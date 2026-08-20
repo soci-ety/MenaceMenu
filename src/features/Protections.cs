@@ -148,7 +148,7 @@ namespace MalumMenu.features
 
 			static bool Prefix(byte callId, MessageReader reader)
 			{
-				if(!Enabled || callId != (byte)RpcCalls.VotingComplete) return true;
+						if(!Enabled || !CheatToggles.antiOverload || callId != (byte)RpcCalls.VotingComplete) return true;
 
 				int oldReadPosition = reader.Position;
 

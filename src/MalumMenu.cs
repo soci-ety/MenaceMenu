@@ -38,7 +38,7 @@ public partial class MalumMenu : BasePlugin
     public static string malumVersion = "3.2.0";
     public static string hyperVersion = "4.2.2";
     public static string hyperBuild = "Stable";
-    public static List<string> supportedAU = new List<string> { "2026.3.31", "2026.6.5" };
+    public static List<string> supportedAU = new List<string> { "2026.8.18", "2026.6.5", "2026.3.31" };
     public static List<string> toleratedAU = new List<string> { "2026.2.24", "2026.3.17" };
     public static bool isPanicked = false;
     public static bool inStealthMode = false;
@@ -192,7 +192,8 @@ public partial class MalumMenu : BasePlugin
         //                         ));
 
         // Enabled by default
-        CheatToggles.antiOverload = true;
+        // The overload RPC assumptions are not compatible with v18+ voting.
+        CheatToggles.antiOverload = false;
         CheatToggles.unlockFeatures = true;
         CheatToggles.freeCosmetics = true;
         CheatToggles.avoidPenalties = true;

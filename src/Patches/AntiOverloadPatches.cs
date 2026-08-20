@@ -54,9 +54,11 @@ public static class RpcValidator
             RpcCalls.ExitVent           => 1,
             RpcCalls.SnapTo             => 8, // Vector2 x (float) + Vector2 y (float) = 8 bytes minimum
             RpcCalls.CloseMeeting       => 0, // no payload
-            RpcCalls.VotingComplete     => 1,
-            RpcCalls.CastVote           => 2, // byte srcPlayerId + byte suspectPlayerId
-            RpcCalls.ClearVote          => 0, // no payload
+            // Voting payloads are version-dependent in Among Us v18+; do not
+            // reject them based on the older fixed-size assumptions.
+            RpcCalls.VotingComplete     => 0,
+            RpcCalls.CastVote           => 0,
+            RpcCalls.ClearVote          => 0,
             RpcCalls.AddVote            => 1,
             RpcCalls.CloseDoorsOfType   => 1,
             RpcCalls.SetTasks           => 1,

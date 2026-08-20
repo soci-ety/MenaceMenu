@@ -289,7 +289,7 @@ namespace MalumMenu
             {
                 if(AmTarget)
                 {
-                    MeetingHud.Instance.VotingComplete(voteStates, ejectedPlayer, isTie);
+                    MeetingHud.Instance.VotingComplete(voteStates, ejectedPlayer, isTie, false, 0);
                 }
 
                 writer.StartMessage((byte)GameDataTypes.RpcFlag);
