@@ -1,4 +1,3 @@
----
 # NOTICE:
 * MenaceMenu is a fork of HyperMenu, which is based on the original MalumMenu.
   * Original MalumMenu: [scp222thj/MalumMenu](https://github.com/scp222thj/MalumMenu)
