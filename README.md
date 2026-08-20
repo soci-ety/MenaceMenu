@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="HyperMenu.jpeg">
-</p>
-
 ---
 # NOTICE:
 * MenaceMenu is a fork of HyperMenu, which is based on the original MalumMenu.
@@ -9,19 +5,6 @@
   * HyperMenu: [The-HyperMenu-Team/HyperMenu](https://github.com/The-HyperMenu-Team/HyperMenu)
   * MenaceMenu: [soci-ety/MenaceMenu](https://github.com/soci-ety/MenaceMenu)
 ---
-## Our Discord:
-https://discord.gg/gkpdeAX5u9
-
-<p align="center">
-  <a href="https://discord.gg/gkpdeAX5u9">
-    <img hspace="6" src="https://img.shields.io/badge/Join%20Us%20on-Discord-blue?style=flat&logo=discord" alt="Discord">
-  </a>
-
-  <a href="https://github.com/soci-ety/MenaceMenu/releases">
-    <img hspace="6" src="https://img.shields.io/github/downloads/soci-ety/MenaceMenu/total?style=flat&logo=github&label=Total%20Downloads&color=2ECC71" alt="Downloads">
-  </a>
-</p>
-
 <p align="center">
   <b>An easy-to-use Among Us BepInEx plugin with a simple GUI and useful modules.</b>
 </p>
@@ -31,7 +14,6 @@ https://discord.gg/gkpdeAX5u9
 ---
 # 😎 Table Of Contents
 
-- [🎁 Releases](#-releases)
 - [⬇️ Installation](#️-installation)
   - [🪟 Windows](#-windows)
   - [🔧 Building From Source](#-building-from-source)
@@ -39,16 +21,6 @@ https://discord.gg/gkpdeAX5u9
 - [📋 Features](#-features)
 - [❓ FAQ](#-faq)
 - [⚠️ Disclaimer](#️-disclaimer)
-
-# 🎁 Releases
-
-| Mod Version        | Among Us - Version | Link                                                                  |
-|--------------------|--------------------|-----------------------------------------------------------------------|
-| Main **[CURRENT]** | 17.5 / 2026.8.18   | [Repository](https://github.com/soci-ety/MenaceMenu)                 |
-| v4.2.2 base        | 17.4 / 2026.6.5    | [Original release](https://github.com/The-HyperMenu-Team/HyperMenu/releases/tag/v4.2.2) |
-
-MenaceMenu is currently built against the Among Us `2026.8.18` game libraries.
-Use the matching game version for the best compatibility.
 
 # ⬇️ Installation
 
@@ -154,16 +126,6 @@ Make sure you installed **BepInEx 6 IL2CPP x64**, not BepInEx 5. Confirm that `w
 Check `BepInEx\LogOutput.log` for errors. The plugin should be installed only once in `BepInEx\plugins\`.
 
 The current build targets Among Us `17.5 / 2026.8.18`. Older or newer game versions may require a different build.
-
-</details>
-
-<details>
-
-<summary><h2>🗳️ Voting does not work</h2></summary>
-
-Use the MenaceMenu build compiled against Among Us `2026.8.18`. The v17.5 fix updates the MeetingHud vote-area fields and the private voting completion RPC used by the newer game version.
-
-Remove old plugin DLLs before installing the new one. Having MalumMenu, HyperMenu, and MenaceMenu loaded together can cause duplicate Harmony patches and broken voting UI.
 
 </details>
 
