@@ -112,6 +112,10 @@ Copy both generated files into `Among Us\BepInEx\plugins\`.
 
 For the original feature list, see [MalumMenu FEATURES.md](https://github.com/scp222thj/MalumMenu/blob/main/FEATURES.md).
 
+# 💬 Community
+
+Join the MenaceMenu Discord: [discord.gg/bH4Hy9YnVD](https://discord.gg/bH4Hy9YnVD)
+
 # ❓ FAQ
 
 Click to expand each topic.
