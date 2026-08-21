@@ -121,6 +121,9 @@ public class PlayersTab : ITab
             Teleporter.TeleportTo(target.transform.position);
         }
 
+        MalumMenu.routines.petPlayer.target = target;
+        MalumMenu.routines.petPlayer.Enabled = GUILayout.Toggle(MalumMenu.routines.petPlayer.Enabled, "Pet Player");
+
         if (GUILayout.Button("Murder"))
         {
             if (AmongUsClient.Instance.AmHost)

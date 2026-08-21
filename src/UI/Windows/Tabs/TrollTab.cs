@@ -1,4 +1,5 @@
 using MalumMenu.features;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MalumMenu;
@@ -44,6 +45,46 @@ public class TrollTab : ITab
         {
             PlayerControl randomPl = Utilities.GetRandomPlayer();
             Utilities.CopyPlayer(randomPl);
+        }
+
+        GUILayout.Space(5);
+
+        GUILayout.Label("Teleport Flooder:");
+        MalumMenu.routines.teleportSpammer.Enabled = GUILayout.Toggle(MalumMenu.routines.teleportSpammer.Enabled, "Teleport Flooder");
+
+        GUILayout.Label($"Destination: {MalumMenu.routines.teleportSpammer.DestinationName}");
+        Dictionary<string, Vector2> teleportLocations = Teleporter.GetTeleportLocations();
+        byte locationIndex = 0;
+        foreach (var (name, position) in teleportLocations)
+        {
+            if (locationIndex % 2 == 0) GUILayout.BeginHorizontal();
+
+            if (GUILayout.Button(name))
+            {
+                MalumMenu.routines.teleportSpammer.SetDestination(name, position);
+            }
+
+            if (locationIndex % 2 != 0) GUILayout.EndHorizontal();
+            locationIndex++;
+        }
+
+        if (locationIndex % 2 != 0) GUILayout.EndHorizontal();
+
+        if (GUILayout.Button("Kick All Players"))
+        {
+            if (!AmongUsClient.Instance.AmHost)
+            {
+                MalumMenu.notifications.Send("Kick All Players", "Only the lobby host can kick players.");
+            }
+            else
+            {
+                foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+                {
+                    if (player == PlayerControl.LocalPlayer || player.OwnerId == AmongUsClient.Instance.HostId) continue;
+
+                    Utilities.KickPlayer(player);
+                }
+            }
         }
 
         GUILayout.Space(5);

@@ -10,6 +10,7 @@ namespace MalumMenu.routines
         public DiscoHostRoutine discoHost = new DiscoHostRoutine();
         public DoorTrollerRoutine doorTroller = new DoorTrollerRoutine();
         public JailPlayerRoutine jailPlayer = new JailPlayerRoutine();
+        public PetPlayerRoutine petPlayer = new PetPlayerRoutine();
         public PlayerFollowerRoutine playerFollower = new PlayerFollowerRoutine();
         public ReportBodySpam reportBodySpam = new ReportBodySpam();
         public TeleportSpammer teleportSpammer = new TeleportSpammer();
@@ -18,7 +19,7 @@ namespace MalumMenu.routines
 
         public RoutineManager()
         {
-            routineList = [ autoTriggerSpores, discoHost, doorTroller, jailPlayer, playerFollower, reportBodySpam, teleportSpammer ];
+            routineList = [ autoTriggerSpores, discoHost, doorTroller, jailPlayer, petPlayer, playerFollower, reportBodySpam, teleportSpammer ];
         }
 
         public void Update()

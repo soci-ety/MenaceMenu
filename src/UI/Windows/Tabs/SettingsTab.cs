@@ -77,6 +77,10 @@ public class SettingsTab : ITab
 
         GUILayout.Space(5);
 
+        MalumMenu.menuMaterialLayout.Value = GUILayout.Toggle(MalumMenu.menuMaterialLayout.Value, " New UI (WIP)");
+
+        GUILayout.Space(5);
+
         MalumMenu.autoLoadProfile.Value = GUILayout.Toggle(MalumMenu.autoLoadProfile.Value, " Auto-Load Profile on Startup");
     }
 

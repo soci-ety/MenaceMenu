@@ -74,5 +74,33 @@ namespace MalumMenu.features
 				}
 			}
 		}
+
+		[HarmonyPatch(typeof(LogicOptionsHnS), nameof(LogicOptionsHnS.GetCrewmateLeadTime))]
+		public static class NoSeekerAnimation
+		{
+			public static bool Enabled { get; set; } = true;
+
+			static bool Prefix(ref int __result)
+			{
+				if (!Enabled) return true;
+
+				__result = 0;
+				return false;
+			}
+		}
+
+		[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Visible), MethodType.Setter)]
+		public static class ShowGhosts
+		{
+			public static bool Enabled { get; set; } = true;
+
+			static bool Prefix(PlayerControl __instance)
+			{
+				if (!Enabled || !__instance.Data.IsDead) return true;
+
+				__instance.cosmetics.Visible = true;
+				return false;
+			}
+		}
 	}
 }

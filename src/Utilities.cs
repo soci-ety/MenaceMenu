@@ -273,58 +273,25 @@ namespace MalumMenu
 
         public static void KickPlayer(PlayerControl player, bool skipFirstStage = false)
         {
-            if(AmongUsClient.Instance.AmHost)
+            if(!AmongUsClient.Instance.AmHost)
             {
-                AmongUsClient.Instance.KickPlayer(player.OwnerId, true);
-                MalumMenu.notifications.Send("Kick Player", $"{player.Data.PlayerName} has been kicked from the game.");
+                MalumMenu.notifications.Send("Kick Player", "Only the lobby host can kick players.");
+                return;
+            }
+
+            if(player == null || player.Data == null)
+            {
+                MalumMenu.notifications.Send("Kick Player", "That player is no longer available.");
                 return;
             }
 
             if(player.OwnerId == AmongUsClient.Instance.HostId)
             {
-                MalumMenu.notifications.Send("Kick Player", "You are not able to kick out the host of the lobby");
+                MalumMenu.notifications.Send("Kick Player", "You cannot kick the lobby host.");
                 return;
             }
 
-            if(ShipStatus.Instance == null)
-            {
-                MalumMenu.notifications.Send("Kick Player", "The game must have started in order for this feature to work.");
-                return;
-            }
-
-            if(!IsAnticheatPresent())
-            {
-                MalumMenu.notifications.Send("Kick Player", "This feature only works in server-authoritative lobbies.");
-                return;
-            }
-
-            Network.BatchedMessage batch = new Network.BatchedMessage(player.OwnerId);
-
-            if(!skipFirstStage)
-            {
-                MalumMenu.Log.LogInfo($"Sending Enter ventilation system update to {player.OwnerId}");
-
-                MessageWriter writer = MessageWriter.Get(SendOption.Reliable);
-                writer.Write((ushort)0);
-                writer.Write((byte)VentilationSystem.Operation.Enter);
-                writer.Write((byte)0);
-
-                batch.QueueUpdateSystem(PlayerControl.LocalPlayer, SystemTypes.Ventilation, writer);
-                writer.Recycle();
-            }
-
-            MalumMenu.Log.LogInfo($"Sending BootImposters ventilation system update to {player.OwnerId}");
-
-            MessageWriter writer2 = MessageWriter.Get(SendOption.Reliable);
-            writer2.Write((ushort)1);
-            writer2.Write((byte)VentilationSystem.Operation.BootImpostors);
-            writer2.Write((byte)0);
-
-            batch.QueueUpdateSystem(PlayerControl.LocalPlayer, SystemTypes.Ventilation, writer2);
-            writer2.Recycle();
-
-            batch.FinishBatch();
-
+            AmongUsClient.Instance.KickPlayer(player.OwnerId, false);
             MalumMenu.notifications.Send("Kick Player", $"{player.Data.PlayerName} has been kicked from the game.");
         }
     }

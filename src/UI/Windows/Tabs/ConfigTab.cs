@@ -23,7 +23,6 @@ public class ConfigTab : ITab
         };
 
     private int versionSelection = 0;
-
     public void Draw()
     {
         GUILayout.BeginVertical(GUILayout.Width(MenuUI.windowWidth * 0.425f));
@@ -66,4 +65,5 @@ public class ConfigTab : ITab
 
         CheatToggles.loadProfile = GUILayout.Toggle(CheatToggles.loadProfile, " Load from Profile");
     }
+
 }

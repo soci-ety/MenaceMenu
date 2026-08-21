@@ -255,40 +255,21 @@ public static class MalumPPMCheats
 
                 List<NetworkedPlayerInfo> playerDataList = new List<NetworkedPlayerInfo>();
 
-                // Shapeshifter role can only be used if it was already assigned at the start of the game
-                // This is done to prevent the anticheat from kicking players
-                if (_oldRole == RoleTypes.Shapeshifter || Utils.isFreePlay)
-                {
-                    playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Shapeshifter", OutfitPreset.Shapeshifter, Utils.GetBehaviourByRoleType(RoleTypes.Shapeshifter)));
-                }
+                playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Shapeshifter", OutfitPreset.Shapeshifter, Utils.GetBehaviourByRoleType(RoleTypes.Shapeshifter)));
+                playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Phantom", OutfitPreset.Phantom, Utils.GetBehaviourByRoleType(RoleTypes.Phantom)));
+                playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Viper", OutfitPreset.Viper, Utils.GetBehaviourByRoleType(RoleTypes.Viper)));
+                playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Impostor", OutfitPreset.Impostor, Utils.GetBehaviourByRoleType(RoleTypes.Impostor)));
 
-                // Phantom role can only be used if it was already assigned at the start of the game
-                // This is done to prevent the anticheat from kicking players
-                if (_oldRole == RoleTypes.Phantom || Utils.isFreePlay)
-                {
-                    playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Phantom", OutfitPreset.Phantom, Utils.GetBehaviourByRoleType(RoleTypes.Phantom)));
-                }
-
-                // Viper role can only be used if it was already assigned at the start of the game
-                // This is done to prevent the anticheat from kicking players
-                if (_oldRole == RoleTypes.Viper || Utils.isFreePlay)
-                {
-                    playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Viper", OutfitPreset.Viper, Utils.GetBehaviourByRoleType(RoleTypes.Viper)));
-                }
-
-                // Impostor role can only be used if it was already assigned at the start of the game or as host
-                // This is done to prevent the anticheat from kicking players
-                if ((_oldRole != null && Utils.GetBehaviourByRoleType((RoleTypes)_oldRole).TeamType == RoleTeamTypes.Impostor) || Utils.isFreePlay || Utils.isHost)
-                {
-                    playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Impostor", OutfitPreset.Impostor, Utils.GetBehaviourByRoleType(RoleTypes.Impostor)));
-                }
-
+                playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Guardian Angel", OutfitPreset.GuardianAngel, Utils.GetBehaviourByRoleType(RoleTypes.GuardianAngel)));
                 playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Tracker", OutfitPreset.Tracker, Utils.GetBehaviourByRoleType(RoleTypes.Tracker)));
                 playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Noisemaker", OutfitPreset.Noisemaker, Utils.GetBehaviourByRoleType(RoleTypes.Noisemaker)));
                 playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Engineer", OutfitPreset.Engineer, Utils.GetBehaviourByRoleType(RoleTypes.Engineer)));
                 playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Scientist", OutfitPreset.Scientist, Utils.GetBehaviourByRoleType(RoleTypes.Scientist)));
                 playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Detective", OutfitPreset.Detective, Utils.GetBehaviourByRoleType(RoleTypes.Detective)));
+                playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Judge", OutfitPreset.Judge, Utils.GetBehaviourByRoleType(RoleTypes.Judge)));
                 playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Crewmate", OutfitPreset.Crewmate, Utils.GetBehaviourByRoleType(RoleTypes.Crewmate)));
+                playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Crewmate Ghost", OutfitPreset.CrewmateGhost, Utils.GetBehaviourByRoleType(RoleTypes.CrewmateGhost)));
+                playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Impostor Ghost", OutfitPreset.ImpostorGhost, Utils.GetBehaviourByRoleType(RoleTypes.ImpostorGhost)));
 
                 // Player pick menu made for changing your roles with a custom choice list
                 PlayerPickMenu.OpenPlayerPickMenu(playerDataList, (Action) (() =>
@@ -299,7 +280,10 @@ public static class MalumPPMCheats
                         _oldRole = PlayerControl.LocalPlayer.Data.RoleType;
                     }
 
-                    if (PlayerControl.LocalPlayer.Data.IsDead) // Prevent accidential revives
+                    RoleTypes selectedRole = PlayerPickMenu.targetPlayerData.Role.Role;
+                    bool selectedGhostRole = RoleManager.IsGhostRole(selectedRole);
+
+                    if (PlayerControl.LocalPlayer.Data.IsDead && !selectedGhostRole) // Prevent accidental revives
                     {
                         if (PlayerPickMenu.targetPlayerData.Role.TeamType == RoleTeamTypes.Impostor)
                         {
@@ -312,22 +296,11 @@ public static class MalumPPMCheats
                     }
                     else
                     {
-                        /* if (PlayerPickMenu.targetPlayerData.Role.Role == RoleTypes.Shapeshifter && oldRole != RoleTypes.Shapeshifter){
-
-                            Utils.showPopup("\n<size=125%>Changing into the Shapeshifter role is not recommended\nsince shapeshifting will get you kicked by the anticheat");
-
-                        } else if (PlayerPickMenu.targetPlayerData.Role.Role == RoleTypes.Noisemaker && oldRole != RoleTypes.Noisemaker){
-
-                            Utils.showPopup("\n<size=125%>Changing into the Noisemaker role is not recommended\nsince dying won't trigger the alert for other players");
-
-                        } else if (oldRole == RoleTypes.Noisemaker){
-
-                            Utils.showPopup("\n<size=125%>Your \"real\" role is still Noisemaker\nso other players will still see the alert when you die");
-
-                        } */
-
-                        RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, PlayerPickMenu.targetPlayerData.Role.Role);
+                        RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, selectedRole);
                     }
+
+                    HudManager.Instance.ReportButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !selectedGhostRole);
+
                 }));
 
                 _setFakeRoleActive = true;

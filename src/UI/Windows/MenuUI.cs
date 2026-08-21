@@ -15,6 +15,7 @@ public class MenuUI : MonoBehaviour
     private List<ITab> _tabs = new();
     private int _selectedTab;
     private Vector2 _tabScrollPosition = Vector2.zero;
+    private Vector2 _contentScrollPosition = Vector2.zero;
     public static float hue; // For RGB mode
     private bool _wasInGameplay = false;
 
@@ -39,6 +40,7 @@ public class MenuUI : MonoBehaviour
         _tabs.Add(new AnticheatTab());
         _tabs.Add(new ModesTab());
         _tabs.Add(new ConfigTab());
+        _tabs.Add(new ProfilesTab());
         // _tabs.Add(new OverloadTab());
 
         // Instantiate 2D area of MenuUI
@@ -209,7 +211,10 @@ public class MenuUI : MonoBehaviour
 
         UIHelpers.ApplyUIColor();
 
-        _windowRect = GUI.Window((int)WindowId.MenuUI, _windowRect, (GUI.WindowFunction)WindowFunction, "HyperMenu " + MalumMenu.hyperVersion + ", " + MalumMenu.hyperBuild + " build.");
+        GUI.WindowFunction renderer = MalumMenu.menuMaterialLayout.Value
+            ? (GUI.WindowFunction)MaterialWindowFunction
+            : (GUI.WindowFunction)WindowFunction;
+        _windowRect = GUI.Window((int)WindowId.MenuUI, _windowRect, renderer, "MenaceMenu v1.1.0");
     }
 
     private void DisableSabotageCheats()
@@ -263,6 +268,9 @@ public class MenuUI : MonoBehaviour
         // Right tab content and controls (82% width)
         GUILayout.BeginVertical(GUIStylePreset.ModernBox, GUILayout.Width(windowWidth * 0.8f));
         GUILayout.Space(2);
+        bool scrollContent = _tabs[_selectedTab].name is "Troll" or "Config";
+        if (scrollContent)
+            _contentScrollPosition = GUILayout.BeginScrollView(_contentScrollPosition, false, true, GUILayout.ExpandHeight(true));
 
         // Tab-specific content
         if (_selectedTab >= 0 && _selectedTab < _tabs.Count)
@@ -272,6 +280,8 @@ public class MenuUI : MonoBehaviour
             GUILayout.Space(6);
             _tabs[_selectedTab].Draw();
         }
+        if (scrollContent)
+            GUILayout.EndScrollView();
 
         GUILayout.EndVertical();
 
@@ -280,4 +290,81 @@ public class MenuUI : MonoBehaviour
         // Make the window draggable
         GUI.DragWindow();
     }
+
+    private void MaterialWindowFunction(int windowID)
+    {
+        Color primary = GUI.backgroundColor;
+        Color surface = new Color(0.09f, 0.10f, 0.12f, 1f);
+        Color surfaceContainer = new Color(0.14f, 0.15f, 0.18f, 1f);
+        Color surfaceHigh = new Color(0.20f, 0.22f, 0.26f, 1f);
+        Color onSurface = new Color(0.92f, 0.93f, 0.96f, 1f);
+        Color previousContent = GUI.contentColor;
+        Color previousBackground = GUI.backgroundColor;
+
+        GUI.contentColor = onSurface;
+        GUI.backgroundColor = surface;
+        GUILayout.BeginVertical(GUIStylePreset.ModernBox);
+
+        // Compact app bar: the old explanatory header used too much vertical space.
+        GUI.backgroundColor = surfaceContainer;
+        GUILayout.BeginHorizontal(GUIStylePreset.ModernBox, GUILayout.Height(36));
+        GUILayout.Label("MENACEMENU", GUIStylePreset.SectionHeader);
+        GUILayout.FlexibleSpace();
+        GUILayout.Label("discord.gg/bH4Hy9YnVD", GUIStylePreset.ModernLabel);
+        GUILayout.FlexibleSpace();
+        GUI.backgroundColor = surfaceHigh;
+        GUILayout.Label(Utils.isPlayer ? "IN GAME" : "LOBBY", GUIStylePreset.ModernLabel, GUILayout.Width(72));
+        GUILayout.EndHorizontal();
+
+        GUILayout.Space(6);
+        GUILayout.BeginHorizontal(GUILayout.Height(windowHeight - 92));
+
+        GUI.backgroundColor = surfaceContainer;
+        GUILayout.BeginVertical(GUIStylePreset.ModernBox, GUILayout.Width(windowWidth * 0.21f));
+        GUILayout.Label("NAVIGATION", GUIStylePreset.ModernLabel);
+        GUILayout.Space(2);
+        _tabScrollPosition = GUILayout.BeginScrollView(_tabScrollPosition, false, true);
+
+        for (int i = 0; i < _tabs.Count; i++)
+        {
+            Color tabBackground = GUI.backgroundColor;
+            GUI.backgroundColor = _selectedTab == i ? UIHelpers.GetHighlightColor(primary) : surfaceContainer;
+
+            if (GUILayout.Button(_tabs[i].name, GUIStylePreset.TabButton, GUILayout.Height(34)))
+                _selectedTab = i;
+
+            GUI.backgroundColor = tabBackground;
+        }
+
+        GUILayout.EndScrollView();
+        GUILayout.EndVertical();
+
+        GUILayout.Space(8);
+
+        GUI.backgroundColor = surfaceContainer;
+        GUILayout.BeginVertical(GUIStylePreset.ModernBox, GUILayout.Width(windowWidth * 0.77f));
+        if (_selectedTab >= 0 && _selectedTab < _tabs.Count)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(_tabs[_selectedTab].name, GUIStylePreset.TabTitle);
+            GUILayout.FlexibleSpace();
+            GUILayout.Label($"{_selectedTab + 1:00} / {_tabs.Count:00}", GUIStylePreset.ModernLabel);
+            GUILayout.EndHorizontal();
+            GUILayout.Box(string.Empty, GUIStylePreset.Separator, GUILayout.Height(2f), GUILayout.ExpandWidth(true));
+            GUILayout.Space(6);
+
+            _contentScrollPosition = GUILayout.BeginScrollView(_contentScrollPosition, false, true, GUILayout.ExpandHeight(true));
+            _tabs[_selectedTab].Draw();
+            GUILayout.EndScrollView();
+        }
+        GUILayout.EndVertical();
+        GUILayout.EndHorizontal();
+
+        GUILayout.EndVertical();
+
+        GUI.contentColor = previousContent;
+        GUI.backgroundColor = previousBackground;
+        GUI.DragWindow();
+    }
+
 }

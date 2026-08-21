@@ -51,6 +51,7 @@ public partial class MalumMenu : BasePlugin
     public static ConfigEntry<string> menuChatColor;
     public static ConfigEntry<bool> menuOpenOnMouse;
     public static ConfigEntry<bool> menuKeepSubwindowsOpen;
+    public static ConfigEntry<bool> menuMaterialLayout;
     public static ConfigEntry<string> spoofLevel;
     public static ConfigEntry<string> spoofPlatform;
     public static ConfigEntry<bool> spoofDeviceId;
@@ -103,6 +104,12 @@ public partial class MalumMenu : BasePlugin
                                 "KeepSubwindowsOpen",
                                 false,
                                 "When enabled, closing the MalumMenu GUI will not automatically close its subwindows");
+
+        menuMaterialLayout = Config.Bind("MalumMenu.GUI",
+                    "MaterialLayout",
+                                true,
+                    "When enabled, use the Material 3-inspired menu layout");
+
 
         autoLoadProfile = Config.Bind("MalumMenu.Profile",
                                 "AutoLoadProfile",
@@ -233,13 +240,13 @@ public partial class MalumMenu : BasePlugin
         // Create profile file if it is missing
         if (!File.Exists(ProfilePath))
         {
-            CheatToggles.SaveTogglesToProfile();
+            ProfileStore.EnsureLegacyProfile();
         }
 
         // Auto load profile on start if needed
         if (autoLoadProfile.Value)
         {
-            CheatToggles.LoadTogglesFromProfile();
+            ProfileStore.LoadLegacy(out _);
         }
 
         SceneManager.add_sceneLoaded((Action<Scene, LoadSceneMode>) ((scene, _) =>

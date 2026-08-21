@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace MalumMenu.routines
 {
@@ -6,13 +7,21 @@ namespace MalumMenu.routines
     {
         public TeleportSpammer() : base("TeleportSpammer") { }
 
-        private System.Random rnd = new System.Random();
         private float teleportDelay = 0.5f;
         private float timeElapsed = 0f;
+        private Vector2 destination = new Vector2(-0.78f, 2.48f);
+
+        public string DestinationName { get; private set; } = "Cafeteria";
+
+        public void SetDestination(string name, Vector2 position)
+        {
+            DestinationName = name;
+            destination = position;
+        }
 
         public override void Run()
         {
-            if(ShipStatus.Instance == null) return;
+            if(ShipStatus.Instance == null || !AmongUsClient.Instance.AmHost) return;
 
             timeElapsed += Time.deltaTime;
             if(timeElapsed < teleportDelay) return;
@@ -22,19 +31,31 @@ namespace MalumMenu.routines
             {
                 if(player == PlayerControl.LocalPlayer) continue;
 
-                int ventId = rnd.Next(0, ShipStatus.Instance.AllVents.Count);
-
-                Teleporter.TeleportToVent(player, ventId);
+                Teleporter.TeleportPlayerTo(player, destination);
             }
         }
 
         protected override void OnEnable()
         {
-            if(PlayerControl.LocalPlayer == null || ShipStatus.Instance == null)
+            if(PlayerControl.LocalPlayer == null || ShipStatus.Instance == null || !AmongUsClient.Instance.AmHost)
             {
-                MalumMenu.notifications.Send("Teleport Spammer", "Teleport Spammer can only be used once the game has started.", 10);
+                MalumMenu.notifications.Send("Teleport Spammer", "Teleport Spammer is only available to the lobby host.", 10);
                 Enabled = false;
                 return;
+            }
+
+            Dictionary<string, Vector2> locations = Teleporter.GetTeleportLocations();
+            if (!locations.TryGetValue(DestinationName, out Vector2 selectedDestination))
+            {
+                foreach (var location in locations)
+                {
+                    SetDestination(location.Key, location.Value);
+                    break;
+                }
+            }
+            else
+            {
+                destination = selectedDestination;
             }
         }
 

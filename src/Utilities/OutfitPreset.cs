@@ -34,6 +34,12 @@ public static class OutfitPreset
         ColorId = 0
     };
 
+    public static NetworkedPlayerInfo.PlayerOutfit GuardianAngel = new()
+    {
+        ColorId = 10,
+        HatId = "hat_angelwings"
+    };
+
     public static NetworkedPlayerInfo.PlayerOutfit Tracker = new()
     {
         ColorId = 10,
@@ -70,5 +76,23 @@ public static class OutfitPreset
     public static NetworkedPlayerInfo.PlayerOutfit Crewmate = new()
     {
         ColorId = 10
+    };
+
+    public static NetworkedPlayerInfo.PlayerOutfit Judge = new()
+    {
+        ColorId = 10,
+        HatId = "hat_pk05_Fedora"
+    };
+
+    public static NetworkedPlayerInfo.PlayerOutfit CrewmateGhost = new()
+    {
+        ColorId = 10,
+        VisorId = "visor_Scar"
+    };
+
+    public static NetworkedPlayerInfo.PlayerOutfit ImpostorGhost = new()
+    {
+        ColorId = 0,
+        VisorId = "visor_Scar"
     };
 }
