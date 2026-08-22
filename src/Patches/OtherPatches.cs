@@ -142,15 +142,15 @@ public static class VersionShower_Start
 
         if (MalumMenu.supportedAU.Contains(Application.version)) // Checks if Among Us version is supported
         {
-            __instance.text.text =  $"HyperMenu V{MalumMenu.hyperVersion}, MalumMenu V{MalumMenu.malumVersion}, MenaceMenu V1.10.0 ( AU V{Application.version})"; // Supported
+            __instance.text.text =  $"HyperMenu V{MalumMenu.hyperVersion}, MalumMenu V{MalumMenu.malumVersion}, MenaceMenu V1.1.1 ( AU V{Application.version})"; // Supported
         }
         else if (MalumMenu.toleratedAU.Contains(Application.version)) // Checks if Among Us version is tolerated
         {
-            __instance.text.text =  $"HyperMenu V{MalumMenu.hyperVersion}, MalumMenu V{MalumMenu.malumVersion}, MenaceMenu V1.10.0 (<color=yellow>AU V{Application.version}</color>)"; // Tolerated
+            __instance.text.text =  $"HyperMenu V{MalumMenu.hyperVersion}, MalumMenu V{MalumMenu.malumVersion}, MenaceMenu V1.1.1 (<color=yellow>AU V{Application.version}</color>)"; // Tolerated
         }
         else
         {
-            __instance.text.text =  $"HyperMenu V{MalumMenu.hyperVersion}, MalumMenu V{MalumMenu.malumVersion}, MenaceMenu V1.10.0 (<color=red>AU V{Application.version}</color>)"; // Unsupported
+            __instance.text.text =  $"HyperMenu V{MalumMenu.hyperVersion}, MalumMenu V{MalumMenu.malumVersion}, MenaceMenu V1.1.1 (<color=red>AU V{Application.version}</color>)"; // Unsupported
         }
     }
 }

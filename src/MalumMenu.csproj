@@ -4,6 +4,7 @@
         <LangVersion>latest</LangVersion>
         <DebugType>embedded</DebugType>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <AssemblyName>MenaceMenuV1.1.1</AssemblyName>
         <VersionPrefix>4.2.1</VersionPrefix>
         <Description>Among Us cheat menu based on MalumMenu by scp222thj and Astral</Description>
         <Authors>ADHyperActive</Authors>

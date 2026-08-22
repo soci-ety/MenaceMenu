@@ -214,7 +214,7 @@ public class MenuUI : MonoBehaviour
         GUI.WindowFunction renderer = MalumMenu.menuMaterialLayout.Value
             ? (GUI.WindowFunction)MaterialWindowFunction
             : (GUI.WindowFunction)WindowFunction;
-        _windowRect = GUI.Window((int)WindowId.MenuUI, _windowRect, renderer, "MenaceMenu v1.1.0");
+        _windowRect = GUI.Window((int)WindowId.MenuUI, _windowRect, renderer, "MenaceMenu v1.1.1");
     }
 
     private void DisableSabotageCheats()

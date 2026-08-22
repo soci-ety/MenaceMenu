@@ -24,7 +24,7 @@ All notable MenaceMenu changes are documented here.
   - Clipboard paste and import actions.
   - Validation for malformed or empty profile payloads.
 - Added portable `MENACEMENU_PROFILE_V1` profile payloads for sharing settings between installations.
-- Added `MenaceMenu V1.10.0` to the Among Us home-screen version display.
+- Added `MenaceMenu V1.1.1` to the Among Us home-screen version display.
 - Added `discord.gg/bH4Hy9YnVD` centered in the new menu app bar.
 
 ### Changed
@@ -32,7 +32,7 @@ All notable MenaceMenu changes are documented here.
 - Restored Config to its original responsibilities and moved profile management into the separate Profiles tab.
 - Preserved compatibility with the legacy `MalumProfile.txt` format.
 - Updated profile parsing to validate settings before applying them.
-- Updated the menu title to `MenaceMenu v1.1.0`.
+- Updated the menu title to `MenaceMenu v1.1.1`.
 - Updated the Material layout with a compact app bar, navigation rail, improved contrast, and scrollable content.
 
 ### Fixed
