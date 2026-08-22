@@ -479,6 +479,11 @@ public static class MalumCheats
             ownedTaskTypes.Add(myTask.TaskType);
         }
 
+        // Prefab tasks (FuelEngines, VentCleaning, etc.) are not initialized, so
+        // FindConsoles/ValidConsole indexes into an empty Data array and throws.
+        // Match nearby consoles by TaskType instead.
+        var nearbyTaskTypes = GetNearbyConsoleTaskTypes(playerPos);
+
         foreach (var taskArray in allTaskArrays)
         {
             if (taskArray == null) continue;
@@ -486,30 +491,10 @@ public static class MalumCheats
             foreach (var task in taskArray)
             {
                 if (task == null) continue;
-
-                // Skip tasks already present in the player's own task list
                 if (ownedTaskTypes.Contains(task.TaskType)) continue;
+                if (!nearbyTaskTypes.Contains(task.TaskType)) continue;
 
-                // Check whether any console for this task is within interaction range
-                try
-                {
-                    var consoles = task.FindConsoles();
-                    if (consoles == null || consoles.Count == 0) continue;
-
-                    foreach (var console in consoles)
-                    {
-                        if (console == null) continue;
-                        if (Vector2.Distance(playerPos, console.transform.position) <= console.UsableDistance)
-                        {
-                            inRangeTasks.Add(task);
-                            break;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MalumMenu.Log.LogWarning($"DoAnyTaskCheat: exception while checking task {task.TaskType}: {ex.Message}");
-                }
+                inRangeTasks.Add(task);
             }
         }
 
@@ -548,6 +533,41 @@ public static class MalumCheats
             }
             _injectedTasks.Remove(task);
         }
+    }
+
+    private static HashSet<TaskTypes> GetNearbyConsoleTaskTypes(Vector2 playerPos)
+    {
+        var nearby = new HashSet<TaskTypes>();
+        var consoles = ShipStatus.Instance.AllConsoles;
+        if (consoles == null || consoles.Length == 0)
+        {
+            consoles = ShipStatus.Instance.GetComponentsInChildren<Console>();
+        }
+
+        foreach (var console in consoles)
+        {
+            if (console == null) continue;
+            if (Vector2.Distance(playerPos, console.transform.position) > console.UsableDistance) continue;
+
+            if (console.TaskTypes != null)
+            {
+                foreach (var taskType in console.TaskTypes)
+                {
+                    nearby.Add(taskType);
+                }
+            }
+
+            if (console.ValidTasks != null)
+            {
+                foreach (var set in console.ValidTasks)
+                {
+                    if (set == null) continue;
+                    nearby.Add(set.taskType);
+                }
+            }
+        }
+
+        return nearby;
     }
 
     public static void CleanUpInjectedTasks()

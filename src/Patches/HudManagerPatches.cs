@@ -30,7 +30,10 @@ public static class HudManager_Update
 {
 	public static void Postfix(HudManager __instance)
     {
-		__instance.ShadowQuad.gameObject.SetActive(!MalumESP.IsFullbrightActive()); // Fullbright
+		if (__instance.ShadowQuad != null)
+		{
+			__instance.ShadowQuad.gameObject.SetActive(!MalumESP.IsFullbrightActive()); // Fullbright
+		}
 
 		if (PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data != null && __instance.AbilityButton != null)
 		{
@@ -39,14 +42,17 @@ public static class HudManager_Update
 			__instance.AbilityButton.gameObject.SetActive(hasAbility);
 		}
 
-		if (Utils.IsChatUiActive()) // AlwaysChat
+		if (__instance.Chat != null)
 		{
-			__instance.Chat.gameObject.SetActive(true);
-		}
-		else
-		{
-			Utils.CloseChat();
-			__instance.Chat.gameObject.SetActive(false);
+			if (Utils.IsChatUiActive()) // AlwaysChat
+			{
+				__instance.Chat.gameObject.SetActive(true);
+			}
+			else
+			{
+				Utils.CloseChat();
+				__instance.Chat.gameObject.SetActive(false);
+			}
 		}
 
 		MalumCheats.UseVentCheat(__instance);

@@ -253,43 +253,58 @@ public class PlayersTab : ITab
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Blind"))
         {
-            IGameOptions gameOptions = GameOptions.CreateCloneOptions(GameManager.Instance.LogicOptions.currentGameOptions);
-            gameOptions.SetFloat(FloatOptionNames.CrewLightMod, -1.0f);
-            gameOptions.SetFloat(FloatOptionNames.ImpostorLightMod, -1.0f);
-            GameOptions.SendGameOptionsToClient(gameOptions, target.OwnerId);
+            IGameOptions gameOptions = GameOptions.CreateCloneFromCurrent();
+            if (gameOptions != null)
+            {
+                gameOptions.SetFloat(FloatOptionNames.CrewLightMod, -1.0f);
+                gameOptions.SetFloat(FloatOptionNames.ImpostorLightMod, -1.0f);
+                GameOptions.SendGameOptionsToClient(gameOptions, target.OwnerId);
+            }
         }
 
         if (GUILayout.Button("Fullbright"))
         {
-            IGameOptions gameOptions = GameOptions.CreateCloneOptions(GameManager.Instance.LogicOptions.currentGameOptions);
-            gameOptions.SetFloat(FloatOptionNames.CrewLightMod, 1000f);
-            gameOptions.SetFloat(FloatOptionNames.ImpostorLightMod, 1000f);
-            GameOptions.SendGameOptionsToClient(gameOptions, target.OwnerId);
+            IGameOptions gameOptions = GameOptions.CreateCloneFromCurrent();
+            if (gameOptions != null)
+            {
+                gameOptions.SetFloat(FloatOptionNames.CrewLightMod, 1000f);
+                gameOptions.SetFloat(FloatOptionNames.ImpostorLightMod, 1000f);
+                GameOptions.SendGameOptionsToClient(gameOptions, target.OwnerId);
+            }
         }
         GUILayout.EndHorizontal();
 
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Slow Speed"))
         {
-            IGameOptions gameOptions = GameOptions.CreateCloneOptions(GameManager.Instance.LogicOptions.currentGameOptions);
-            gameOptions.SetFloat(FloatOptionNames.PlayerSpeedMod, 0.1f);
-            GameOptions.SendGameOptionsToClient(gameOptions, target.OwnerId);
+            IGameOptions gameOptions = GameOptions.CreateCloneFromCurrent();
+            if (gameOptions != null)
+            {
+                gameOptions.SetFloat(FloatOptionNames.PlayerSpeedMod, 0.1f);
+                GameOptions.SendGameOptionsToClient(gameOptions, target.OwnerId);
+            }
         }
 
         if (GUILayout.Button("Super Speed"))
         {
             float maxSpeed = Utilities.IsAnticheatPresent() ? 3.0f : 5.0f;
 
-            IGameOptions gameOptions = GameOptions.CreateCloneOptions(GameManager.Instance.LogicOptions.currentGameOptions);
-            gameOptions.SetFloat(FloatOptionNames.PlayerSpeedMod, maxSpeed);
-            GameOptions.SendGameOptionsToClient(gameOptions, target.OwnerId);
+            IGameOptions gameOptions = GameOptions.CreateCloneFromCurrent();
+            if (gameOptions != null)
+            {
+                gameOptions.SetFloat(FloatOptionNames.PlayerSpeedMod, maxSpeed);
+                GameOptions.SendGameOptionsToClient(gameOptions, target.OwnerId);
+            }
         }
         GUILayout.EndHorizontal();
 
         if (GUILayout.Button("Reset to Defaults"))
         {
-            IGameOptions gameOptions = GameOptions.CreateCloneOptions(GameManager.Instance.LogicOptions.currentGameOptions);
-            GameOptions.SendGameOptionsToClient(gameOptions, target.OwnerId);
+            IGameOptions gameOptions = GameOptions.CreateCloneFromCurrent();
+            if (gameOptions != null)
+            {
+                GameOptions.SendGameOptionsToClient(gameOptions, target.OwnerId);
+            }
         }
 
         GUILayout.Space(5);

@@ -36,15 +36,31 @@ public static class MalumESP
         // Fullbright is automatically activated when zooming out, spectating other players, or "freecamming"
         // This is done to avoid issues with shadows
 
-        return CheatToggles.noShadows || Camera.main.orthographicSize > 3f || Camera.main.gameObject.GetComponent<FollowerCamera>().Target != PlayerControl.LocalPlayer;
+        if (CheatToggles.noShadows) return true;
+
+        Camera cam = Camera.main;
+        if (cam == null) return false;
+        if (cam.orthographicSize > 3f) return true;
+
+        FollowerCamera follower = cam.GetComponent<FollowerCamera>();
+        return follower != null && follower.Target != PlayerControl.LocalPlayer;
     }
 
     public static void ZoomOut(HudManager hudManager)
     {
+        Camera cam = Camera.main;
+        if (cam == null || hudManager?.UICamera == null) return;
+
         if (CheatToggles.zoomOut)
         {
-            if (hudManager.Chat.IsOpenOrOpening || PlayerCustomizationMenu.Instance || (Utils.isLobby && (FriendsListUI.Instance.IsOpen ||
-                GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane.gameObject.active || GameStartManager.Instance.RulesEditPanel))) return;
+            if ((hudManager.Chat != null && hudManager.Chat.IsOpenOrOpening)
+                || PlayerCustomizationMenu.Instance
+                || (Utils.isLobby && FriendsListUI.Instance != null && FriendsListUI.Instance.IsOpen)
+                || (Utils.isLobby && GameStartManager.Instance != null && (
+                    (GameStartManager.Instance.LobbyInfoPane != null
+                     && GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane != null
+                     && GameStartManager.Instance.LobbyInfoPane.LobbyViewSettingsPane.gameObject.active)
+                    || GameStartManager.Instance.RulesEditPanel))) return;
 
             _resolutionChangeNeeded = true;
 
@@ -53,7 +69,7 @@ public static class MalumESP
 
                 // Both the main camera and the UI camera need to be adjusted
 
-                Camera.main.orthographicSize++;
+                cam.orthographicSize++;
                 hudManager.UICamera.orthographicSize++;
 
                 // Utils.AdjustResolution() seems to be needed to properly sync the game's UI
@@ -65,26 +81,22 @@ public static class MalumESP
             else if (Input.GetAxis("Mouse ScrollWheel") > 0f )
             {
                 // Zoom in
-                if (!(Camera.main.orthographicSize > 3f)) return; // Never go below the default orthographicSize: 3f
+                if (!(cam.orthographicSize > 3f)) return; // Never go below the default orthographicSize: 3f
 
-                Camera.main.orthographicSize--;
+                cam.orthographicSize--;
                 hudManager.UICamera.orthographicSize--;
 
                 Utils.AdjustResolution();
             }
         }
-        else
+        else if (_resolutionChangeNeeded)
         {
-            // orthographicSize is reset to default value: 3f
-            Camera.main.orthographicSize = 3f;
+            // Only snap back to the default size when the zoom cheat is turned off,
+            // not every frame — otherwise lobby scroll zoom flashes then gets overwritten.
+            cam.orthographicSize = 3f;
             hudManager.UICamera.orthographicSize = 3f;
-
-            // Utils.AdjustResolution() is invoked one last time to prevent issues with UI
-            if (_resolutionChangeNeeded)
-            {
-                Utils.AdjustResolution();
-                _resolutionChangeNeeded = false;
-            }
+            Utils.AdjustResolution();
+            _resolutionChangeNeeded = false;
         }
     }
 

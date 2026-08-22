@@ -368,9 +368,10 @@ public static class Utils
     // Closes Chat UI
     public static void CloseChat()
     {
-        if (DestroyableSingleton<HudManager>.Instance.Chat.IsOpenOrOpening)
+        ChatController chat = DestroyableSingleton<HudManager>.Instance?.Chat;
+        if (chat != null && chat.IsOpenOrOpening)
         {
-            DestroyableSingleton<HudManager>.Instance.Chat.ForceClosed();
+            chat.ForceClosed();
         }
     }
 

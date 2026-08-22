@@ -132,9 +132,11 @@ namespace MalumMenu.features
 				if(!Enabled || !AmongUsClient.Instance.AmHost) return;
 
 				PlayerControl player = Utilities.GetRandomPlayer();
-				if(player == null) return;
+				if (player == null) return;
 
-				IGameOptions options = GameOptions.CreateCloneOptions(GameManager.Instance.LogicOptions.currentGameOptions);
+				IGameOptions options = GameOptions.CreateCloneFromCurrent();
+				if (options == null) return;
+
 				options.SetFloat(FloatOptionNames.ShapeshifterCooldown, 0.0f);
 
 				GameOptions.SendGameOptionsToClient(options, player.OwnerId);
