@@ -1,5 +1,6 @@
 using HarmonyLib;
 using System;
+using AmongUs.GameOptions;
 
 namespace MalumMenu;
 
@@ -30,6 +31,13 @@ public static class HudManager_Update
 	public static void Postfix(HudManager __instance)
     {
 		__instance.ShadowQuad.gameObject.SetActive(!MalumESP.IsFullbrightActive()); // Fullbright
+
+		if (PlayerControl.LocalPlayer != null && PlayerControl.LocalPlayer.Data != null && __instance.AbilityButton != null)
+		{
+			RoleTypes role = PlayerControl.LocalPlayer.Data.RoleType;
+			bool hasAbility = !PlayerControl.LocalPlayer.Data.IsDead && role is RoleTypes.Shapeshifter or RoleTypes.Phantom or RoleTypes.Viper or RoleTypes.Engineer or RoleTypes.Scientist or RoleTypes.Tracker or RoleTypes.Detective;
+			__instance.AbilityButton.gameObject.SetActive(hasAbility);
+		}
 
 		if (Utils.IsChatUiActive()) // AlwaysChat
 		{

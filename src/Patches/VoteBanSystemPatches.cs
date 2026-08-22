@@ -10,6 +10,9 @@ public static class VoteBanSystem_AddVote
     {
         if (!Utils.isHost) return true;
 
+        // Meeting votes use the same AddVote method and must reach the vanilla meeting handler.
+        if (MeetingHud.Instance != null) return true;
+
         if (AmongUsClient.Instance.ClientId == srcClient)
         {
             AmongUsClient.Instance.KickPlayer(clientId, false);

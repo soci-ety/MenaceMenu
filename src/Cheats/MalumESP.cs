@@ -1,11 +1,22 @@
 using UnityEngine;
 using Sentry.Internal.Extensions;
+using System.Collections.Generic;
 
 namespace MalumMenu;
 public static class MalumESP
 {
     private static bool _freecamActive;
     private static bool _resolutionChangeNeeded;
+    private static readonly Dictionary<byte, string> _playerNameTags = new();
+    private static readonly Dictionary<byte, int> _playerNameTagLayouts = new();
+    private static readonly Dictionary<byte, string> _meetingNameTags = new();
+    private static readonly Dictionary<byte, int> _meetingNameTagLayouts = new();
+
+    private static int GetNameTagLayout()
+    {
+        return CheatToggles.seeRoles && CheatToggles.seePlayerInfo ? 2 : CheatToggles.seeRoles || CheatToggles.seePlayerInfo ? 1 : 0;
+    }
+
     public static void SporeCloudVision(Mushroom mushroom)
     {
         if (CheatToggles.noShadows)
@@ -88,25 +99,36 @@ public static class MalumESP
 
                 if (data.IsNull() || data.Disconnected || data.Outfits[PlayerOutfitType.Default].IsNull()) continue;
 
-                // Update the player's nametag appropriately
-                playerState.NameText.text = Utils.GetNameTag(data, data.DefaultOutfit.PlayerName);
+                byte playerId = playerState.PlayerId;
+                string nameTag = Utils.GetNameTag(data, data.DefaultOutfit.PlayerName);
+                int layout = GetNameTagLayout();
+
+                if (!_meetingNameTags.TryGetValue(playerId, out string previousNameTag) || previousNameTag != nameTag)
+                {
+                    playerState.NameText.text = nameTag;
+                    _meetingNameTags[playerId] = nameTag;
+                }
 
                 // Move and resize the nametag to prevent it overlapping with colorblind text
-                if (CheatToggles.seeRoles && CheatToggles.seePlayerInfo)
+                if (!_meetingNameTagLayouts.TryGetValue(playerId, out int previousLayout) || previousLayout != layout)
                 {
-                    playerState.NameText.transform.localPosition = new Vector3(0.33f, 0.08f, 0f);
-                    playerState.NameText.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
-                }
-                else if (CheatToggles.seeRoles || CheatToggles.seePlayerInfo)
-                {
-                    playerState.NameText.transform.localPosition = new Vector3(0.3384f, 0.1125f, -0.1f);
-                    playerState.NameText.transform.localScale = new Vector3(0.9f, 1f, 1f);
-                }
-                else
-                {
-                    // Reset the position and scale of the nametag to default values (they're kinda weird but whatever)
-                    playerState.NameText.transform.localPosition = new Vector3(0.3384f, 0.0311f, -0.1f);
-                    playerState.NameText.transform.localScale = new Vector3(0.9f, 1f, 1f);
+                    if (layout == 2)
+                    {
+                        playerState.NameText.transform.localPosition = new Vector3(0.33f, 0.08f, 0f);
+                        playerState.NameText.transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
+                    }
+                    else if (layout == 1)
+                    {
+                        playerState.NameText.transform.localPosition = new Vector3(0.3384f, 0.1125f, -0.1f);
+                        playerState.NameText.transform.localScale = new Vector3(0.9f, 1f, 1f);
+                    }
+                    else
+                    {
+                        playerState.NameText.transform.localPosition = new Vector3(0.3384f, 0.0311f, -0.1f);
+                        playerState.NameText.transform.localScale = new Vector3(0.9f, 1f, 1f);
+                    }
+
+                    _meetingNameTagLayouts[playerId] = layout;
                 }
             }
         } catch { }
@@ -116,19 +138,25 @@ public static class MalumESP
     {
         try
         {
-            playerPhysics.myPlayer.cosmetics.SetName(Utils.GetNameTag(playerPhysics.myPlayer.Data, playerPhysics.myPlayer.CurrentOutfit.PlayerName));
+            byte playerId = playerPhysics.myPlayer.PlayerId;
+            string nameTag = Utils.GetNameTag(playerPhysics.myPlayer.Data, playerPhysics.myPlayer.CurrentOutfit.PlayerName);
+            int layout = GetNameTagLayout();
+
+            if (!_playerNameTags.TryGetValue(playerId, out string previousNameTag) || previousNameTag != nameTag)
+            {
+                playerPhysics.myPlayer.cosmetics.SetName(nameTag);
+                _playerNameTags[playerId] = nameTag;
+            }
+
             // Move the nameText up to prevent it overlapping with colorblind text
-            if (CheatToggles.seeRoles && CheatToggles.seePlayerInfo)
+            if (!_playerNameTagLayouts.TryGetValue(playerId, out int previousLayout) || previousLayout != layout)
             {
-                playerPhysics.myPlayer.cosmetics.nameText.transform.localPosition = new Vector3(0f, 0.186f, 0f);
-            }
-            else if (CheatToggles.seeRoles || CheatToggles.seePlayerInfo)
-            {
-                playerPhysics.myPlayer.cosmetics.nameText.transform.localPosition = new Vector3(0f, 0.093f, 0f);
-            }
-            else
-            {
-                playerPhysics.myPlayer.cosmetics.nameText.transform.localPosition = new Vector3(0f, 0f, 0f);
+                playerPhysics.myPlayer.cosmetics.nameText.transform.localPosition = layout == 2
+                    ? new Vector3(0f, 0.186f, 0f)
+                    : layout == 1
+                        ? new Vector3(0f, 0.093f, 0f)
+                        : new Vector3(0f, 0f, 0f);
+                _playerNameTagLayouts[playerId] = layout;
             }
         } catch { }
     }

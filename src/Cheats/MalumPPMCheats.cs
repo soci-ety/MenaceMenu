@@ -287,16 +287,37 @@ public static class MalumPPMCheats
                     {
                         if (PlayerPickMenu.targetPlayerData.Role.TeamType == RoleTeamTypes.Impostor)
                         {
-                            RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, RoleTypes.ImpostorGhost);
+                            if (AmongUsClient.Instance.AmHost)
+                            {
+                                PlayerControl.LocalPlayer.RpcSetRole(RoleTypes.ImpostorGhost);
+                            }
+                            else
+                            {
+                                RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, RoleTypes.ImpostorGhost);
+                            }
                         }
                         else
                         {
-                            RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, RoleTypes.CrewmateGhost);
+                            if (AmongUsClient.Instance.AmHost)
+                            {
+                                PlayerControl.LocalPlayer.RpcSetRole(RoleTypes.CrewmateGhost);
+                            }
+                            else
+                            {
+                                RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, RoleTypes.CrewmateGhost);
+                            }
                         }
                     }
                     else
                     {
-                        RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, selectedRole);
+                        if (AmongUsClient.Instance.AmHost)
+                        {
+                            PlayerControl.LocalPlayer.RpcSetRole(selectedRole);
+                        }
+                        else
+                        {
+                            RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, selectedRole);
+                        }
                     }
 
                     HudManager.Instance.ReportButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !selectedGhostRole);

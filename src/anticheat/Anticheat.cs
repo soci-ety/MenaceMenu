@@ -140,6 +140,7 @@ namespace MalumMenu.anticheat
 		public static void Flag(PlayerControl player, string reason, bool shouldPunish = true)
 		{
 			if(player == PlayerControl.LocalPlayer) return;
+			if(player != null && PlayerControl.LocalPlayer != null && player.Data != null && PlayerControl.LocalPlayer.Data != null && player.Data.PlayerId == PlayerControl.LocalPlayer.Data.PlayerId) return;
 
 			if(sendNotification)
 			{
