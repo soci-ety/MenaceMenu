@@ -11,7 +11,7 @@
         <PathMap>$(MSBuildProjectDirectory)=/_/</PathMap>
 
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <AssemblyName>MenaceMenuV1.1.2pre</AssemblyName>
+        <AssemblyName>MenaceMenuV1.1.2</AssemblyName>
         <VersionPrefix>4.2.1</VersionPrefix>
         <Description>Among Us cheat menu based on MalumMenu by scp222thj and Astral</Description>
         <Authors>ADHyperActive</Authors>
