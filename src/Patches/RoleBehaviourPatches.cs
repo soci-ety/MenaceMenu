@@ -92,9 +92,13 @@ public static class ImpostorRole_FindClosestTarget
 
         var playerList = Utils.GetPlayersSortedByDistance().Where(player => !player.IsNull() && __instance.IsValidTarget(player.Data) && player.Collider.enabled).ToList();
 
-        __result = playerList[0];
+        if (playerList.Count > 0)
+        {
+            __result = playerList[0];
+            return false;
+        }
 
-        return false;
+        return true;
     }
 }
 
@@ -108,9 +112,13 @@ public static class DetectiveRole_FindClosestTarget
 
         var playerList = Utils.GetPlayersSortedByDistance().Where(player => !player.IsNull() && __instance.IsValidTarget(player.Data) && player.Collider.enabled).ToList();
 
-        __result = playerList[0];
+        if (playerList.Count > 0)
+        {
+            __result = playerList[0];
+            return false;
+        }
 
-        return false;
+        return true;
     }
 }
 
@@ -124,8 +132,12 @@ public static class TrackerRole_FindClosestTarget
 
         var playerList = Utils.GetPlayersSortedByDistance().Where(player => !player.IsNull() && __instance.IsValidTarget(player.Data) && player.Collider.enabled).ToList();
 
-        __result = playerList[0];
+        if (playerList.Count > 0)
+        {
+            __result = playerList[0];
+            return false;
+        }
 
-        return false;
+        return true;
     }
 }
