@@ -2,14 +2,21 @@
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <LangVersion>latest</LangVersion>
-        <DebugType>embedded</DebugType>
+
+        <!-- Change this from 'embedded' to 'portable' or 'none' for releases -->
+        <DebugType>portable</DebugType>
+    
+        <!-- Enable deterministic builds and map local paths to a generic root -->
+        <Deterministic>true</Deterministic>
+        <PathMap>$(MSBuildProjectDirectory)=/_/</PathMap>
+
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <AssemblyName>MenaceMenuV1.1.2pre</AssemblyName>
         <VersionPrefix>4.2.1</VersionPrefix>
         <Description>Among Us cheat menu based on MalumMenu by scp222thj and Astral</Description>
         <Authors>ADHyperActive</Authors>
-		<UnityBaseLibsDirectory>C:\Program Files\Unity\Hub\Editor\2022.3.62f3\Editor\Data\PlaybackEngines\windowsstandalonesupport\Variations\il2cpp\Managed</UnityBaseLibsDirectory>
-	</PropertyGroup>
+        <UnityBaseLibsDirectory>C:\Program Files\Unity\Hub\Editor\2022.3.62f3\Editor\Data\PlaybackEngines\windowsstandalonesupport\Variations\il2cpp\Managed</UnityBaseLibsDirectory>
+    </PropertyGroup>
 
     <!--<ItemGroup>
         <EmbeddedResource Include=".\Assets\**" />
@@ -27,10 +34,10 @@
       <Folder Include="routines\" />
     </ItemGroup>
 
-	<Target Name="Copy" AfterTargets="Build" Condition="'$(AmongUs)' != ''">
-		<!-- Copies the main compiled DLL -->
-		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(AmongUs)/BepInEx/plugins/" UseSymboliclinksIfPossible="true" />
-		<!-- Copies the dependencies JSON configuration -->
-		<Copy SourceFiles="$(TargetDir)$(TargetName).deps.json" DestinationFolder="$(AmongUs)/BepInEx/plugins/" UseSymboliclinksIfPossible="true" />
-	</Target>
+    <Target Name="Copy" AfterTargets="Build" Condition="'$(AmongUs)' != ''">
+        <!-- Copies the main compiled DLL -->
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(AmongUs)/BepInEx/plugins/" UseSymboliclinksIfPossible="true" />
+        <!-- Copies the dependencies JSON configuration -->
+        <Copy SourceFiles="$(TargetDir)$(TargetName).deps.json" DestinationFolder="$(AmongUs)/BepInEx/plugins/" UseSymboliclinksIfPossible="true" />
+    </Target>
 </Project>
