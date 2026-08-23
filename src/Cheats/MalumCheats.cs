@@ -541,7 +541,7 @@ public static class MalumCheats
         var consoles = ShipStatus.Instance.AllConsoles;
         if (consoles == null || consoles.Length == 0)
         {
-            consoles = ShipStatus.Instance.GetComponentsInChildren<Console>();
+            consoles = new Il2CppReferenceArray<Console>(IntPtr.Zero); // (or pass the source IntPtr directly if you have it)
         }
 
         foreach (var console in consoles)
