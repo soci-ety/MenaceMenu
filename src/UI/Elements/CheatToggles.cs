@@ -48,6 +48,12 @@ public struct CheatToggles
     public static bool taskArrows;
     public static bool revealVotes;
     public static bool seeLobbyInfo;
+    public static bool showRadar;
+    public static bool radarRealistic;
+    public static bool radarDeadBodies;
+    public static bool radarGhosts = true;
+    public static bool radarRightClickTeleport;
+    public static bool radarHideInMeeting = true;
 
     // Camera
     public static bool spectate;
@@ -77,6 +83,9 @@ public struct CheatToggles
     public static bool longerMessages;
     public static bool unlockClipboard;
     public static bool lowerRateLimits;
+    public static bool freeColorCycle;
+    public static bool snipeColor;
+    public static int snipeColorId;
 
     // Ship
     public static bool closeMeeting;
@@ -203,6 +212,8 @@ public struct CheatToggles
             ToggleFields[field.Name] = field;
             Keybinds[field.Name] = KeyCode.None;
         }
+
+        Keybinds[nameof(freeColorCycle)] = KeyCode.K;
     }
 
     public static void DisablePPMCheats(string variableToKeep)

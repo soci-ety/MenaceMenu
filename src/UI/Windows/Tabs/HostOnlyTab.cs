@@ -44,55 +44,55 @@ public class HostOnlyTab : ITab
 
     private void DrawGeneral()
     {
-        CheatToggles.bypassHostOnly = GUILayout.Toggle(CheatToggles.bypassHostOnly, " Bypass Host Only");
+        CheatToggles.bypassHostOnly = UIHelpers.Toggle(CheatToggles.bypassHostOnly, " Bypass Host Only");
 
         GUILayout.Space(5);
 
-        CheatToggles.killVanished = GUILayout.Toggle(CheatToggles.killVanished, " Kill While Vanished");
+        CheatToggles.killVanished = UIHelpers.Toggle(CheatToggles.killVanished, " Kill While Vanished");
 
-        CheatToggles.killAnyone = GUILayout.Toggle(CheatToggles.killAnyone, " Kill Anyone");
+        CheatToggles.killAnyone = UIHelpers.Toggle(CheatToggles.killAnyone, " Kill Anyone");
 
-        CheatToggles.noKillCd = GUILayout.Toggle(CheatToggles.noKillCd, " No Kill Cooldown");
+        CheatToggles.noKillCd = UIHelpers.Toggle(CheatToggles.noKillCd, " No Kill Cooldown");
 
-        CheatToggles.showProtectMenu = GUILayout.Toggle(CheatToggles.showProtectMenu, " Show Protect Menu");
+        CheatToggles.showProtectMenu = UIHelpers.Toggle(CheatToggles.showProtectMenu, " Show Protect Menu");
 
-        // CheatToggles.forceRole = GUILayout.Toggle(CheatToggles.forceRole, " Force Role");
+        // CheatToggles.forceRole = UIHelpers.Toggle(CheatToggles.forceRole, " Force Role");
 
-        // CheatToggles.noOptionsLimits = GUILayout.Toggle(CheatToggles.noOptionsLimits, " No Options Limits");
+        // CheatToggles.noOptionsLimits = UIHelpers.Toggle(CheatToggles.noOptionsLimits, " No Options Limits");
     }
 
     private void DrawMurder()
     {
         GUILayout.Label("Murder", GUIStylePreset.TabSubtitle);
 
-        CheatToggles.killPlayer = GUILayout.Toggle(CheatToggles.killPlayer, " Kill Player");
+        CheatToggles.killPlayer = UIHelpers.Toggle(CheatToggles.killPlayer, " Kill Player");
 
-        CheatToggles.telekillPlayer = GUILayout.Toggle(CheatToggles.telekillPlayer, " Telekill Player");
+        CheatToggles.telekillPlayer = UIHelpers.Toggle(CheatToggles.telekillPlayer, " Telekill Player");
 
-        CheatToggles.killAllCrew = GUILayout.Toggle(CheatToggles.killAllCrew, " Kill All Crewmates");
+        CheatToggles.killAllCrew = UIHelpers.Toggle(CheatToggles.killAllCrew, " Kill All Crewmates");
 
-        CheatToggles.killAllImps = GUILayout.Toggle(CheatToggles.killAllImps, " Kill All Impostors");
+        CheatToggles.killAllImps = UIHelpers.Toggle(CheatToggles.killAllImps, " Kill All Impostors");
 
-        CheatToggles.killAll = GUILayout.Toggle(CheatToggles.killAll, " Kill Everyone");
+        CheatToggles.killAll = UIHelpers.Toggle(CheatToggles.killAll, " Kill Everyone");
     }
 
     private void DrawGameState()
     {
         GUILayout.Label("Game State", GUIStylePreset.TabSubtitle);
 
-        CheatToggles.forceStartGame = GUILayout.Toggle(CheatToggles.forceStartGame, " Force Start Game");
+        CheatToggles.forceStartGame = UIHelpers.Toggle(CheatToggles.forceStartGame, " Force Start Game");
 
-        CheatToggles.noGameEnd = GUILayout.Toggle(CheatToggles.noGameEnd, " No Game End");
+        CheatToggles.noGameEnd = UIHelpers.Toggle(CheatToggles.noGameEnd, " No Game End");
     }
 
     private void DrawMeetings()
     {
         GUILayout.Label("Meetings", GUIStylePreset.TabSubtitle);
 
-        CheatToggles.skipMeeting = GUILayout.Toggle(CheatToggles.skipMeeting, " Skip Meeting");
+        CheatToggles.skipMeeting = UIHelpers.Toggle(CheatToggles.skipMeeting, " Skip Meeting");
 
-        CheatToggles.voteImmune = GUILayout.Toggle(CheatToggles.voteImmune, " Vote Immune");
+        CheatToggles.voteImmune = UIHelpers.Toggle(CheatToggles.voteImmune, " Vote Immune");
 
-        CheatToggles.ejectPlayer = GUILayout.Toggle(CheatToggles.ejectPlayer, " Eject Player");
+        CheatToggles.ejectPlayer = UIHelpers.Toggle(CheatToggles.ejectPlayer, " Eject Player");
     }
 }

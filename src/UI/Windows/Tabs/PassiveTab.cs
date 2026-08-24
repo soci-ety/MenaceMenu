@@ -17,19 +17,19 @@ public class PassiveTab : ITab
 
     private void DrawGeneral()
     {
-        CheatToggles.antiOverload = GUILayout.Toggle(CheatToggles.antiOverload, " Anti-Overload");
+        CheatToggles.antiOverload = UIHelpers.Toggle(CheatToggles.antiOverload, " Anti-Overload");
 
-        CheatToggles.freeCosmetics = GUILayout.Toggle(CheatToggles.freeCosmetics, " Free Cosmetics");
+        CheatToggles.freeCosmetics = UIHelpers.Toggle(CheatToggles.freeCosmetics, " Free Cosmetics");
 
-        CheatToggles.avoidPenalties = GUILayout.Toggle(CheatToggles.avoidPenalties, " Avoid Penalties");
+        CheatToggles.avoidPenalties = UIHelpers.Toggle(CheatToggles.avoidPenalties, " Avoid Penalties");
 
-        CheatToggles.unlockFeatures = GUILayout.Toggle(CheatToggles.unlockFeatures, " Unlock Extra Features");
+        CheatToggles.unlockFeatures = UIHelpers.Toggle(CheatToggles.unlockFeatures, " Unlock Extra Features");
 
-        CheatToggles.copyLobbyCodeOnDisconnect = GUILayout.Toggle(CheatToggles.copyLobbyCodeOnDisconnect, " Copy Lobby Code on Disconnect");
+        CheatToggles.copyLobbyCodeOnDisconnect = UIHelpers.Toggle(CheatToggles.copyLobbyCodeOnDisconnect, " Copy Lobby Code on Disconnect");
 
-        CheatToggles.spoofAprilFoolsDate = GUILayout.Toggle(CheatToggles.spoofAprilFoolsDate, " Spoof Date to April 1st");
+        CheatToggles.spoofAprilFoolsDate = UIHelpers.Toggle(CheatToggles.spoofAprilFoolsDate, " Spoof Date to April 1st");
 
-        CheatToggles.randomizeCosmetics = GUILayout.Toggle(CheatToggles.randomizeCosmetics, " Randomize on Lobby Join");
+        CheatToggles.randomizeCosmetics = UIHelpers.Toggle(CheatToggles.randomizeCosmetics, " Randomize on Lobby Join");
 
         if (GUILayout.Button(" Randomize Now", GUILayout.Width(200)))
         {

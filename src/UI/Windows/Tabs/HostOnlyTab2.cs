@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using MalumMenu.features;
 using InnerNet;
@@ -24,23 +24,23 @@ public class HostOnlyTab2 : ITab
         {
             GUILayout.Label("You are not the host of the current lobby. Using these options will either do nothing or get you banned by the anticheat");
         }
-        Host.BanMidGame.Enabled = GUILayout.Toggle(Host.BanMidGame.Enabled, "Be able to ban players mid-game");
+        Host.BanMidGame.Enabled = UIHelpers.Toggle(Host.BanMidGame.Enabled, "Be able to ban players mid-game");
 
-        Host.FlippedSkeld = GUILayout.Toggle(Host.FlippedSkeld, "Use Flipped Skeld Map");
+        Host.FlippedSkeld = UIHelpers.Toggle(Host.FlippedSkeld, "Use Flipped Skeld Map");
 
-        Host.DisableMeetings.Enabled = GUILayout.Toggle(Host.DisableMeetings.Enabled, "Disable Meetings");
-        Host.DisableSabotages.Enabled = GUILayout.Toggle(Host.DisableSabotages.Enabled, "Disable Sabotages");
-        Host.DisableCloseDoors.Enabled = GUILayout.Toggle(Host.DisableCloseDoors.Enabled, "Disable Close Doors");
-        Host.DisableCameras.Enabled = GUILayout.Toggle(Host.DisableCameras.Enabled, "Disable Security Cameras");
-        Host.DisableGameEnd.Enabled = GUILayout.Toggle(Host.DisableGameEnd.Enabled, "Disable Game End");
-        Host.NoKillCooldown.Enabled = GUILayout.Toggle(Host.NoKillCooldown.Enabled, "No Kill Cooldown");
+        Host.DisableMeetings.Enabled = UIHelpers.Toggle(Host.DisableMeetings.Enabled, "Disable Meetings");
+        Host.DisableSabotages.Enabled = UIHelpers.Toggle(Host.DisableSabotages.Enabled, "Disable Sabotages");
+        Host.DisableCloseDoors.Enabled = UIHelpers.Toggle(Host.DisableCloseDoors.Enabled, "Disable Close Doors");
+        Host.DisableCameras.Enabled = UIHelpers.Toggle(Host.DisableCameras.Enabled, "Disable Security Cameras");
+        Host.DisableGameEnd.Enabled = UIHelpers.Toggle(Host.DisableGameEnd.Enabled, "Disable Game End");
+        Host.NoKillCooldown.Enabled = UIHelpers.Toggle(Host.NoKillCooldown.Enabled, "No Kill Cooldown");
 
         GUILayout.BeginHorizontal();
-        Host.BlockLowLevels.Enabled = GUILayout.Toggle(Host.BlockLowLevels.Enabled, $"Kick players with less than {Host.BlockLowLevels.MinLevel} levels");
-        Host.BlockLowLevels.MinLevel = (uint)GUILayout.HorizontalSlider(Host.BlockLowLevels.MinLevel, 0, 100);
+        Host.BlockLowLevels.Enabled = UIHelpers.Toggle(Host.BlockLowLevels.Enabled, $"Kick players with less than {Host.BlockLowLevels.MinLevel} levels");
+        Host.BlockLowLevels.MinLevel = (uint)UIHelpers.HorizontalSlider(Host.BlockLowLevels.MinLevel, 0, 100);
         GUILayout.EndHorizontal();
 
-        MalumMenu.routines.reportBodySpam.Enabled = GUILayout.Toggle(MalumMenu.routines.reportBodySpam.Enabled, "Spam Report Bodies");
+        MalumMenu.routines.reportBodySpam.Enabled = UIHelpers.Toggle(MalumMenu.routines.reportBodySpam.Enabled, "Spam Report Bodies");
 
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Force Crewmate Victory"))
@@ -90,7 +90,7 @@ public class HostOnlyTab2 : ITab
         GUILayout.EndHorizontal();
 
         GUILayout.Label($"Selected map: {(MapNames)selectedMap}");
-        selectedMap = (byte)GUILayout.HorizontalSlider(selectedMap, 0, 5);
+        selectedMap = (byte)UIHelpers.HorizontalSlider(selectedMap, 0, 5);
 
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Despawn Map"))
@@ -115,9 +115,9 @@ public class HostOnlyTab2 : ITab
         GUILayout.Space(5);
 
         GUILayout.Label("Disco Party:");
-        MalumMenu.routines.discoHost.Enabled = GUILayout.Toggle(MalumMenu.routines.discoHost.Enabled, "Enabled");
+        MalumMenu.routines.discoHost.Enabled = UIHelpers.Toggle(MalumMenu.routines.discoHost.Enabled, "Enabled");
         GUILayout.Label($"Color randomization delay: {MalumMenu.routines.discoHost.randomizationDelay:F2}s");
-        MalumMenu.routines.discoHost.randomizationDelay = GUILayout.HorizontalSlider(MalumMenu.routines.discoHost.randomizationDelay, 0.1f, 2.0f);
+        MalumMenu.routines.discoHost.randomizationDelay = UIHelpers.HorizontalSlider(MalumMenu.routines.discoHost.randomizationDelay, 0.1f, 2.0f);
     }
     private static IEnumerator SpawnMap(byte mapId)
     {

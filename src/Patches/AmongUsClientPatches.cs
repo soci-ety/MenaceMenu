@@ -33,6 +33,7 @@ public static class AmongUsClient_Update
     public static void Postfix()
     {
         MalumSpoof.SpoofLevel();
+        Utilities.UpdateFreeColorCycle();
 
         // GuestMode cheats are commented out as they are broken in latest updates
 

@@ -170,7 +170,7 @@ namespace MalumMenu.anticheat
 
 				case Punishments.Kick:
 				case Punishments.ErrorKick:
-					MalumMenu.Log.LogMessage($"{player.Data.PlayerName} was kicked by HyperMenu Anticheat for hacking");
+					MalumMenu.Log.LogMessage($"{player.Data.PlayerName} was kicked by Menace Menu Anticheat for hacking");
 
 					// The vanilla anticheat prevents using the ErrorKick method if the game has not started yet
 					if(punishment == Punishments.Kick || AmongUsClient.Instance.GameState != InnerNet.InnerNetClient.GameStates.Started)
@@ -189,7 +189,7 @@ namespace MalumMenu.anticheat
 					break;
 
 				case Punishments.Ban:
-					MalumMenu.Log.LogMessage($"{player.Data.PlayerName} was automatically banned by HyperMenu Anticheat for hacking");
+					MalumMenu.Log.LogMessage($"{player.Data.PlayerName} was automatically banned by Menace Menu Anticheat for hacking");
 					AmongUsClient.Instance.KickPlayer(player.OwnerId, true);
 					break;
 			}

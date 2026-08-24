@@ -142,15 +142,15 @@ public static class VersionShower_Start
 
         if (MalumMenu.supportedAU.Contains(Application.version)) // Checks if Among Us version is supported
         {
-            __instance.text.text = $"HyperMenu V{MalumMenu.hyperVersion}, MalumMenu V{MalumMenu.malumVersion}, MenaceMenu V1.1.2 ( AU V{Application.version})"; // Supported
+            __instance.text.text = $"Menace Menu v{MalumMenu.menaceVersion} (Among Us v{Application.version})"; // Supported
         }
         else if (MalumMenu.toleratedAU.Contains(Application.version)) // Checks if Among Us version is tolerated
         {
-            __instance.text.text = $"HyperMenu V{MalumMenu.hyperVersion}, MalumMenu V{MalumMenu.malumVersion}, MenaceMenu V1.1.2 (<color=yellow>AU V{Application.version}</color>)"; // Tolerated
+            __instance.text.text = $"Menace Menu v{MalumMenu.menaceVersion} (<color=yellow>Among Us v{Application.version}</color>)"; // Tolerated
         }
         else
         {
-            __instance.text.text = $"HyperMenu V{MalumMenu.hyperVersion}, MalumMenu V{MalumMenu.malumVersion}, MenaceMenu V1.1.2 (<color=red>AU V{Application.version}</color>)"; // Unsupported
+            __instance.text.text = $"Menace Menu v{MalumMenu.menaceVersion} (<color=red>Among Us v{Application.version}</color>)"; // Unsupported
         }
     }
 }
@@ -178,12 +178,12 @@ public static class PingTracker_Update
         {
             __instance.aspectPosition.DistanceFromEdge = new Vector3(-0.21f, 0.50f, 0f);
 
-            __instance.text.text = $"HyperMenu by Simon McLaurin\nMalumMenu by scp222thj & Astral\nMenaceMenu by soci-ety ~ {Utils.GetColoredPingText($"PING : {AmongUsClient.Instance.Ping} ms", AmongUsClient.Instance.Ping)}";
+            __instance.text.text = $"Menace Menu by soci-ety ~ {Utils.GetColoredPingText($"PING : {AmongUsClient.Instance.Ping} ms", AmongUsClient.Instance.Ping)}";
 
             return;
         }
 
-        __instance.text.text = $"HyperMenu by Simon McLaurin\nMalumMenu by scp222thj & Astral\nMenaceMenu by soci-ety\n{Utils.GetColoredPingText($"PING : {AmongUsClient.Instance.Ping} ms", AmongUsClient.Instance.Ping)}";
+        __instance.text.text = $"Menace Menu by soci-ety\n{Utils.GetColoredPingText($"PING : {AmongUsClient.Instance.Ping} ms", AmongUsClient.Instance.Ping)}";
 
     }
 }

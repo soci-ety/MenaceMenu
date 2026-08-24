@@ -1,7 +1,5 @@
 # NOTICE:
-* MenaceMenu is a fork of HyperMenu, which is based on the original MalumMenu.
-  * Original MalumMenu: [scp222thj/MalumMenu](https://github.com/scp222thj/MalumMenu)
-  * HyperMenu: [The-HyperMenu-Team/HyperMenu](https://github.com/The-HyperMenu-Team/HyperMenu)
+* Menace Menu is a BepInEx mod menu for Among Us.
   * MenaceMenu: [soci-ety/MenaceMenu](https://github.com/soci-ety/MenaceMenu)
 ---
 <p align="center">
@@ -30,7 +28,7 @@
 
 2. Launch Among Us once, wait for BepInEx to finish creating its folders, then close the game.
 
-3. Download `MalumMenu.dll` and `MalumMenu.deps.json` from the [MenaceMenu repository](https://github.com/soci-ety/MenaceMenu), or build them from source below.
+3. Download `MenaceMenuV1.3.0.dll` and its dependencies JSON from the [MenaceMenu repository](https://github.com/soci-ety/MenaceMenu), or build them from source below.
 
 4. Copy both files into:
 
@@ -64,8 +62,8 @@ dotnet build .\MalumMenu.sln --no-restore
 The plugin files are generated in:
 
 ```text
-src\bin\Debug\net6.0\MalumMenu.dll
-src\bin\Debug\net6.0\MalumMenu.deps.json
+src\bin\Debug\net6.0\MenaceMenuV1.3.0.dll
+src\bin\Debug\net6.0\MenaceMenuV1.3.0.deps.json
 ```
 
 Copy both generated files into `Among Us\BepInEx\plugins\`.

@@ -39,29 +39,29 @@ public class ChatTab : ITab
 
     private void DrawGeneral()
     {
-        CheatToggles.enableChat = GUILayout.Toggle(CheatToggles.enableChat, " Enable Chat");
+        CheatToggles.enableChat = UIHelpers.Toggle(CheatToggles.enableChat, " Enable Chat");
 
-        CheatToggles.bypassUrlBlock = GUILayout.Toggle(CheatToggles.bypassUrlBlock, " Bypass URL Block");
+        CheatToggles.bypassUrlBlock = UIHelpers.Toggle(CheatToggles.bypassUrlBlock, " Bypass URL Block");
 
-        CheatToggles.lowerRateLimits = GUILayout.Toggle(CheatToggles.lowerRateLimits, " Lower Rate Limits");
+        CheatToggles.lowerRateLimits = UIHelpers.Toggle(CheatToggles.lowerRateLimits, " Lower Rate Limits");
     }
 
     private void DrawTextbox()
     {
         GUILayout.Label("Textbox", GUIStylePreset.TabSubtitle);
 
-        CheatToggles.unlockCharacters = GUILayout.Toggle(CheatToggles.unlockCharacters, " Unlock Extra Characters");
+        CheatToggles.unlockCharacters = UIHelpers.Toggle(CheatToggles.unlockCharacters, " Unlock Extra Characters");
 
-        CheatToggles.longerMessages = GUILayout.Toggle(CheatToggles.longerMessages, " Allow Longer Messages");
+        CheatToggles.longerMessages = UIHelpers.Toggle(CheatToggles.longerMessages, " Allow Longer Messages");
 
-        CheatToggles.unlockClipboard = GUILayout.Toggle(CheatToggles.unlockClipboard, " Unlock Clipboard");
+        CheatToggles.unlockClipboard = UIHelpers.Toggle(CheatToggles.unlockClipboard, " Unlock Clipboard");
     }
 
     private void DrawColorSettings()
     {
         GUILayout.Label("Chat Color", GUIStylePreset.TabSubtitle);
-        CheatToggles.colorAsPlayer = GUILayout.Toggle(CheatToggles.colorAsPlayer, " Chat messages colored as the player who sent them");
-        CheatToggles.changeChatColor = GUILayout.Toggle(CheatToggles.changeChatColor, " Enable Custom Chat Color");
+        CheatToggles.colorAsPlayer = UIHelpers.Toggle(CheatToggles.colorAsPlayer, " Chat messages colored as the player who sent them");
+        CheatToggles.changeChatColor = UIHelpers.Toggle(CheatToggles.changeChatColor, " Enable Custom Chat Color");
         GUILayout.Space(5);
         GUILayout.BeginHorizontal();
         GUILayout.Label("Chat HTML Color:", GUILayout.Width(150));

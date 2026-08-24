@@ -35,9 +35,7 @@ public partial class MalumMenu : BasePlugin
     public static StreamerUI streamerUI;
     public static KeybindListener keybindListener;
 
-    public static string malumVersion = "3.3.0";
-    public static string hyperVersion = "4.2.2";
-    public static string hyperBuild = "Stable";
+    public static string menaceVersion = "1.3.0";
     public static List<string> supportedAU = new List<string> { "2026.8.18", "2026.6.5", "2026.3.31" };
     public static List<string> toleratedAU = new List<string> { "2026.2.24", "2026.3.17" };
     public static bool isPanicked = false;
@@ -75,23 +73,26 @@ public partial class MalumMenu : BasePlugin
     {
         Instance = this;
         Log = base.Log;
-        Log.LogInfo($"HyperMenu has loaded!");
+        Log.LogInfo("Menace Menu has loaded!");
         Plugin = this;
         notifications = AddComponent<NotificationManager>();
         routines = AddComponent<RoutineManager>();
 
         // Loads config settings
-        menuKeybind = Config.Bind("MalumMenu.GUI",
+        menuKeybind = Config.Bind("MenaceMenu.GUI",
                                 "Keybind",
                                 "Delete",
                                 "The keyboard key used to toggle the GUI on and off. List of supported keycodes: https://docs.unity3d.com/Packages/com.unity.tiny@0.16/api/Unity.Tiny.Input.KeyCode.html");
 
-        menuHtmlColor = Config.Bind("MalumMenu.GUI",
+        if (menuKeybind.Value.Equals("K", StringComparison.OrdinalIgnoreCase))
+            menuKeybind.Value = "Delete";
+
+        menuHtmlColor = Config.Bind("MenaceMenu.GUI",
                                 "Color",
                                 "",
-                                "A custom color for your MalumMenu GUI. Supports html color codes");
+                                "A custom color for your Menace Menu GUI. Supports html color codes");
 
-        menuChatColor = Config.Bind("MalumMenu.GUI",
+        menuChatColor = Config.Bind("MenaceMenu.GUI",
                                 "ChatColor",
                                 "",
                                 "A custom HTML color code for your in-game chat messages. Supports html color codes");
@@ -99,30 +100,30 @@ public partial class MalumMenu : BasePlugin
         menuOpenOnMouse = Config.Bind("MalumMenu.GUI",
                                 "OpenOnMouse",
                                 false,
-                                "When enabled, the MalumMenu GUI will always be opened at the current mouse position");
+                                "When enabled, the Menace Menu GUI will always be opened at the current mouse position");
 
-        menuKeepSubwindowsOpen = Config.Bind("MalumMenu.GUI",
+        menuKeepSubwindowsOpen = Config.Bind("MenaceMenu.GUI",
                                 "KeepSubwindowsOpen",
                                 false,
-                                "When enabled, closing the MalumMenu GUI will not automatically close its subwindows");
+                                "When enabled, closing the Menace Menu GUI will not automatically close its subwindows");
 
-        menuAllowClickThrough = Config.Bind("MalumMenu.GUI",
+        menuAllowClickThrough = Config.Bind("MenaceMenu.GUI",
                                 "AllowClicksThrough",
                                 true,
-                                "When enabled, clicks pass through the MalumMenu GUI, letting you interact with Among Us GUI elements behind it");
+                                "When enabled, clicks pass through the Menace Menu GUI, letting you interact with Among Us GUI elements behind it");
 
-        menuMaterialLayout = Config.Bind("MalumMenu.GUI",
+        menuMaterialLayout = Config.Bind("MenaceMenu.GUI",
                     "MaterialLayout",
                                 true,
                     "When enabled, use the Material 3-inspired menu layout");
 
 
-        autoLoadProfile = Config.Bind("MalumMenu.Profile",
+        autoLoadProfile = Config.Bind("MenaceMenu.Profile",
                                 "AutoLoadProfile",
                                 false,
                                 "When enabled, your saved keybind and toggle profile will be automatically loaded at game startup");
 
-        configEditor = Config.Bind("MalumMenu.Config",
+        configEditor = Config.Bind("MenaceMenu.Config",
                                 "ConfigEditor",
                                 "notepad.exe",
                                 "The program used to open the config file when using the Open Config toggle. Can be any executable, but using a text editor is recommended");
@@ -139,22 +140,22 @@ public partial class MalumMenu : BasePlugin
         //                         "",
         //                         "The username that will be used when setting a friend code for your guest account. IMPORTANT: Can only be used with GuestMode, needs to be ≤ 10 characters, and cannot include special characters/discriminator (#1234)");
 
-        spoofLevel = Config.Bind("MalumMenu.Spoofing",
+        spoofLevel = Config.Bind("MenaceMenu.Spoofing",
                                 "Level",
                                 "",
                                 "A custom player level to display to others in online games to hide your actual platform. IMPORTANT: Custom levels can only be within 1 and 100001. Decimal numbers will not work");
 
-        spoofPlatform = Config.Bind("MalumMenu.Spoofing",
+        spoofPlatform = Config.Bind("MenaceMenu.Spoofing",
                                 "Platform",
                                 "",
                                 "A custom gaming platform to display to others in online lobbies to hide your actual platform. List of supported platforms: https://skeld.js.org/enums/_skeldjs_constant.Platform.html");
 
-        spoofDeviceId = Config.Bind("MalumMenu.Privacy",
+        spoofDeviceId = Config.Bind("MenaceMenu.Privacy",
                                 "HideDeviceId",
                                 true,
                                 "When enabled, it will hide your unique deviceId from Among Us, which could potentially help bypass hardware bans in the future");
 
-        noTelemetry = Config.Bind("MalumMenu.Privacy",
+        noTelemetry = Config.Bind("MenaceMenu.Privacy",
                                 "NoTelemetry",
                                 true,
                                 "When enabled, it will stop Among Us from collecting analytics of your games and sending them to Innersloth using Unity Analytics");
@@ -179,6 +180,7 @@ public partial class MalumMenu : BasePlugin
 
         // UI
         menuUI = AddComponent<MenuUI>();
+        AddComponent<RadarHandler>();
         consoleUI = AddComponent<ConsoleUI>();
         doorsUI = AddComponent<DoorsUI>();
         tasksUI = AddComponent<TasksUI>();
@@ -216,11 +218,11 @@ public partial class MalumMenu : BasePlugin
                 // Warns about unsupported AU versions
                 if (!supportedAU.Contains(Application.version) && !toleratedAU.Contains(Application.version))
                 {
-                    Utils.ShowNewPopup("This version of HyperMenu and this version of Among Us are incompatible\n\nInstall the right version to avoid problems");
+                    Utils.ShowNewPopup("This version of Menace Menu and this version of Among Us are incompatible\n\nInstall the right version to avoid problems");
                 } 
                 else if (!supportedAU.Contains(Application.version) && toleratedAU.Contains(Application.version))
                 {
-                    Utils.ShowNewPopup("This version of HyperMenu and this version of Among Us are not fully compatible\n\nSome features may not work properly, as HyperMenu is not updated to keep compatibility with older Among Us versions.");
+                    Utils.ShowNewPopup("This version of Menace Menu and this version of Among Us are not fully compatible\n\nSome features may not work properly with this Among Us version.");
                 }
             }
         }));

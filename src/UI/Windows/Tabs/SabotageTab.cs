@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
 namespace MalumMenu;
@@ -16,7 +16,7 @@ public class SabotageTab : ITab
             GUILayout.Label("You are not currently in a game, or the game has not started yet. These options will not work.");
         }
 
-        Sabotage.UpdateSystemsDirectly = GUILayout.Toggle(Sabotage.UpdateSystemsDirectly, "Update Sabotage Systems Directly");
+        Sabotage.UpdateSystemsDirectly = UIHelpers.Toggle(Sabotage.UpdateSystemsDirectly, "Update Sabotage Systems Directly");
 
         Dictionary<string, SystemTypes> sabotages = Sabotage.GetSabotages();
         Dictionary<string, SystemTypes> doors = Sabotage.GetDoors();

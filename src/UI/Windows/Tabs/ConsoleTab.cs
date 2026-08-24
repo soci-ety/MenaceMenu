@@ -17,12 +17,12 @@ public class ConsoleTab : ITab
 
     private void DrawGeneral()
     {
-        CheatToggles.showConsole = GUILayout.Toggle(CheatToggles.showConsole, " Show Console");
+        CheatToggles.showConsole = UIHelpers.Toggle(CheatToggles.showConsole, " Show Console");
 
-        CheatToggles.logDeaths = GUILayout.Toggle(CheatToggles.logDeaths, " Log Deaths");
+        CheatToggles.logDeaths = UIHelpers.Toggle(CheatToggles.logDeaths, " Log Deaths");
 
-        CheatToggles.logShapeshifts = GUILayout.Toggle(CheatToggles.logShapeshifts, " Log Shapeshifts");
+        CheatToggles.logShapeshifts = UIHelpers.Toggle(CheatToggles.logShapeshifts, " Log Shapeshifts");
 
-        CheatToggles.logVents = GUILayout.Toggle(CheatToggles.logVents, " Log Vents");
+        CheatToggles.logVents = UIHelpers.Toggle(CheatToggles.logVents, " Log Vents");
     }
 }

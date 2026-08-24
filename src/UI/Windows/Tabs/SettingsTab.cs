@@ -23,7 +23,7 @@ public class SettingsTab : ITab
             _initialized = true;
         }
 
-        GUILayout.BeginVertical(GUILayout.Width(MenuUI.windowWidth * 0.425f));
+        GUILayout.BeginVertical(GUILayout.Width(MenuUI.windowWidth * 0.425f), GUILayout.ExpandWidth(true));
 
         DrawGUISettings();
 
@@ -44,6 +44,7 @@ public class SettingsTab : ITab
         _menuColorField = new TextField(MalumMenu.menuHtmlColor.Value);
         _spoofLevelField = new TextField(MalumMenu.spoofLevel.Value);
         _spoofPlatformField = new TextField(MalumMenu.spoofPlatform.Value);
+
     }
 
 
@@ -73,15 +74,32 @@ public class SettingsTab : ITab
 
         GUILayout.Space(5);
 
-        MalumMenu.menuOpenOnMouse.Value = GUILayout.Toggle(MalumMenu.menuOpenOnMouse.Value, " Open Menu on Mouse Position");
+        MalumMenu.menuOpenOnMouse.Value = UIHelpers.Toggle(MalumMenu.menuOpenOnMouse.Value, " Open Menu on Mouse Position");
 
         GUILayout.Space(5);
 
-        MalumMenu.menuMaterialLayout.Value = GUILayout.Toggle(MalumMenu.menuMaterialLayout.Value, " New UI (WIP)");
+        MalumMenu.menuMaterialLayout.Value = UIHelpers.Toggle(MalumMenu.menuMaterialLayout.Value, " New UI (WIP)");
+
+        if (MalumMenu.menuMaterialLayout.Value)
+        {
+            GUILayout.Label("New UI Color Preset", GUIStylePreset.TabSubtitle);
+            for (int i = 0; i < MenuUI.MaterialColorPresets.Length; i++)
+            {
+                if (i % 4 == 0)
+                    GUILayout.BeginHorizontal();
+                if (GUILayout.Button(MenuUI.MaterialColorPresets[i], GUILayout.Height(28)))
+                    MenuUI.SetMaterialColorPreset(i);
+                if (i % 4 == 3 || i == MenuUI.MaterialColorPresets.Length - 1)
+                    GUILayout.EndHorizontal();
+            }
+
+            GUILayout.Label($"Window Transparency: {1f - MenuUI.MaterialWindowOpacity:P0}", GUIStylePreset.TabSubtitle);
+            MenuUI.MaterialWindowOpacity = UIHelpers.HorizontalSlider(MenuUI.MaterialWindowOpacity, 0.45f, 1f);
+        }
 
         GUILayout.Space(5);
 
-        MalumMenu.autoLoadProfile.Value = GUILayout.Toggle(MalumMenu.autoLoadProfile.Value, " Auto-Load Profile on Startup");
+        MalumMenu.autoLoadProfile.Value = UIHelpers.Toggle(MalumMenu.autoLoadProfile.Value, " Auto-Load Profile on Startup");
     }
 
     private void DrawSpoofingSettings()
@@ -126,11 +144,11 @@ public class SettingsTab : ITab
     {
         GUILayout.Label("Privacy Settings", GUIStylePreset.TabSubtitle);
 
-        MalumMenu.spoofDeviceId.Value = GUILayout.Toggle(MalumMenu.spoofDeviceId.Value, " Hide Device ID");
+        MalumMenu.spoofDeviceId.Value = UIHelpers.Toggle(MalumMenu.spoofDeviceId.Value, " Hide Device ID");
 
         GUILayout.Space(5);
 
-        MalumMenu.noTelemetry.Value = GUILayout.Toggle(MalumMenu.noTelemetry.Value, " Disable Telemetry");
+        MalumMenu.noTelemetry.Value = UIHelpers.Toggle(MalumMenu.noTelemetry.Value, " Disable Telemetry");
 
         GUILayout.Space(10);
 

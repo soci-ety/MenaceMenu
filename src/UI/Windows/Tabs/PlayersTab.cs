@@ -122,7 +122,7 @@ public class PlayersTab : ITab
         }
 
         MalumMenu.routines.petPlayer.target = target;
-        MalumMenu.routines.petPlayer.Enabled = GUILayout.Toggle(MalumMenu.routines.petPlayer.Enabled, "Pet Player");
+        MalumMenu.routines.petPlayer.Enabled = UIHelpers.Toggle(MalumMenu.routines.petPlayer.Enabled, "Pet Player");
 
         if (GUILayout.Button("Murder"))
         {
@@ -309,7 +309,7 @@ public class PlayersTab : ITab
 
         GUILayout.Space(5);
         GUILayout.Label($"Change color to: {_selectedColor}");
-        _selectedColor = (CrewmateColor)GUILayout.HorizontalSlider((float)_selectedColor, 0, 17);
+        _selectedColor = (CrewmateColor)UIHelpers.HorizontalSlider((float)_selectedColor, 0, 17);
 
         if (GUILayout.Button("Set Color"))
         {

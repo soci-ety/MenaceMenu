@@ -12,18 +12,18 @@ public class ProtectionsTab : ITab
         GUILayout.BeginVertical(GUILayout.Width(MenuUI.windowWidth * 0.425f));
 
         // Network
-        Protections.ForceDTLS.Enabled = GUILayout.Toggle(Protections.ForceDTLS.Enabled, "Force enable DTLS to encrypt network data");
+        Protections.ForceDTLS.Enabled = UIHelpers.Toggle(Protections.ForceDTLS.Enabled, "Force enable DTLS to encrypt network data");
 
-        Protections.BlockServerTeleports.Enabled = GUILayout.Toggle(Protections.BlockServerTeleports.Enabled, "Block position updates from server");
+        Protections.BlockServerTeleports.Enabled = UIHelpers.Toggle(Protections.BlockServerTeleports.Enabled, "Block position updates from server");
 
         // Overloads
-        Protections.HardenedReadPackedUInt.Enabled = GUILayout.Toggle(Protections.HardenedReadPackedUInt.Enabled, "Use hardened packed int deserializer");
-        Protections.BlockLargeGameMessages = GUILayout.Toggle(Protections.BlockLargeGameMessages, "Block large game messages");
-        Protections.BlockInvalidGameDataMessages = GUILayout.Toggle(Protections.BlockInvalidGameDataMessages, "Block invalid game data messages");
-        Protections.BlockUnauthorizedSystemUpdates = GUILayout.Toggle(Protections.BlockUnauthorizedSystemUpdates, "Block unauthorized system updates");
-        Protections.ProtectAgainstNonHostKickExploit = GUILayout.Toggle(Protections.ProtectAgainstNonHostKickExploit, "Protect against non-host kick exploit");
+        Protections.HardenedReadPackedUInt.Enabled = UIHelpers.Toggle(Protections.HardenedReadPackedUInt.Enabled, "Use hardened packed int deserializer");
+        Protections.BlockLargeGameMessages = UIHelpers.Toggle(Protections.BlockLargeGameMessages, "Block large game messages");
+        Protections.BlockInvalidGameDataMessages = UIHelpers.Toggle(Protections.BlockInvalidGameDataMessages, "Block invalid game data messages");
+        Protections.BlockUnauthorizedSystemUpdates = UIHelpers.Toggle(Protections.BlockUnauthorizedSystemUpdates, "Block unauthorized system updates");
+        Protections.ProtectAgainstNonHostKickExploit = UIHelpers.Toggle(Protections.ProtectAgainstNonHostKickExploit, "Protect against non-host kick exploit");
 
-        Protections.Votekicks.Enabled = GUILayout.Toggle(Protections.Votekicks.Enabled, "Prevent being votekicked as host");
+        Protections.Votekicks.Enabled = UIHelpers.Toggle(Protections.Votekicks.Enabled, "Prevent being votekicked as host");
 
         GUILayout.EndVertical();
     }

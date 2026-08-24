@@ -21,23 +21,23 @@ public class AnimationsTab : ITab
 
     private void DrawGeneral()
     {
-        CheatToggles.animShields = GUILayout.Toggle(CheatToggles.animShields, " Shields");
+        CheatToggles.animShields = UIHelpers.Toggle(CheatToggles.animShields, " Shields");
 
-        CheatToggles.animAsteroids = GUILayout.Toggle(CheatToggles.animAsteroids, " Asteroids");
+        CheatToggles.animAsteroids = UIHelpers.Toggle(CheatToggles.animAsteroids, " Asteroids");
 
-        CheatToggles.animEmptyGarbage = GUILayout.Toggle(CheatToggles.animEmptyGarbage, " Empty Garbage");
+        CheatToggles.animEmptyGarbage = UIHelpers.Toggle(CheatToggles.animEmptyGarbage, " Empty Garbage");
 
-        CheatToggles.animMedScan = GUILayout.Toggle(CheatToggles.animMedScan, " Medbay Scan");
+        CheatToggles.animMedScan = UIHelpers.Toggle(CheatToggles.animMedScan, " Medbay Scan");
 
-        CheatToggles.animCamsInUse = GUILayout.Toggle(CheatToggles.animCamsInUse, " Cams In Use");
+        CheatToggles.animCamsInUse = UIHelpers.Toggle(CheatToggles.animCamsInUse, " Cams In Use");
 
-        // CheatToggles.animPet = GUILayout.Toggle(CheatToggles.animPet, " Pet");
+        // CheatToggles.animPet = UIHelpers.Toggle(CheatToggles.animPet, " Pet");
     }
 
     private void DrawClientSided()
     {
         GUILayout.Label("Client-Sided", GUIStylePreset.TabSubtitle);
 
-        CheatToggles.moonWalk = GUILayout.Toggle(CheatToggles.moonWalk, " Moonwalk");
+        CheatToggles.moonWalk = UIHelpers.Toggle(CheatToggles.moonWalk, " Moonwalk");
     }
 }

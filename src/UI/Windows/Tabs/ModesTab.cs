@@ -17,13 +17,13 @@ public class ModesTab : ITab
 
     private void DrawGeneral()
     {
-        CheatToggles.rgbMode = GUILayout.Toggle(CheatToggles.rgbMode, " RGB Mode");
+        CheatToggles.rgbMode = UIHelpers.Toggle(CheatToggles.rgbMode, " RGB Mode");
 
-        CheatToggles.stealthMode = GUILayout.Toggle(CheatToggles.stealthMode, " Stealth Mode");
+        CheatToggles.stealthMode = UIHelpers.Toggle(CheatToggles.stealthMode, " Stealth Mode");
 
         if (MalumMenu.isDevRelease)
         {
-            CheatToggles.streamerMode = GUILayout.Toggle(CheatToggles.streamerMode, " Streamer Mode");
+            CheatToggles.streamerMode = UIHelpers.Toggle(CheatToggles.streamerMode, " Streamer Mode");
         }
         else
         {
@@ -31,6 +31,6 @@ public class ModesTab : ITab
 
         }
         
-        CheatToggles.panicMode = GUILayout.Toggle(CheatToggles.panicMode, " Panic Mode");
+        CheatToggles.panicMode = UIHelpers.Toggle(CheatToggles.panicMode, " Panic Mode");
     }
 }

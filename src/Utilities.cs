@@ -34,6 +34,72 @@ namespace MalumMenu
             return colors[rnd.Next(0, colors.Count)];
         }
 
+        public static int GetFreeColorCycleTarget()
+        {
+            List<int> freeColors = Enumerable.Range(0, 18).ToList();
+
+            if (PlayerControl.AllPlayerControls != null)
+            {
+                foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+                {
+                    if (player != null && player.Data != null)
+                    {
+                        freeColors.Remove(player.Data.DefaultOutfit.ColorId);
+                    }
+                }
+            }
+
+            if (playerDataFreeColorOverride != null && playerDataFreeColorOverride.Count > 0)
+            {
+                freeColors = freeColors.Intersect(playerDataFreeColorOverride).ToList();
+            }
+
+            if (freeColors.Count == 0)
+            {
+                return Mathf.Clamp(CheatToggles.snipeColorId, 0, 17);
+            }
+
+            return freeColors[new System.Random().Next(freeColors.Count)];
+        }
+
+        private static readonly List<int> playerDataFreeColorOverride = new List<int>();
+
+        public static void UpdateFreeColorCycle()
+        {
+            if (!CheatToggles.freeColorCycle || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
+            {
+                return;
+            }
+
+            if (CheatToggles.snipeColor)
+            {
+                TryApplyColor(CheatToggles.snipeColorId);
+                return;
+            }
+
+            TryApplyColor(GetFreeColorCycleTarget());
+        }
+
+        private static float _lastFreeColorApply = -999f;
+
+        private static void TryApplyColor(int colorId)
+        {
+            float now = Time.unscaledTime;
+            if (now - _lastFreeColorApply < 0.5f)
+            {
+                return;
+            }
+
+            _lastFreeColorApply = now;
+            colorId = Mathf.Clamp(colorId, 0, 17);
+            if (PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
+            {
+                return;
+            }
+
+            PlayerControl.LocalPlayer.CmdCheckColor((byte)colorId);
+        }
+
         public static void RandomizePlayer(bool ingame = false)
         {
             System.Random rnd = new System.Random();

@@ -17,10 +17,10 @@ public class TrollTab : ITab
 
         GUILayout.BeginVertical(GUILayout.Width(MenuUI.windowWidth * 0.425f));
 
-        Troll.AutoReportBodies.Enabled = GUILayout.Toggle(Troll.AutoReportBodies.Enabled, "Automatically Report Bodies");
-         MalumMenu.routines.autoTriggerSpores.Enabled = GUILayout.Toggle(MalumMenu.routines.autoTriggerSpores.Enabled, "Auto Trigger Spores");
-        Troll.BlockSabotages.Enabled = GUILayout.Toggle(Troll.BlockSabotages.Enabled, "Block Sabotages");
-        Troll.BlockVenting.Enabled = GUILayout.Toggle(Troll.BlockVenting.Enabled, "Disable Vents");
+        Troll.AutoReportBodies.Enabled = UIHelpers.Toggle(Troll.AutoReportBodies.Enabled, "Automatically Report Bodies");
+         MalumMenu.routines.autoTriggerSpores.Enabled = UIHelpers.Toggle(MalumMenu.routines.autoTriggerSpores.Enabled, "Auto Trigger Spores");
+        Troll.BlockSabotages.Enabled = UIHelpers.Toggle(Troll.BlockSabotages.Enabled, "Block Sabotages");
+        Troll.BlockVenting.Enabled = UIHelpers.Toggle(Troll.BlockVenting.Enabled, "Disable Vents");
 
         if (GUILayout.Button(" Trigger All Spores"))
         {
@@ -50,7 +50,7 @@ public class TrollTab : ITab
         GUILayout.Space(5);
 
         GUILayout.Label("Teleport Flooder:");
-        MalumMenu.routines.teleportSpammer.Enabled = GUILayout.Toggle(MalumMenu.routines.teleportSpammer.Enabled, "Teleport Flooder");
+        MalumMenu.routines.teleportSpammer.Enabled = UIHelpers.Toggle(MalumMenu.routines.teleportSpammer.Enabled, "Teleport Flooder");
 
         GUILayout.Label($"Destination: {MalumMenu.routines.teleportSpammer.DestinationName}");
         Dictionary<string, Vector2> teleportLocations = Teleporter.GetTeleportLocations();
@@ -90,10 +90,10 @@ public class TrollTab : ITab
         GUILayout.Space(5);
 
         GUILayout.Label("Door Troller:");
-        MalumMenu.routines.doorTroller.Enabled = GUILayout.Toggle(MalumMenu.routines.doorTroller.Enabled, "Enabled");
+        MalumMenu.routines.doorTroller.Enabled = UIHelpers.Toggle(MalumMenu.routines.doorTroller.Enabled, "Enabled");
 
         GUILayout.Label($"Lock and Unlock Delay: {MalumMenu.routines.doorTroller.doorDelay:F2}s");
-        MalumMenu.routines.doorTroller.doorDelay = GUILayout.HorizontalSlider(MalumMenu.routines.doorTroller.doorDelay, 0.1f, 2.0f);
+        MalumMenu.routines.doorTroller.doorDelay = UIHelpers.HorizontalSlider(MalumMenu.routines.doorTroller.doorDelay, 0.1f, 2.0f);
 
         GUILayout.EndVertical();
     }

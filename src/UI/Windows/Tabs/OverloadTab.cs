@@ -33,7 +33,7 @@ public class OverloadTab : ITab
             GUILayout.Label("Until a workaround is found, overload features will be unavailable.");
             GUILayout.Label("We apologize for the inconvenience.");
             GUILayout.Space(5);
-            GUILayout.Label(" - The HyperMenu Team");
+            GUILayout.Label(" - The Menace Menu Team");
         }
         
 
@@ -62,14 +62,14 @@ public class OverloadTab : ITab
 
     private void DrawGeneral()
     {
-        CheatToggles.showOverload = GUILayout.Toggle(CheatToggles.showOverload, " Show Overload Menu");
+        CheatToggles.showOverload = UIHelpers.Toggle(CheatToggles.showOverload, " Show Overload Menu");
     }
 
     private void DrawSettingsToggle()
     {
         GUILayout.Label("Settings", GUIStylePreset.TabSubtitle);
 
-        CheatToggles.showOverloadSettings = GUILayout.Toggle(CheatToggles.showOverloadSettings, " Show Overload Settings");
+        CheatToggles.showOverloadSettings = UIHelpers.Toggle(CheatToggles.showOverloadSettings, " Show Overload Settings");
     }
 
     private void DrawSettingsSection()
@@ -84,7 +84,7 @@ public class OverloadTab : ITab
 
         GUILayout.BeginHorizontal();
 
-        CheatToggles.olAutoAdapt = GUILayout.Toggle(CheatToggles.olAutoAdapt, " Auto Adapt");
+        CheatToggles.olAutoAdapt = UIHelpers.Toggle(CheatToggles.olAutoAdapt, " Auto Adapt");
 
         int ping = Utils.GetPing();
         string pingStr = $"PING : {ping} ms";
@@ -123,7 +123,7 @@ public class OverloadTab : ITab
                         ? $"{rpcPerTarget*Math.Max(1, numTargetsPerSec)}"
                         : $"{rpcPerTarget}x{numTargetsPerSec}";
 
-        CheatToggles.olShowRpcTotal = GUILayout.Toggle(CheatToggles.olShowRpcTotal, $" RPC/s : {rpcStr}{extraStr}");
+        CheatToggles.olShowRpcTotal = UIHelpers.Toggle(CheatToggles.olShowRpcTotal, $" RPC/s : {rpcStr}{extraStr}");
 
         GUILayout.EndHorizontal();
 
@@ -145,13 +145,13 @@ public class OverloadTab : ITab
 
         GUILayout.Label("General", GUIStylePreset.TabSubtitle);
 
-        CheatToggles.olAutoStart = GUILayout.Toggle(CheatToggles.olAutoStart, " Auto Start when Ready");
+        CheatToggles.olAutoStart = UIHelpers.Toggle(CheatToggles.olAutoStart, " Auto Start when Ready");
 
-        CheatToggles.olAutoStop = GUILayout.Toggle(CheatToggles.olAutoStop, " Auto Stop when Done");
+        CheatToggles.olAutoStop = UIHelpers.Toggle(CheatToggles.olAutoStop, " Auto Stop when Done");
 
-        CheatToggles.olLockTargets = GUILayout.Toggle(CheatToggles.olLockTargets, " Lock Targets on Start");
+        CheatToggles.olLockTargets = UIHelpers.Toggle(CheatToggles.olLockTargets, " Lock Targets on Start");
 
-        CheatToggles.olKillSwitch = GUILayout.Toggle(CheatToggles.olKillSwitch, " Kill Switch on Lag");
+        CheatToggles.olKillSwitch = UIHelpers.Toggle(CheatToggles.olKillSwitch, " Kill Switch on Lag");
 
         if (CheatToggles.olKillSwitch)
         {
@@ -180,17 +180,17 @@ public class OverloadTab : ITab
 
         GUILayout.Label("Logs", GUIStylePreset.TabSubtitle);
 
-        CheatToggles.olLogStartStop = GUILayout.Toggle(CheatToggles.olLogStartStop, " Log START and STOP");
+        CheatToggles.olLogStartStop = UIHelpers.Toggle(CheatToggles.olLogStartStop, " Log START and STOP");
 
-        CheatToggles.olLogAddRemove = GUILayout.Toggle(CheatToggles.olLogAddRemove, " Log ADD and REMOVE");
+        CheatToggles.olLogAddRemove = UIHelpers.Toggle(CheatToggles.olLogAddRemove, " Log ADD and REMOVE");
 
-        CheatToggles.olLogAttack = GUILayout.Toggle(CheatToggles.olLogAttack, " Log Attack");
+        CheatToggles.olLogAttack = UIHelpers.Toggle(CheatToggles.olLogAttack, " Log Attack");
 
-        CheatToggles.olLogDisconnect = GUILayout.Toggle(CheatToggles.olLogDisconnect, " Log Disconnect");
+        CheatToggles.olLogDisconnect = UIHelpers.Toggle(CheatToggles.olLogDisconnect, " Log Disconnect");
 
-        CheatToggles.olVerboseLogs = GUILayout.Toggle(CheatToggles.olVerboseLogs, " Verbose Attack Logs");
+        CheatToggles.olVerboseLogs = UIHelpers.Toggle(CheatToggles.olVerboseLogs, " Verbose Attack Logs");
 
-        CheatToggles.olAutoClear = GUILayout.Toggle(CheatToggles.olAutoClear, " Auto Clear on Start");
+        CheatToggles.olAutoClear = UIHelpers.Toggle(CheatToggles.olAutoClear, " Auto Clear on Start");
 
         GUILayout.EndVertical();
 
@@ -207,7 +207,7 @@ public class OverloadTab : ITab
 
         GUILayout.BeginHorizontal();
 
-        float inputStrength = GUILayout.HorizontalSlider(_rawStrength, 1, _maxStrength, GUILayout.Width(350f));
+        float inputStrength = UIHelpers.HorizontalSlider(_rawStrength, 1, _maxStrength, GUILayout.Width(350f));
 
         if (inputStrength != _rawStrength)
         {
@@ -230,7 +230,7 @@ public class OverloadTab : ITab
 
         GUILayout.BeginHorizontal();
 
-        float inputCooldown = GUILayout.HorizontalSlider(_rawCooldown, 0f, _maxCooldown, GUILayout.Width(350f));
+        float inputCooldown = UIHelpers.HorizontalSlider(_rawCooldown, 0f, _maxCooldown, GUILayout.Width(350f));
 
         if (inputCooldown != _rawCooldown)
         {

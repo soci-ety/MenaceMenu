@@ -31,7 +31,7 @@ public class ConfigTab : ITab
 
         GUILayout.Space(10);
         
-		Chat.OnChat.LogChatMessages = GUILayout.Toggle(Chat.OnChat.LogChatMessages, "Log chat messages to console");
+		Chat.OnChat.LogChatMessages = UIHelpers.Toggle(Chat.OnChat.LogChatMessages, "Log chat messages to console");
 
 		if(GUILayout.Button("Clear Notifications"))
 		{
@@ -41,29 +41,29 @@ public class ConfigTab : ITab
 
         GUILayout.Space(10);
 
-        Spoofer.shouldSpoofVersion = GUILayout.Toggle(Spoofer.shouldSpoofVersion, "Enable Version Spoofing");
+        Spoofer.shouldSpoofVersion = UIHelpers.Toggle(Spoofer.shouldSpoofVersion, "Enable Version Spoofing");
 
         GUILayout.Label($"Spoofed Version: {versions.ElementAt(versionSelection).Key} ({Spoofer.spoofedVersion})");
-        versionSelection = (int)GUILayout.HorizontalSlider(versionSelection, 0, versions.Count - 1);
+        versionSelection = (int)UIHelpers.HorizontalSlider(versionSelection, 0, versions.Count - 1);
         Spoofer.spoofedVersion = versions.ElementAt(versionSelection).Value;
 
-        Spoofer.useModdedProtocol = GUILayout.Toggle(Spoofer.useModdedProtocol, "Use Modded Protocol");
+        Spoofer.useModdedProtocol = UIHelpers.Toggle(Spoofer.useModdedProtocol, "Use Modded Protocol");
 
         GUILayout.Label($"Spoofed Platform: {Spoofer.spoofedPlatform}");
-        Spoofer.spoofedPlatform = (Platforms)GUILayout.HorizontalSlider((float)Spoofer.spoofedPlatform, 0, 10);
+        Spoofer.spoofedPlatform = (Platforms)UIHelpers.HorizontalSlider((float)Spoofer.spoofedPlatform, 0, 10);
 
         GUILayout.EndVertical();
     }
 
     private void DrawGeneral()
     {
-        CheatToggles.openConfig = GUILayout.Toggle(CheatToggles.openConfig, " Open Config");
+        CheatToggles.openConfig = UIHelpers.Toggle(CheatToggles.openConfig, " Open Config");
 
-        CheatToggles.reloadConfig = GUILayout.Toggle(CheatToggles.reloadConfig, " Reload Config");
+        CheatToggles.reloadConfig = UIHelpers.Toggle(CheatToggles.reloadConfig, " Reload Config");
 
-        CheatToggles.saveProfile = GUILayout.Toggle(CheatToggles.saveProfile, " Save to Profile");
+        CheatToggles.saveProfile = UIHelpers.Toggle(CheatToggles.saveProfile, " Save to Profile");
 
-        CheatToggles.loadProfile = GUILayout.Toggle(CheatToggles.loadProfile, " Load from Profile");
+        CheatToggles.loadProfile = UIHelpers.Toggle(CheatToggles.loadProfile, " Load from Profile");
     }
 
 }

@@ -29,6 +29,10 @@ public class ESPTab : ITab
 
         DrawMinimap();
 
+        GUILayout.Space(15);
+
+        DrawRadar();
+
         GUILayout.EndVertical();
 
         GUILayout.EndHorizontal();
@@ -36,69 +40,86 @@ public class ESPTab : ITab
 
     private void DrawGeneral()
     {
-        CheatToggles.seePlayerInfo = GUILayout.Toggle(CheatToggles.seePlayerInfo, " See Player Info");
+        CheatToggles.seePlayerInfo = UIHelpers.Toggle(CheatToggles.seePlayerInfo, " See Player Info");
 
-        CheatToggles.seeRoles = GUILayout.Toggle(CheatToggles.seeRoles, " See Roles");
+        CheatToggles.seeRoles = UIHelpers.Toggle(CheatToggles.seeRoles, " See Roles");
 
-        CheatToggles.seeGhosts = GUILayout.Toggle(CheatToggles.seeGhosts, " See Ghosts");
+        CheatToggles.seeGhosts = UIHelpers.Toggle(CheatToggles.seeGhosts, " See Ghosts");
 
-        CheatToggles.noShadows = GUILayout.Toggle(CheatToggles.noShadows, " No Shadows");
+        CheatToggles.noShadows = UIHelpers.Toggle(CheatToggles.noShadows, " No Shadows");
 
-        CheatToggles.taskArrows = GUILayout.Toggle(CheatToggles.taskArrows, " Task Arrows");
+        CheatToggles.taskArrows = UIHelpers.Toggle(CheatToggles.taskArrows, " Task Arrows");
 
-        CheatToggles.revealVotes = GUILayout.Toggle(CheatToggles.revealVotes, " Reveal Votes");
+        CheatToggles.revealVotes = UIHelpers.Toggle(CheatToggles.revealVotes, " Reveal Votes");
 
-        CheatToggles.seeLobbyInfo = GUILayout.Toggle(CheatToggles.seeLobbyInfo, " See Lobby Info");
+        CheatToggles.seeLobbyInfo = UIHelpers.Toggle(CheatToggles.seeLobbyInfo, " See Lobby Info");
 
-        Visuals.SkipShhhAnimation.Enabled = GUILayout.Toggle(Visuals.SkipShhhAnimation.Enabled, "Skip Shhh Animation");
+        Visuals.SkipShhhAnimation.Enabled = UIHelpers.Toggle(Visuals.SkipShhhAnimation.Enabled, "Skip Shhh Animation");
 
-        Visuals.NoSeekerAnimation.Enabled = GUILayout.Toggle(Visuals.NoSeekerAnimation.Enabled, "Skip Seeker Animation");
+        Visuals.NoSeekerAnimation.Enabled = UIHelpers.Toggle(Visuals.NoSeekerAnimation.Enabled, "Skip Seeker Animation");
 
-        Visuals.ShowGhosts.Enabled = GUILayout.Toggle(Visuals.ShowGhosts.Enabled, "Show Dead Players");
+        Visuals.ShowGhosts.Enabled = UIHelpers.Toggle(Visuals.ShowGhosts.Enabled, "Show Dead Players");
 
-        Visuals.AccurateDisconnectReasons.Enabled = GUILayout.Toggle(Visuals.AccurateDisconnectReasons.Enabled, "Use more accurate disconnection reasons");
+        Visuals.AccurateDisconnectReasons.Enabled = UIHelpers.Toggle(Visuals.AccurateDisconnectReasons.Enabled, "Use more accurate disconnection reasons");
 
-        Visuals.ShowProtections.Enabled = GUILayout.Toggle(Visuals.ShowProtections.Enabled, "Show Guardian Angel Protections");
+        Visuals.ShowProtections.Enabled = UIHelpers.Toggle(Visuals.ShowProtections.Enabled, "Show Guardian Angel Protections");
     }
 
     private void DrawCamera()
     {
         GUILayout.Label("Camera", GUIStylePreset.TabSubtitle);
 
-        CheatToggles.zoomOut = GUILayout.Toggle(CheatToggles.zoomOut, " Zoom Out");
+        CheatToggles.zoomOut = UIHelpers.Toggle(CheatToggles.zoomOut, " Zoom Out");
 
-        CheatToggles.spectate = GUILayout.Toggle(CheatToggles.spectate, " Spectate");
+        CheatToggles.spectate = UIHelpers.Toggle(CheatToggles.spectate, " Spectate");
 
-        CheatToggles.freecam = GUILayout.Toggle(CheatToggles.freecam, " Freecam");
+        CheatToggles.freecam = UIHelpers.Toggle(CheatToggles.freecam, " Freecam");
     }
 
     private void DrawTracers()
     {
         GUILayout.Label("Tracers", GUIStylePreset.TabSubtitle);
 
-        CheatToggles.tracersCrew = GUILayout.Toggle(CheatToggles.tracersCrew, " Crewmates");
+        CheatToggles.tracersCrew = UIHelpers.Toggle(CheatToggles.tracersCrew, " Crewmates");
 
-        CheatToggles.tracersImps = GUILayout.Toggle(CheatToggles.tracersImps, " Impostors");
+        CheatToggles.tracersImps = UIHelpers.Toggle(CheatToggles.tracersImps, " Impostors");
 
-        CheatToggles.tracersGhosts = GUILayout.Toggle(CheatToggles.tracersGhosts, " Ghosts");
+        CheatToggles.tracersGhosts = UIHelpers.Toggle(CheatToggles.tracersGhosts, " Ghosts");
 
-        CheatToggles.tracersBodies = GUILayout.Toggle(CheatToggles.tracersBodies, " Dead Bodies");
+        CheatToggles.tracersBodies = UIHelpers.Toggle(CheatToggles.tracersBodies, " Dead Bodies");
 
-        CheatToggles.colorBasedTracers = GUILayout.Toggle(CheatToggles.colorBasedTracers, " Color-based");
+        CheatToggles.colorBasedTracers = UIHelpers.Toggle(CheatToggles.colorBasedTracers, " Color-based");
 
-        CheatToggles.distanceBasedTracers = GUILayout.Toggle(CheatToggles.distanceBasedTracers, " Distance-based");
+        CheatToggles.distanceBasedTracers = UIHelpers.Toggle(CheatToggles.distanceBasedTracers, " Distance-based");
     }
 
     private void DrawMinimap()
     {
         GUILayout.Label("Minimap", GUIStylePreset.TabSubtitle);
 
-        CheatToggles.mapCrew = GUILayout.Toggle(CheatToggles.mapCrew, " Crewmates");
+        CheatToggles.mapCrew = UIHelpers.Toggle(CheatToggles.mapCrew, " Crewmates");
 
-        CheatToggles.mapImps = GUILayout.Toggle(CheatToggles.mapImps, " Impostors");
+        CheatToggles.mapImps = UIHelpers.Toggle(CheatToggles.mapImps, " Impostors");
 
-        CheatToggles.mapGhosts = GUILayout.Toggle(CheatToggles.mapGhosts, " Ghosts");
+        CheatToggles.mapGhosts = UIHelpers.Toggle(CheatToggles.mapGhosts, " Ghosts");
 
-        CheatToggles.colorBasedMap = GUILayout.Toggle(CheatToggles.colorBasedMap, " Color-based");
+        CheatToggles.colorBasedMap = UIHelpers.Toggle(CheatToggles.colorBasedMap, " Color-based");
+    }
+
+    private void DrawRadar()
+    {
+        GUILayout.Label("Radar", GUIStylePreset.TabSubtitle);
+
+        CheatToggles.showRadar = UIHelpers.Toggle(CheatToggles.showRadar, " Show Radar");
+        CheatToggles.radarRealistic = UIHelpers.Toggle(CheatToggles.radarRealistic, " Realistic Map");
+        CheatToggles.radarGhosts = UIHelpers.Toggle(CheatToggles.radarGhosts, " Show Ghosts");
+        CheatToggles.radarDeadBodies = UIHelpers.Toggle(CheatToggles.radarDeadBodies, " Show Dead Bodies");
+        CheatToggles.radarRightClickTeleport = UIHelpers.Toggle(CheatToggles.radarRightClickTeleport, " Right-click Teleport");
+        CheatToggles.radarHideInMeeting = UIHelpers.Toggle(CheatToggles.radarHideInMeeting, " Hide In Meetings");
+
+            RadarHandler.RadarScale = UIHelpers.HorizontalSlider(RadarHandler.RadarScale, 0.65f, 1.6f);
+        GUILayout.Label($"Radar Scale: {RadarHandler.RadarScale:F2}");
+            RadarHandler.RadarAlpha = UIHelpers.HorizontalSlider(RadarHandler.RadarAlpha, 0.2f, 1f);
+        GUILayout.Label($"Radar Opacity: {RadarHandler.RadarAlpha:F2}");
     }
 }

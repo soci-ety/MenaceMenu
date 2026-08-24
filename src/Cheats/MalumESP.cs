@@ -103,11 +103,9 @@ public static class MalumESP
                 string nameTag = Utils.GetNameTag(data, data.DefaultOutfit.PlayerName);
                 int layout = GetNameTagLayout();
 
-                if (!_meetingNameTags.TryGetValue(playerId, out string previousNameTag) || previousNameTag != nameTag)
-                {
-                    playerState.NameText.text = nameTag;
-                    _meetingNameTags[playerId] = nameTag;
-                }
+                playerState.NameText.text = nameTag;
+                _meetingNameTags[playerId] = nameTag;
+                playerState.NameText.ForceMeshUpdate(true, true);
 
                 // Move and resize the nametag to prevent it overlapping with colorblind text
                 if (!_meetingNameTagLayouts.TryGetValue(playerId, out int previousLayout) || previousLayout != layout)

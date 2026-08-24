@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using MalumMenu.features;
@@ -23,12 +23,71 @@ namespace MalumMenu
                 GUILayout.Label($"Role: {PlayerControl.LocalPlayer.Data.RoleType}");
             }
 
-            // Self.BypassIntentionalDisconnectionBlocks.Enabled = GUILayout.Toggle(Self.BypassIntentionalDisconnectionBlocks.Enabled, "Bypass intentional disconnection temp bans");
-            Self.UpdateStatsFreeplay.Enabled = GUILayout.Toggle(Self.UpdateStatsFreeplay.Enabled, "Update Stats in Freeplay");
-            Immortality.Enabled = GUILayout.Toggle(Immortality.Enabled, "Become Immortal");
-            Self.AlwaysShowTaskAnimations = GUILayout.Toggle(Self.AlwaysShowTaskAnimations, "Always Show Task Animations");
-            Self.NoLadderCooldown.Enabled = GUILayout.Toggle(Self.NoLadderCooldown.Enabled, "No Ladder Cooldown");
-            Self.UnlimitedMeetings.enabled = GUILayout.Toggle(Self.UnlimitedMeetings.enabled, "Unlimited Meetings");
+            GUILayout.Space(8);
+            GUILayout.Label("Color Utilities", GUIStylePreset.TabSubtitle);
+
+            bool newFreeColorCycle = UIHelpers.Toggle(CheatToggles.freeColorCycle, "Free Color Cycle");
+            if (newFreeColorCycle != CheatToggles.freeColorCycle)
+            {
+                CheatToggles.freeColorCycle = newFreeColorCycle;
+                if (CheatToggles.freeColorCycle)
+                {
+                    CheatToggles.snipeColor = false;
+                }
+            }
+
+            bool newSnipeColor = false;
+            if (CheatToggles.snipeColor || CheatToggles.freeColorCycle)
+            {
+                newSnipeColor = UIHelpers.Toggle(CheatToggles.snipeColor, "Snipe Color");
+                if (newSnipeColor != CheatToggles.snipeColor)
+                {
+                    CheatToggles.snipeColor = newSnipeColor;
+                    if (CheatToggles.snipeColor)
+                    {
+                        CheatToggles.freeColorCycle = false;
+                    }
+                }
+            }
+            else
+            {
+                CheatToggles.snipeColor = UIHelpers.Toggle(CheatToggles.snipeColor, "Snipe Color");
+            }
+
+            if (CheatToggles.snipeColor)
+            {
+                int selectedColorId = Mathf.Clamp(CheatToggles.snipeColorId, 0, 17);
+                Color selectedColor = Palette.PlayerColors != null && selectedColorId < Palette.PlayerColors.Length
+                    ? Palette.PlayerColors[selectedColorId]
+                    : Color.white;
+
+                GUILayout.BeginHorizontal();
+                Color previousBackground = GUI.backgroundColor;
+                GUI.backgroundColor = selectedColor;
+                GUILayout.Box(string.Empty, GUILayout.Width(24), GUILayout.Height(20));
+                GUI.backgroundColor = previousBackground;
+                GUILayout.Label($"Selected Color: {((CrewmateColor)selectedColorId)}");
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Target Color:", GUILayout.Width(90));
+                CheatToggles.snipeColorId = Mathf.RoundToInt(UIHelpers.HorizontalSlider(CheatToggles.snipeColorId, 0, 17, GUILayout.Width(180)));
+                GUILayout.EndHorizontal();
+                if (GUILayout.Button("Apply Snipe Color"))
+                {
+                    if (PlayerControl.LocalPlayer != null)
+                    {
+                        PlayerControl.LocalPlayer.CmdCheckColor((byte)Mathf.Clamp(CheatToggles.snipeColorId, 0, 17));
+                    }
+                }
+            }
+
+            // Self.BypassIntentionalDisconnectionBlocks.Enabled = UIHelpers.Toggle(Self.BypassIntentionalDisconnectionBlocks.Enabled, "Bypass intentional disconnection temp bans");
+            Self.UpdateStatsFreeplay.Enabled = UIHelpers.Toggle(Self.UpdateStatsFreeplay.Enabled, "Update Stats in Freeplay");
+            Immortality.Enabled = UIHelpers.Toggle(Immortality.Enabled, "Become Immortal");
+            Self.AlwaysShowTaskAnimations = UIHelpers.Toggle(Self.AlwaysShowTaskAnimations, "Always Show Task Animations");
+            Self.NoLadderCooldown.Enabled = UIHelpers.Toggle(Self.NoLadderCooldown.Enabled, "No Ladder Cooldown");
+            Self.UnlimitedMeetings.enabled = UIHelpers.Toggle(Self.UnlimitedMeetings.enabled, "Unlimited Meetings");
 
             if (GUILayout.Button("Call Meeting"))
             {
@@ -127,7 +186,7 @@ namespace MalumMenu
 
             GUILayout.Space(5);
             GUILayout.Label($"Update level to: {level + 1}");
-            level = (uint)GUILayout.HorizontalSlider(level, 0, 199);
+            level = (uint)UIHelpers.HorizontalSlider(level, 0, 199);
 
             if (GUILayout.Button("Send Level Update"))
             {

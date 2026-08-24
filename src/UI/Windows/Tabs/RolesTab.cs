@@ -52,75 +52,75 @@ public class RolesTab : ITab
 
     private void DrawGeneral()
     {
-        CheatToggles.setFakeRole = GUILayout.Toggle(CheatToggles.setFakeRole, " Set Fake Role");
+        CheatToggles.setFakeRole = UIHelpers.Toggle(CheatToggles.setFakeRole, " Set Fake Role");
 
-        CheatToggles.setFakeAlive = GUILayout.Toggle(CheatToggles.setFakeAlive, " Set Fake Alive");
+        CheatToggles.setFakeAlive = UIHelpers.Toggle(CheatToggles.setFakeAlive, " Set Fake Alive");
     }
 
     private void DrawImpostor()
     {
         GUILayout.Label("Impostor", GUIStylePreset.TabSubtitle);
 
-        CheatToggles.killReach = GUILayout.Toggle(CheatToggles.killReach, " Kill Reach");
+        CheatToggles.killReach = UIHelpers.Toggle(CheatToggles.killReach, " Kill Reach");
 
-        Roles.SkipSabotageChecks.SabotageInVents = GUILayout.Toggle(Roles.SkipSabotageChecks.SabotageInVents, " Allow Sabotaging In Vents As Imposter");
+        Roles.SkipSabotageChecks.SabotageInVents = UIHelpers.Toggle(Roles.SkipSabotageChecks.SabotageInVents, " Allow Sabotaging In Vents As Imposter");
 
-        CheatToggles.impostorTasks = GUILayout.Toggle(CheatToggles.impostorTasks, " Allow Tasks");
+        CheatToggles.impostorTasks = UIHelpers.Toggle(CheatToggles.impostorTasks, " Allow Tasks");
     }
 
     private void DrawShapeshifter()
     {
         GUILayout.Label("Shapeshifter", GUIStylePreset.TabSubtitle);
 
-        CheatToggles.noShapeshiftAnim = GUILayout.Toggle(CheatToggles.noShapeshiftAnim, " No Ss Animation");
+        CheatToggles.noShapeshiftAnim = UIHelpers.Toggle(CheatToggles.noShapeshiftAnim, " No Ss Animation");
 
-        CheatToggles.endlessSsDuration = GUILayout.Toggle(CheatToggles.endlessSsDuration, " Endless Ss Duration");
+        CheatToggles.endlessSsDuration = UIHelpers.Toggle(CheatToggles.endlessSsDuration, " Endless Ss Duration");
     }
 
     private void DrawCrewmate()
     {
         GUILayout.Label("Crewmate", GUIStylePreset.TabSubtitle);
 
-        Roles.SkipSabotageChecks.SabotageAsCrewmate = GUILayout.Toggle(Roles.SkipSabotageChecks.SabotageAsCrewmate, " Sabotage As Crewmate");
+        Roles.SkipSabotageChecks.SabotageAsCrewmate = UIHelpers.Toggle(Roles.SkipSabotageChecks.SabotageAsCrewmate, " Sabotage As Crewmate");
 
-        CheatToggles.showTasksMenu = GUILayout.Toggle(CheatToggles.showTasksMenu, " Show Tasks Menu");
+        CheatToggles.showTasksMenu = UIHelpers.Toggle(CheatToggles.showTasksMenu, " Show Tasks Menu");
     }
 
     private void DrawTracker()
     {
         GUILayout.Label("Tracker", GUIStylePreset.TabSubtitle);
 
-        CheatToggles.endlessTracking = GUILayout.Toggle(CheatToggles.endlessTracking, " Endless Tracking");
+        CheatToggles.endlessTracking = UIHelpers.Toggle(CheatToggles.endlessTracking, " Endless Tracking");
 
-        CheatToggles.noTrackingDelay = GUILayout.Toggle(CheatToggles.noTrackingDelay, " No Track Delay");
+        CheatToggles.noTrackingDelay = UIHelpers.Toggle(CheatToggles.noTrackingDelay, " No Track Delay");
 
-        CheatToggles.noTrackingCooldown = GUILayout.Toggle(CheatToggles.noTrackingCooldown, " No Track Cooldown");
+        CheatToggles.noTrackingCooldown = UIHelpers.Toggle(CheatToggles.noTrackingCooldown, " No Track Cooldown");
 
-        CheatToggles.trackReach = GUILayout.Toggle(CheatToggles.trackReach, " Track Reach");
+        CheatToggles.trackReach = UIHelpers.Toggle(CheatToggles.trackReach, " Track Reach");
     }
 
     private void DrawEngineer()
     {
         GUILayout.Label("Engineer", GUIStylePreset.TabSubtitle);
 
-        CheatToggles.endlessVentTime = GUILayout.Toggle(CheatToggles.endlessVentTime, " Endless Vent Time");
+        CheatToggles.endlessVentTime = UIHelpers.Toggle(CheatToggles.endlessVentTime, " Endless Vent Time");
 
-        CheatToggles.noVentCooldown = GUILayout.Toggle(CheatToggles.noVentCooldown, " No Vent Cooldown");
+        CheatToggles.noVentCooldown = UIHelpers.Toggle(CheatToggles.noVentCooldown, " No Vent Cooldown");
     }
 
     private void DrawScientist()
     {
         GUILayout.Label("Scientist", GUIStylePreset.TabSubtitle);
 
-        CheatToggles.endlessBattery = GUILayout.Toggle(CheatToggles.endlessBattery, " Endless Battery");
+        CheatToggles.endlessBattery = UIHelpers.Toggle(CheatToggles.endlessBattery, " Endless Battery");
 
-        CheatToggles.noVitalsCooldown = GUILayout.Toggle(CheatToggles.noVitalsCooldown, " No Vitals Cooldown");
+        CheatToggles.noVitalsCooldown = UIHelpers.Toggle(CheatToggles.noVitalsCooldown, " No Vitals Cooldown");
     }
 
     private void DrawDetective()
     {
         GUILayout.Label("Detective", GUIStylePreset.TabSubtitle);
 
-        CheatToggles.interrogateReach = GUILayout.Toggle(CheatToggles.interrogateReach, " Interrogate Reach");
+        CheatToggles.interrogateReach = UIHelpers.Toggle(CheatToggles.interrogateReach, " Interrogate Reach");
     }
 }

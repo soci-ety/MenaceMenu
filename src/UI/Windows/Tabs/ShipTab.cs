@@ -32,56 +32,56 @@ public class ShipTab : ITab
     private void DrawGeneral()
     {
         // Will implement this later, currently gets user kicked by AC. -ADHyperActive
-        // CheatToggles.completeAllTasks = GUILayout.Toggle(CheatToggles.completeAllTasks, " Allow All Tasks");
+        // CheatToggles.completeAllTasks = UIHelpers.Toggle(CheatToggles.completeAllTasks, " Allow All Tasks");
         
-        CheatToggles.fakeTasks = GUILayout.Toggle(CheatToggles.fakeTasks, " Fake Tasks");
+        CheatToggles.fakeTasks = UIHelpers.Toggle(CheatToggles.fakeTasks, " Fake Tasks");
 
-        CheatToggles.doAnyTask = GUILayout.Toggle(CheatToggles.doAnyTask, " Do Any Task");
+        CheatToggles.doAnyTask = UIHelpers.Toggle(CheatToggles.doAnyTask, " Do Any Task");
 
-        CheatToggles.unfixableLights = GUILayout.Toggle(CheatToggles.unfixableLights, " Unfixable Lights");
+        CheatToggles.unfixableLights = UIHelpers.Toggle(CheatToggles.unfixableLights, " Unfixable Lights");
 
-        CheatToggles.callMeeting = GUILayout.Toggle(CheatToggles.callMeeting, " Call Meeting");
+        CheatToggles.callMeeting = UIHelpers.Toggle(CheatToggles.callMeeting, " Call Meeting");
 
-        CheatToggles.reportBody = GUILayout.Toggle(CheatToggles.reportBody, " Report Body");
+        CheatToggles.reportBody = UIHelpers.Toggle(CheatToggles.reportBody, " Report Body");
 
-        CheatToggles.closeMeeting = GUILayout.Toggle(CheatToggles.closeMeeting, " Close Meeting");
+        CheatToggles.closeMeeting = UIHelpers.Toggle(CheatToggles.closeMeeting, " Close Meeting");
 
-        CheatToggles.autoReportBodies = GUILayout.Toggle(CheatToggles.autoReportBodies, " Auto-Report Dead Bodies");
+        CheatToggles.autoReportBodies = UIHelpers.Toggle(CheatToggles.autoReportBodies, " Auto-Report Dead Bodies");
 
-        CheatToggles.autoOpenDoorsOnUse = GUILayout.Toggle(CheatToggles.autoOpenDoorsOnUse, " Auto-Open Doors On Use");
+        CheatToggles.autoOpenDoorsOnUse = UIHelpers.Toggle(CheatToggles.autoOpenDoorsOnUse, " Auto-Open Doors On Use");
 
-        CheatToggles.kickOffensiveNames = GUILayout.Toggle(CheatToggles.kickOffensiveNames, " Kick Offensive Names");
+        CheatToggles.kickOffensiveNames = UIHelpers.Toggle(CheatToggles.kickOffensiveNames, " Kick Offensive Names");
     }
 
     private void DrawSabotage()
     {
         GUILayout.Label("Sabotage", GUIStylePreset.TabSubtitle);
 
-        CheatToggles.reactorSab = GUILayout.Toggle(CheatToggles.reactorSab, " Reactor");
+        CheatToggles.reactorSab = UIHelpers.Toggle(CheatToggles.reactorSab, " Reactor");
 
-        CheatToggles.oxygenSab = GUILayout.Toggle(CheatToggles.oxygenSab, " Oxygen");
+        CheatToggles.oxygenSab = UIHelpers.Toggle(CheatToggles.oxygenSab, " Oxygen");
 
-        CheatToggles.elecSab = GUILayout.Toggle(CheatToggles.elecSab, " Lights");
+        CheatToggles.elecSab = UIHelpers.Toggle(CheatToggles.elecSab, " Lights");
 
-        CheatToggles.commsSab = GUILayout.Toggle(CheatToggles.commsSab, " Comms");
+        CheatToggles.commsSab = UIHelpers.Toggle(CheatToggles.commsSab, " Comms");
 
-        CheatToggles.showDoorsMenu = GUILayout.Toggle(CheatToggles.showDoorsMenu, " Show Doors Menu");
+        CheatToggles.showDoorsMenu = UIHelpers.Toggle(CheatToggles.showDoorsMenu, " Show Doors Menu");
 
-        CheatToggles.mushSab = GUILayout.Toggle(CheatToggles.mushSab, " Mushroom Mixup");
+        CheatToggles.mushSab = UIHelpers.Toggle(CheatToggles.mushSab, " Mushroom Mixup");
 
-        CheatToggles.mushSpore = GUILayout.Toggle(CheatToggles.mushSpore, " Trigger Spores");
+        CheatToggles.mushSpore = UIHelpers.Toggle(CheatToggles.mushSpore, " Trigger Spores");
 
-        CheatToggles.sabotageMap = GUILayout.Toggle(CheatToggles.sabotageMap, " Open Sabotage Map");
+        CheatToggles.sabotageMap = UIHelpers.Toggle(CheatToggles.sabotageMap, " Open Sabotage Map");
     }
 
     private void DrawVents()
     {
         GUILayout.Label("Vents", GUIStylePreset.TabSubtitle);
 
-        CheatToggles.unlockVents = GUILayout.Toggle(CheatToggles.unlockVents, " Unlock Vents");
+        CheatToggles.unlockVents = UIHelpers.Toggle(CheatToggles.unlockVents, " Unlock Vents");
 
-        CheatToggles.kickVents = GUILayout.Toggle(CheatToggles.kickVents, " Kick All From Vents");
+        CheatToggles.kickVents = UIHelpers.Toggle(CheatToggles.kickVents, " Kick All From Vents");
 
-        CheatToggles.walkInVents = GUILayout.Toggle(CheatToggles.walkInVents, " Walk In Vents");
+        CheatToggles.walkInVents = UIHelpers.Toggle(CheatToggles.walkInVents, " Walk In Vents");
     }
 }
