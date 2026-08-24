@@ -28,7 +28,7 @@
 
 2. Launch Among Us once, wait for BepInEx to finish creating its folders, then close the game.
 
-3. Download `MenaceMenuV1.3.0.dll` and its dependencies JSON from the [MenaceMenu repository](https://github.com/soci-ety/MenaceMenu), or build them from source below.
+3. Download `MenaceMenuV1.2.0.dll` and its dependencies JSON from the [MenaceMenu repository](https://github.com/soci-ety/MenaceMenu), or build them from source below.
 
 4. Copy both files into:
 
@@ -62,8 +62,8 @@ dotnet build .\MalumMenu.sln --no-restore
 The plugin files are generated in:
 
 ```text
-src\bin\Debug\net6.0\MenaceMenuV1.3.0.dll
-src\bin\Debug\net6.0\MenaceMenuV1.3.0.deps.json
+src\bin\Debug\net6.0\MenaceMenuV1.2.0.dll
+src\bin\Debug\net6.0\MenaceMenuV1.2.0.deps.json
 ```
 
 Copy both generated files into `Among Us\BepInEx\plugins\`.
