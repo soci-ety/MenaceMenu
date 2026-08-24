@@ -7,7 +7,7 @@ public class TasksUI : MonoBehaviour
 {
     public static int windowHeight = 300;
     public static int windowWidth = 500;
-    private Rect _windowRect;
+    public static Rect windowRect;
 
     private Vector2 _scrollPosition = Vector2.zero;
     private GUIStyle _playerHeaderStyle;
@@ -17,7 +17,7 @@ public class TasksUI : MonoBehaviour
     private void Start()
     {
         // Instantiate 2D area of TasksUI
-        _windowRect = new(
+        windowRect = new(
             Screen.width / 2f - windowWidth / 2f,
             Screen.height / 2f - windowHeight / 2f,
             windowWidth,
@@ -31,15 +31,13 @@ public class TasksUI : MonoBehaviour
 
         _playerHeaderStyle ??= new GUIStyle(GUI.skin.button)
         {
-            fontSize = 16,
-            fontStyle = FontStyle.Bold,
-            alignment = TextAnchor.MiddleLeft,
-            padding = new RectOffset { left = 8, right = 8, top = 8, bottom = 8 }
+            fontSize = 18,
+            alignment = TextAnchor.MiddleLeft
         };
 
         UIHelpers.ApplyUIColor();
 
-        _windowRect = GUI.Window((int)WindowId.TasksUI, _windowRect, (GUI.WindowFunction)TasksWindow, "Tasks");
+        windowRect = GUI.Window((int)WindowId.TasksUI, windowRect, (GUI.WindowFunction)TasksWindow, "Tasks");
     }
 
     private void TasksWindow(int windowID)
@@ -93,7 +91,6 @@ public class TasksUI : MonoBehaviour
 
                     _tasksString.Clear();
                     task.AppendTaskText(_tasksString);
-                    //_tasksString.Append($"Task Type: {task.TaskType.ToString()}");
                     var taskText = _tasksString.ToString();
 
                     if (taskText.Contains("You're dead") || taskText.Contains("Sabotage and kill")) continue;
@@ -129,11 +126,10 @@ public class TasksUI : MonoBehaviour
 
         GUILayout.EndScrollView();
 
-        if (GUILayout.Button("Complete My Tasks", GUILayout.Height(30)))
+        if (GUILayout.Button("Complete My Tasks", GUIStylePreset.NormalButton))
         {
             CheatToggles.completeMyTasks = true;
         }
-
 
         GUILayout.EndVertical();
 

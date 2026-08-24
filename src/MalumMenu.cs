@@ -35,7 +35,7 @@ public partial class MalumMenu : BasePlugin
     public static StreamerUI streamerUI;
     public static KeybindListener keybindListener;
 
-    public static string malumVersion = "3.2.0";
+    public static string malumVersion = "3.3.0";
     public static string hyperVersion = "4.2.2";
     public static string hyperBuild = "Stable";
     public static List<string> supportedAU = new List<string> { "2026.8.18", "2026.6.5", "2026.3.31" };
@@ -51,6 +51,7 @@ public partial class MalumMenu : BasePlugin
     public static ConfigEntry<string> menuChatColor;
     public static ConfigEntry<bool> menuOpenOnMouse;
     public static ConfigEntry<bool> menuKeepSubwindowsOpen;
+    public static ConfigEntry<bool> menuAllowClickThrough;
     public static ConfigEntry<bool> menuMaterialLayout;
     public static ConfigEntry<string> spoofLevel;
     public static ConfigEntry<string> spoofPlatform;
@@ -74,7 +75,7 @@ public partial class MalumMenu : BasePlugin
     {
         Instance = this;
         Log = base.Log;
-		Log.LogInfo($"HyperMenu has loaded!");
+        Log.LogInfo($"HyperMenu has loaded!");
         Plugin = this;
         notifications = AddComponent<NotificationManager>();
         routines = AddComponent<RoutineManager>();
@@ -104,6 +105,11 @@ public partial class MalumMenu : BasePlugin
                                 "KeepSubwindowsOpen",
                                 false,
                                 "When enabled, closing the MalumMenu GUI will not automatically close its subwindows");
+
+        menuAllowClickThrough = Config.Bind("MalumMenu.GUI",
+                                "AllowClicksThrough",
+                                true,
+                                "When enabled, clicks pass through the MalumMenu GUI, letting you interact with Among Us GUI elements behind it");
 
         menuMaterialLayout = Config.Bind("MalumMenu.GUI",
                     "MaterialLayout",
@@ -153,53 +159,7 @@ public partial class MalumMenu : BasePlugin
                                 true,
                                 "When enabled, it will stop Among Us from collecting analytics of your games and sending them to Innersloth using Unity Analytics");
 
-        // adaptMaxStrength = Config.Bind("MalumMenu.Overload",
-        //                         "AdaptMaxStrength",
-        //                         18000,
-        //                         new ConfigDescription(
-        //                             "Maximum total number of RPCs sent during one overload cycle in AutoAdapt mode. Automatically divided between targets and reduced based on ping. IMPORTANT: Only goes from 1 to 100K RPCs",
-        //                             new AcceptableValueRange<int>(1, 100000)
-        //                         ));
-
-        // adaptMaxCooldown = Config.Bind("MalumMenu.Overload",
-        //                         "AdaptMaxCooldown",
-        //                         1f,
-        //                         new ConfigDescription(
-        //                             "Maximum time (in seconds) for one full overload cycle to complete in AutoAdapt mode. Automatically distributed across targets (more targets = shorter delay per target). IMPORTANT: Only goes from 0s to 10s",
-        //                             new AcceptableValueRange<float>(0f, 10f)
-        //                         ));
-
-        // attackLogDelay = Config.Bind("MalumMenu.Overload",
-        //                         "AttackLogDelay",
-        //                         2f,
-        //                         "Minimum time (in seconds) between attack logs in normal (non-verbose) mode");
-
-        // defaultStrength = Config.Bind("MalumMenu.Overload",
-        //                         "DefaultStrength",
-        //                         18000,
-        //                         new ConfigDescription(
-        //                             "Default number of malformed RPCs sent to each target during an overload cycle. Overridden if AutoAdapt mode is enabled. IMPORTANT: Only goes from 1 to 100K RPCs",
-        //                             new AcceptableValueRange<int>(1, 100000)
-        //                         ));
-
-        // defaultCooldown = Config.Bind("MalumMenu.Overload",
-        //                         "DefaultCooldown",
-        //                         1f,
-        //                         new ConfigDescription(
-        //                             "Default cooldown (in seconds) between each target during an overload cycle. Overridden if AutoAdapt mode is enabled. IMPORTANT: Only goes from 0s to 10s",
-        //                             new AcceptableValueRange<float>(0f, 10f)
-        //                         ));
-
-        // killSwitchLvl = Config.Bind("MalumMenu.Overload",
-        //                         "DefaultKillSwitchLevel",
-        //                         1,
-        //                         new ConfigDescription(
-        //                             "Default level used by kill switch. Each level adds 500 ms to the max allowed ping before overload stops. Helps avoid lagging / disconnects. IMPORTANT: Only goes from level 1 (500 ms) to 6 (3000 ms)",
-        //                             new AcceptableValueRange<int>(1, 6)
-        //                         ));
-
         // Enabled by default
-        // The overload RPC assumptions are not compatible with v18+ voting.
         CheatToggles.antiOverload = false;
         CheatToggles.unlockFeatures = true;
         CheatToggles.freeCosmetics = true;
@@ -257,7 +217,8 @@ public partial class MalumMenu : BasePlugin
                 if (!supportedAU.Contains(Application.version) && !toleratedAU.Contains(Application.version))
                 {
                     Utils.ShowNewPopup("This version of HyperMenu and this version of Among Us are incompatible\n\nInstall the right version to avoid problems");
-                } else if (!supportedAU.Contains(Application.version) && toleratedAU.Contains(Application.version))
+                } 
+                else if (!supportedAU.Contains(Application.version) && toleratedAU.Contains(Application.version))
                 {
                     Utils.ShowNewPopup("This version of HyperMenu and this version of Among Us are not fully compatible\n\nSome features may not work properly, as HyperMenu is not updated to keep compatibility with older Among Us versions.");
                 }

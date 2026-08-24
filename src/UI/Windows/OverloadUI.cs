@@ -304,7 +304,7 @@ public class OverloadUI : MonoBehaviour
     {
         if (CheatToggles.olLogStartStop)
         {
-            int total = currentTargets.Count+numSuccesses;
+            int total = currentTargets.Count + numSuccesses;
             string colorStr = ColorUtility.ToHtmlStringRGB(Color.red);
             LogConsole($"> <b><color=#{colorStr}>STOP : [{numSuccesses} / {total}] Kicked{extraStr}</color></b>");
         }

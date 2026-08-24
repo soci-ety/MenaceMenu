@@ -22,7 +22,6 @@ public static class MalumESP
         if (CheatToggles.noShadows)
         {
             // Change the Z axis position of spore clouds as to make players appear above them
-
             mushroom.sporeMask.transform.position = new Vector3(mushroom.sporeMask.transform.position.x, mushroom.sporeMask.transform.position.y, -1);
             return;
         }
@@ -33,17 +32,9 @@ public static class MalumESP
 
     public static bool IsFullbrightActive()
     {
-        // Fullbright is automatically activated when zooming out, spectating other players, or "freecamming"
+        // Fullbright is automatically activated when being a ghost, zooming out, spectating other players, or "freecamming"
         // This is done to avoid issues with shadows
-
-        if (CheatToggles.noShadows) return true;
-
-        Camera cam = Camera.main;
-        if (cam == null) return false;
-        if (cam.orthographicSize > 3f) return true;
-
-        FollowerCamera follower = cam.GetComponent<FollowerCamera>();
-        return follower != null && follower.Target != PlayerControl.LocalPlayer;
+        return CheatToggles.noShadows || (PlayerControl.LocalPlayer?.Data != null && PlayerControl.LocalPlayer.Data.IsDead) || Camera.main.orthographicSize > 3f || Camera.main.gameObject.GetComponent<FollowerCamera>().Target != PlayerControl.LocalPlayer;
     }
 
     public static void ZoomOut(HudManager hudManager)
@@ -53,6 +44,7 @@ public static class MalumESP
 
         if (CheatToggles.zoomOut)
         {
+            // Suspend zoomOut whenever a UI screen requires scrolling
             if ((hudManager.Chat != null && hudManager.Chat.IsOpenOrOpening)
                 || PlayerCustomizationMenu.Instance
                 || (Utils.isLobby && FriendsListUI.Instance != null && FriendsListUI.Instance.IsOpen)
@@ -66,17 +58,10 @@ public static class MalumESP
 
             if (Input.GetAxis("Mouse ScrollWheel") < 0f ) // Zoom out
             {
-
                 // Both the main camera and the UI camera need to be adjusted
-
                 cam.orthographicSize++;
                 hudManager.UICamera.orthographicSize++;
-
-                // Utils.AdjustResolution() seems to be needed to properly sync the game's UI
-                // after a change in orthographicSize
-
                 Utils.AdjustResolution();
-
             }
             else if (Input.GetAxis("Mouse ScrollWheel") > 0f )
             {
@@ -85,18 +70,21 @@ public static class MalumESP
 
                 cam.orthographicSize--;
                 hudManager.UICamera.orthographicSize--;
-
                 Utils.AdjustResolution();
             }
         }
-        else if (_resolutionChangeNeeded)
+        else
         {
-            // Only snap back to the default size when the zoom cheat is turned off,
-            // not every frame — otherwise lobby scroll zoom flashes then gets overwritten.
+            // orthographicSize is reset to default value: 3f
             cam.orthographicSize = 3f;
             hudManager.UICamera.orthographicSize = 3f;
-            Utils.AdjustResolution();
-            _resolutionChangeNeeded = false;
+
+            // Utils.AdjustResolution() is invoked one last time to prevent issues with UI
+            if (_resolutionChangeNeeded)
+            {
+                Utils.AdjustResolution();
+                _resolutionChangeNeeded = false;
+            }
         }
     }
 
@@ -136,6 +124,7 @@ public static class MalumESP
                     }
                     else
                     {
+                        // Reset the position and scale of the nametag to default values
                         playerState.NameText.transform.localPosition = new Vector3(0.3384f, 0.0311f, -0.1f);
                         playerState.NameText.transform.localScale = new Vector3(0.9f, 1f, 1f);
                     }
@@ -190,14 +179,13 @@ public static class MalumESP
 
     public static void SeeGhostsCheat(PlayerPhysics playerPhysics)
     {
-        try{
-
-            if(playerPhysics.myPlayer.Data.IsDead && !PlayerControl.LocalPlayer.Data.IsDead)
+        try
+        {
+            if (playerPhysics.myPlayer.Data.IsDead && !PlayerControl.LocalPlayer.Data.IsDead)
             {
                 playerPhysics.myPlayer.Visible = CheatToggles.seeGhosts;
             }
-
-        }catch{}
+        } catch {}
     }
 
     public static void FreecamCheat()
@@ -207,12 +195,9 @@ public static class MalumESP
             // Completely disable FollowerCamera
             if (!_freecamActive)
             {
-
                 Camera.main.gameObject.GetComponent<FollowerCamera>().enabled = false;
                 Camera.main.gameObject.GetComponent<FollowerCamera>().Target = null;
-
                 _freecamActive = true;
-
             }
 
             // Prevent the player from moving while in freecam
@@ -222,9 +207,7 @@ public static class MalumESP
             var movement = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0.0f);
 
             // Change the camera's position depending on the keyboard input
-            // Speed: 10f
             Camera.main.transform.position = Camera.main.transform.position + movement * 10f * Time.deltaTime;
-
         }
         else
         {

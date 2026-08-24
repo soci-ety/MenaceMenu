@@ -23,7 +23,6 @@ public static class MalumPPMCheats
     {
         if (CheatToggles.reportBody)
         {
-
             if (!_reportBodyActive)
             {
                 // Close any player pick menus already open & their cheats
@@ -47,7 +46,6 @@ public static class MalumPPMCheats
             {
                 CheatToggles.reportBody = false;
             }
-
         }
         else
         {
@@ -90,7 +88,7 @@ public static class MalumPPMCheats
                 PlayerPickMenu.OpenPlayerPickMenu(playerInfo, (Action)(() =>
                 {
                     NetworkedPlayerInfo playerToEject = PlayerPickMenu.targetPlayerData;
-                    Utils.CompleteVoting(new Il2CppStructArray<MeetingHud.VoterState>(0L), playerToEject, false);
+                    MeetingHud.Instance.RpcVotingComplete(new Il2CppStructArray<MeetingHud.VoterState>(0L), playerToEject, false, false, ushort.MinValue);
                 }));
 
                 _ejectPlayerActive = true;
@@ -170,7 +168,7 @@ public static class MalumPPMCheats
                 }
 
                 // Player pick menu made for killing any player by sending a successful MurderPlayer RPC call
-                // and immediatly teleporting back to original position
+                // and immediately teleporting back to original position
                 PlayerPickMenu.OpenPlayerPickMenu(Utils.GetAllPlayerData(), (Action)(() =>
                 {
                     var oldPos = PlayerControl.LocalPlayer.GetTruePosition();
@@ -242,10 +240,8 @@ public static class MalumPPMCheats
     {
         if (CheatToggles.setFakeRole)
         {
-
             if (!_setFakeRoleActive)
             {
-
                 // Close any player pick menus already open & their cheats
                 if (PlayerPickMenu.playerpickMenu != null)
                 {
@@ -255,18 +251,41 @@ public static class MalumPPMCheats
 
                 List<NetworkedPlayerInfo> playerDataList = new List<NetworkedPlayerInfo>();
 
-                playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Shapeshifter", OutfitPreset.Shapeshifter, Utils.GetBehaviourByRoleType(RoleTypes.Shapeshifter)));
-                playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Phantom", OutfitPreset.Phantom, Utils.GetBehaviourByRoleType(RoleTypes.Phantom)));
-                playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Viper", OutfitPreset.Viper, Utils.GetBehaviourByRoleType(RoleTypes.Viper)));
-                playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Impostor", OutfitPreset.Impostor, Utils.GetBehaviourByRoleType(RoleTypes.Impostor)));
+                // Shapeshifter role can only be used if it was already assigned at the start of the game or in freeplay
+                if (_oldRole == RoleTypes.Shapeshifter || Utils.isFreePlay)
+                {
+                    playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Shapeshifter", OutfitPreset.Shapeshifter, Utils.GetBehaviourByRoleType(RoleTypes.Shapeshifter)));
+                }
 
-                playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Guardian Angel", OutfitPreset.GuardianAngel, Utils.GetBehaviourByRoleType(RoleTypes.GuardianAngel)));
+                // Phantom role can only be used if it was already assigned at the start of the game or in freeplay
+                if (_oldRole == RoleTypes.Phantom || Utils.isFreePlay)
+                {
+                    playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Phantom", OutfitPreset.Phantom, Utils.GetBehaviourByRoleType(RoleTypes.Phantom)));
+                }
+
+                // Viper role can only be used if it was already assigned at the start of the game or in freeplay
+                if (_oldRole == RoleTypes.Viper || Utils.isFreePlay)
+                {
+                    playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Viper", OutfitPreset.Viper, Utils.GetBehaviourByRoleType(RoleTypes.Viper)));
+                }
+
+                // Impostor role can only be used if it was already assigned as impostor, freeplay, or host
+                if ((_oldRole != null && Utils.GetBehaviourByRoleType((RoleTypes)_oldRole).TeamType == RoleTeamTypes.Impostor) || Utils.isFreePlay || Utils.isHost)
+                {
+                    playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Impostor", OutfitPreset.Impostor, Utils.GetBehaviourByRoleType(RoleTypes.Impostor)));
+                }
+
+                // Judge role can only be used if it was already assigned at the start of the game or in freeplay
+                if (_oldRole == RoleTypes.Judge || Utils.isFreePlay)
+                {
+                    playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Judge", OutfitPreset.Judge, Utils.GetBehaviourByRoleType(RoleTypes.Judge)));
+                }
+
                 playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Tracker", OutfitPreset.Tracker, Utils.GetBehaviourByRoleType(RoleTypes.Tracker)));
                 playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Noisemaker", OutfitPreset.Noisemaker, Utils.GetBehaviourByRoleType(RoleTypes.Noisemaker)));
                 playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Engineer", OutfitPreset.Engineer, Utils.GetBehaviourByRoleType(RoleTypes.Engineer)));
                 playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Scientist", OutfitPreset.Scientist, Utils.GetBehaviourByRoleType(RoleTypes.Scientist)));
                 playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Detective", OutfitPreset.Detective, Utils.GetBehaviourByRoleType(RoleTypes.Detective)));
-                playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Judge", OutfitPreset.Judge, Utils.GetBehaviourByRoleType(RoleTypes.Judge)));
                 playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Crewmate", OutfitPreset.Crewmate, Utils.GetBehaviourByRoleType(RoleTypes.Crewmate)));
                 playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Crewmate Ghost", OutfitPreset.CrewmateGhost, Utils.GetBehaviourByRoleType(RoleTypes.CrewmateGhost)));
                 playerDataList.Add(PlayerPickMenu.CustomPPMChoice("Impostor Ghost", OutfitPreset.ImpostorGhost, Utils.GetBehaviourByRoleType(RoleTypes.ImpostorGhost)));
@@ -321,7 +340,6 @@ public static class MalumPPMCheats
                     }
 
                     HudManager.Instance.ReportButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsDead && !selectedGhostRole);
-
                 }));
 
                 _setFakeRoleActive = true;
@@ -332,7 +350,6 @@ public static class MalumPPMCheats
             {
                 CheatToggles.setFakeRole = false;
             }
-
         }
         else
         {
@@ -347,10 +364,8 @@ public static class MalumPPMCheats
     {
         if (CheatToggles.setFakeAlive)
         {
-
             if (!_setFakeAliveActive)
             {
-
                 // Close any player pick menus already open & their cheats
                 if (PlayerPickMenu.playerpickMenu != null)
                 {
@@ -384,7 +399,6 @@ public static class MalumPPMCheats
             {
                 CheatToggles.setFakeAlive = false;
             }
-
         }
         else
         {
@@ -434,7 +448,6 @@ public static class MalumPPMCheats
             {
                 CheatToggles.forceRole = false;
             }
-
         }
         else
         {
@@ -449,10 +462,8 @@ public static class MalumPPMCheats
     {
         if (CheatToggles.spectate)
         {
-
             if (!_spectateActive)
             {
-
                 // Close any player pick menus already open & their cheats
                 if (PlayerPickMenu.playerpickMenu != null)
                 {
@@ -482,7 +493,6 @@ public static class MalumPPMCheats
                 PlayerControl.LocalPlayer.moveable = false; // Can't move while spectating
 
                 CheatToggles.freecam = false; // Disable incompatible cheats while spectating
-
             }
 
             // Deactivate cheat if menu is closed and no one is getting spectated

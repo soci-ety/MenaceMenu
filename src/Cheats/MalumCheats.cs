@@ -23,7 +23,6 @@ public static class MalumCheats
 
         if (Utils.isMeeting) // Closes MeetingHud window if it's open
         {
-
             // Destroy MeetingHud window gameobject
             MeetingHud.Instance.DespawnOnDestroy = false;
             UnityEngine.Object.Destroy(MeetingHud.Instance.gameObject);
@@ -33,10 +32,9 @@ public static class MalumCheats
             PlayerControl.LocalPlayer.SetKillTimer(GameManager.Instance.LogicOptions.GetKillCooldown());
             ShipStatus.Instance.EmergencyCooldown = GameManager.Instance.LogicOptions.GetEmergencyCooldown();
             Camera.main.GetComponent<FollowerCamera>().Locked = false;
-            DestroyableSingleton<HudManager>.Instance.ToggleMapButton(true);
+            DestroyableSingleton<HudManager>.Instance.SetMapAndInfoButtonsEnabled(true);
             DestroyableSingleton<HudManager>.Instance.SetHudActive(true);
             ControllerManager.Instance.CloseAndResetAll();
-
         }
         else if (ExileController.Instance) // Ends exile cutscene if it's playing
         {
@@ -53,7 +51,7 @@ public static class MalumCheats
 
         if (Utils.isMeeting)
         {
-            Utils.CompleteVoting(new Il2CppStructArray<MeetingHud.VoterState>(0L), null, true);
+            MeetingHud.Instance.RpcVotingComplete(new Il2CppStructArray<MeetingHud.VoterState>(0L), null, true, false, ushort.MinValue);
         }
 
         CheatToggles.skipMeeting = false;
@@ -166,7 +164,6 @@ public static class MalumCheats
         {
             // Shapeshift duration is reset to normal value after the cheat is disabled
             shapeshifterRole.durationSecondsRemaining = GameManager.Instance.LogicOptions.GetRoleFloat(FloatOptionNames.ShapeshifterDuration);
-
         }
     }
 
@@ -207,30 +204,26 @@ public static class MalumCheats
 
         if (CheatToggles.endlessTracking)
         {
-            // Makes vitals battery so incredibly long (float.MaxValue) so that it never ends
+            // Makes tracking duration so incredibly long (float.MaxValue) so that it never ends
             trackerRole.durationSecondsRemaining = float.MaxValue;
         }
         else if (trackerRole.durationSecondsRemaining > GameManager.Instance.LogicOptions.GetRoleFloat(FloatOptionNames.TrackerDuration))
         {
-            // Battery charge is reset to normal value after the cheat is disabled
+            // Tracking duration is reset to normal value after the cheat is disabled
             trackerRole.durationSecondsRemaining = GameManager.Instance.LogicOptions.GetRoleFloat(FloatOptionNames.TrackerDuration);
         }
     }
 
     public static void UseVentCheat(HudManager hudManager)
     {
-        // try-catch to prevent errors when role is null
         try
         {
-
-			// Engineers & Impostors don't need this cheat so it is disabled for them
-			// Ghost venting causes issues so it is also disabled
-
-			if (!PlayerControl.LocalPlayer.Data.Role.CanVent && !PlayerControl.LocalPlayer.Data.IsDead)
+            // Engineers & Impostors don't need this cheat so it is disabled for them
+            // Ghost venting causes issues so it is also disabled
+            if (!PlayerControl.LocalPlayer.Data.Role.CanVent && !PlayerControl.LocalPlayer.Data.IsDead)
             {
-				hudManager.ImpostorVentButton.gameObject.SetActive(CheatToggles.unlockVents);
-			}
-
+                hudManager.ImpostorVentButton.gameObject.SetActive(CheatToggles.unlockVents);
+            }
         } catch { }
     }
 
@@ -242,7 +235,6 @@ public static class MalumCheats
 
             PlayerControl.LocalPlayer.inVent = false;
             PlayerControl.LocalPlayer.moveable = true;
-
         } catch { }
     }
 
@@ -250,7 +242,7 @@ public static class MalumCheats
     {
         if (!CheatToggles.kickVents) return;
 
-        foreach(var vent in ShipStatus.Instance.AllVents)
+        foreach (var vent in ShipStatus.Instance.AllVents)
         {
             VentilationSystem.Update(VentilationSystem.Operation.BootImpostors, vent.Id);
         }
@@ -288,7 +280,6 @@ public static class MalumCheats
         }
         else
         {
-            // Kill all players by sending a successful MurderPlayer RPC call
             foreach (var player in PlayerControl.AllPlayerControls)
             {
                 if (player.Data.Role.TeamType == RoleTeamTypes.Crewmate)
@@ -311,7 +302,6 @@ public static class MalumCheats
         }
         else
         {
-            // Kill all players by sending a successful MurderPlayer RPC call
             foreach (var player in PlayerControl.AllPlayerControls)
             {
                 if (player.Data.Role.TeamType == RoleTeamTypes.Impostor)
@@ -332,7 +322,6 @@ public static class MalumCheats
         {
             if (player.protectedByGuardianId == -1) // -1 means no protection is currently active
             {
-                //PlayerControl.LocalPlayer.TurnOnProtection(true, PlayerControl.LocalPlayer.cosmetics.ColorId, PlayerControl.LocalPlayer.PlayerId);
                 PlayerControl.LocalPlayer.RpcProtectPlayer(player, PlayerControl.LocalPlayer.cosmetics.ColorId);
             }
         }
@@ -354,9 +343,7 @@ public static class MalumCheats
     {
         try
         {
-
             PlayerControl.LocalPlayer.Collider.enabled = !(CheatToggles.noClip || PlayerControl.LocalPlayer.onLadder);
-
         } catch { }
     }
 
@@ -426,7 +413,6 @@ public static class MalumCheats
         {
             if (CheatToggles.animCamsInUse && !_isCamsAnimActive)
             {
-                // ShipStatus.Instance.UpdateSystem(SystemTypes.Security, PlayerControl.LocalPlayer, (byte)(CheatToggles.animCamsInUse ? 1 : 0));
                 ShipStatus.Instance.RpcUpdateSystem(SystemTypes.Security, 1);
                 _isCamsAnimActive = true;
             }
@@ -479,9 +465,6 @@ public static class MalumCheats
             ownedTaskTypes.Add(myTask.TaskType);
         }
 
-        // Prefab tasks (FuelEngines, VentCleaning, etc.) are not initialized, so
-        // FindConsoles/ValidConsole indexes into an empty Data array and throws.
-        // Match nearby consoles by TaskType instead.
         var nearbyTaskTypes = GetNearbyConsoleTaskTypes(playerPos);
 
         foreach (var taskArray in allTaskArrays)
@@ -505,6 +488,7 @@ public static class MalumCheats
 
             _originalOwners[task] = task.Owner;
             task.Owner = player;
+            
             // Assign the next unique ID: one higher than the current maximum across all tasks
             uint nextId = 0;
             foreach (var t in player.myTasks)
@@ -541,7 +525,7 @@ public static class MalumCheats
         var consoles = ShipStatus.Instance.AllConsoles;
         if (consoles == null || consoles.Length == 0)
         {
-            consoles = new Il2CppReferenceArray<Console>(IntPtr.Zero); // (or pass the source IntPtr directly if you have it)
+            consoles = new Il2CppReferenceArray<Console>(IntPtr.Zero);
         }
 
         foreach (var console in consoles)
@@ -597,9 +581,6 @@ public static class MalumCheats
         CheatToggles.animEmptyGarbage = false;
         CheatToggles.animMedScan = false;
         CheatToggles.animCamsInUse = false;
-
-        // This ensures cams and scan animations don't remain marked as active if the player
-        // disconnects while the toggles are on (as this may cause unusual RPCs in lobbies)
 
         _isCamsAnimActive = false;
         _isScanAnimActive = false;

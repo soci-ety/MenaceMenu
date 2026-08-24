@@ -2,16 +2,15 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
-
 namespace MalumMenu;
 
 public class MenuUI : MonoBehaviour
 {
     public static int windowHeight = 600;
     public static int windowWidth = 800;
+    public static Rect windowRect;
 
     public static bool isGUIActive = false;
-    private Rect _windowRect;
     private List<ITab> _tabs = new();
     private int _selectedTab;
     private Vector2 _tabScrollPosition = Vector2.zero;
@@ -44,7 +43,7 @@ public class MenuUI : MonoBehaviour
         // _tabs.Add(new OverloadTab());
 
         // Instantiate 2D area of MenuUI
-        _windowRect = new(
+        windowRect = new(
             Screen.width / 2f - windowWidth / 2f,
             Screen.height / 2f - windowHeight / 2f,
             windowWidth,
@@ -62,32 +61,29 @@ public class MenuUI : MonoBehaviour
 
     private void Update()
     {
-
         if (Input.GetKeyDown(Utils.StringToKeycode(MalumMenu.menuKeybind.Value)))
         {
-            // Enable or disable GUI with DELETE key
+            // Enable or disable GUI
             isGUIActive = !isGUIActive;
 
             if (MalumMenu.menuOpenOnMouse.Value)
             {
                 // Teleport the window to the mouse for immediate use
                 Vector2 mousePosition = Input.mousePosition;
-                _windowRect.position = new Vector2(mousePosition.x, Screen.height - mousePosition.y);
+                windowRect.position = new Vector2(mousePosition.x, Screen.height - mousePosition.y);
             }
         }
 
         if (CheatToggles.rgbMode)
         {
-            hue += Time.deltaTime * 0.3f; // Adjust speed of color change, higher multiplier = faster
-            if (hue > 1f) hue -= 1f; // Loop hue back to 0 when it exceeds 1
+            hue += Time.deltaTime * 0.3f;
+            if (hue > 1f) hue -= 1f;
         }
 
         if (CheatToggles.stealthMode != MalumMenu.inStealthMode)
         {
             MalumMenu.inStealthMode = CheatToggles.stealthMode;
-
             Scene scene = SceneManager.GetActiveScene();
-
             if (scene.name == "MainMenu" || scene.name == "MatchMaking")
             {
                 SceneManager.LoadScene(scene.name);
@@ -112,6 +108,7 @@ public class MenuUI : MonoBehaviour
             DisableSabotageCheats();
         }
         _wasInGameplay = currentlyInGameplay;
+
         if (CheatToggles.reloadConfig)
         {
             MalumMenu.Plugin.Config.Reload();
@@ -120,7 +117,7 @@ public class MenuUI : MonoBehaviour
 
         if (CheatToggles.saveProfile)
         {
-            CheatToggles.saveProfile = false; // Disable first to avoid saving it to profile
+            CheatToggles.saveProfile = false;
             CheatToggles.SaveTogglesToProfile();
         }
 
@@ -130,8 +127,8 @@ public class MenuUI : MonoBehaviour
             CheatToggles.loadProfile = false;
         }
 
-        // Some cheats only work if the LocalPlayer exists, so they are turned off if it does not
-        if(!Utils.isPlayer)
+        // Turn off player-dependent cheats if local player doesn't exist
+        if (!Utils.isPlayer)
         {
             CheatToggles.setFakeRole = false;
             CheatToggles.setFakeAlive = false;
@@ -151,31 +148,25 @@ public class MenuUI : MonoBehaviour
             }
         }
 
-        // Some cheats only work if the ship exists, so they are turned off if it does not
-        if(!Utils.isShip)
+        // Turn off ship-dependent cheats if ship doesn't exist
+        if (!Utils.isShip)
         {
-            CheatToggles.sabotageMap = false;
-            CheatToggles.unfixableLights = false;
+            DisableSabotageCheats();
             CheatToggles.completeMyTasks = false;
             CheatToggles.kickVents = false;
             CheatToggles.reportBody = false;
             CheatToggles.closeMeeting = false;
-            CheatToggles.reactorSab = false;
-            CheatToggles.oxygenSab = false;
-            CheatToggles.commsSab = false;
-            CheatToggles.elecSab = false;
-            CheatToggles.mushSab = false;
             CheatToggles.closeAllDoors = false;
             CheatToggles.openAllDoors = false;
             CheatToggles.spamCloseAllDoors = false;
             CheatToggles.spamOpenAllDoors = false;
-            CheatToggles.mushSpore = false;
 
             MalumCheats.StopShipAnimCheats();
             MalumCheats.CleanUpInjectedTasks();
         }
 
-        if(!Utils.isHost && !Utils.isFreePlay)
+        // Turn off host-dependent cheats if not host or freeplay
+        if (!Utils.isHost && !Utils.isFreePlay)
         {
             CheatToggles.killAll = false;
             CheatToggles.telekillPlayer = false;
@@ -195,7 +186,7 @@ public class MenuUI : MonoBehaviour
             CheatToggles.noOptionsLimits = false;
         }
 
-        // Some cheats only work if in a meeting, so they are turned off if it does not
+        // Turn off meeting-dependent cheats if not in a meeting
         if (!Utils.isMeeting)
         {
             CheatToggles.skipMeeting = false;
@@ -208,13 +199,13 @@ public class MenuUI : MonoBehaviour
         if (!isGUIActive || MalumMenu.isPanicked) return;
 
         InitStyles();
-
         UIHelpers.ApplyUIColor();
 
         GUI.WindowFunction renderer = MalumMenu.menuMaterialLayout.Value
             ? (GUI.WindowFunction)MaterialWindowFunction
             : (GUI.WindowFunction)WindowFunction;
-        _windowRect = GUI.Window((int)WindowId.MenuUI, _windowRect, renderer, "MenaceMenu v1.1.2");
+
+        windowRect = GUI.Window((int)WindowId.MenuUI, windowRect, renderer, "MenaceMenu v" + MalumMenu.malumVersion);
     }
 
     private void DisableSabotageCheats()
@@ -237,7 +228,7 @@ public class MenuUI : MonoBehaviour
     {
         GUILayout.BeginHorizontal();
 
-        // Left tab selector (18% width)
+        // Left tab selector (20% width)
         GUILayout.BeginVertical(GUIStylePreset.ModernBox, GUILayout.Width(windowWidth * 0.2f));
         GUILayout.Space(2);
 
@@ -259,20 +250,19 @@ public class MenuUI : MonoBehaviour
         }
 
         GUILayout.EndScrollView();
-
         GUILayout.Space(4);
         GUILayout.EndVertical();
 
         GUILayout.Space(10f);
 
-        // Right tab content and controls (82% width)
+        // Right tab content and controls (80% width)
         GUILayout.BeginVertical(GUIStylePreset.ModernBox, GUILayout.Width(windowWidth * 0.8f));
         GUILayout.Space(2);
+        
         bool scrollContent = _tabs[_selectedTab].name is "Troll" or "Config";
         if (scrollContent)
             _contentScrollPosition = GUILayout.BeginScrollView(_contentScrollPosition, false, true, GUILayout.ExpandHeight(true));
 
-        // Tab-specific content
         if (_selectedTab >= 0 && _selectedTab < _tabs.Count)
         {
             GUILayout.Label(_tabs[_selectedTab].name, GUIStylePreset.TabTitle);
@@ -280,14 +270,13 @@ public class MenuUI : MonoBehaviour
             GUILayout.Space(6);
             _tabs[_selectedTab].Draw();
         }
+
         if (scrollContent)
             GUILayout.EndScrollView();
 
         GUILayout.EndVertical();
-
         GUILayout.EndHorizontal();
 
-        // Make the window draggable
         GUI.DragWindow();
     }
 
@@ -305,7 +294,7 @@ public class MenuUI : MonoBehaviour
         GUI.backgroundColor = surface;
         GUILayout.BeginVertical(GUIStylePreset.ModernBox);
 
-        // Compact app bar: the old explanatory header used too much vertical space.
+        // Compact app bar
         GUI.backgroundColor = surfaceContainer;
         GUILayout.BeginHorizontal(GUIStylePreset.ModernBox, GUILayout.Height(36));
         GUILayout.Label("MENACEMENU", GUIStylePreset.SectionHeader);
@@ -323,6 +312,7 @@ public class MenuUI : MonoBehaviour
         GUILayout.BeginVertical(GUIStylePreset.ModernBox, GUILayout.Width(windowWidth * 0.21f));
         GUILayout.Label("NAVIGATION", GUIStylePreset.ModernLabel);
         GUILayout.Space(2);
+        
         _tabScrollPosition = GUILayout.BeginScrollView(_tabScrollPosition, false, true);
 
         for (int i = 0; i < _tabs.Count; i++)
@@ -343,6 +333,7 @@ public class MenuUI : MonoBehaviour
 
         GUI.backgroundColor = surfaceContainer;
         GUILayout.BeginVertical(GUIStylePreset.ModernBox, GUILayout.Width(windowWidth * 0.77f));
+        
         if (_selectedTab >= 0 && _selectedTab < _tabs.Count)
         {
             GUILayout.BeginHorizontal();
@@ -357,14 +348,5 @@ public class MenuUI : MonoBehaviour
             _tabs[_selectedTab].Draw();
             GUILayout.EndScrollView();
         }
-        GUILayout.EndVertical();
-        GUILayout.EndHorizontal();
-
-        GUILayout.EndVertical();
-
-        GUI.contentColor = previousContent;
-        GUI.backgroundColor = previousBackground;
-        GUI.DragWindow();
     }
-
 }

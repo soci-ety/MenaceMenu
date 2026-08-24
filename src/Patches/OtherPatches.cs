@@ -108,7 +108,7 @@ public static class FreeChatInputField_UpdateCharCount
 public static class ChatBubble_SetName
 {
     public static void Postfix(ChatBubble __instance)
-	{
+    {
         MalumESP.ChatNametags(__instance);
     }
 }
@@ -135,22 +135,22 @@ public static class SystemInfo_deviceUniqueIdentifier_Getter
 [HarmonyPatch(typeof(VersionShower), nameof(VersionShower.Start))]
 public static class VersionShower_Start
 {
-    // Postfix patch of VersionShower.Start to show MalumMenu version
+    // Postfix patch of VersionShower.Start to show version info
     public static void Postfix(VersionShower __instance)
     {
         if (MalumMenu.inStealthMode || MalumMenu.isPanicked) return;
 
         if (MalumMenu.supportedAU.Contains(Application.version)) // Checks if Among Us version is supported
         {
-            __instance.text.text =  $"HyperMenu V{MalumMenu.hyperVersion}, MalumMenu V{MalumMenu.malumVersion}, MenaceMenu V1.1.2 ( AU V{Application.version})"; // Supported
+            __instance.text.text = $"HyperMenu V{MalumMenu.hyperVersion}, MalumMenu V{MalumMenu.malumVersion}, MenaceMenu V1.1.2 ( AU V{Application.version})"; // Supported
         }
         else if (MalumMenu.toleratedAU.Contains(Application.version)) // Checks if Among Us version is tolerated
         {
-            __instance.text.text =  $"HyperMenu V{MalumMenu.hyperVersion}, MalumMenu V{MalumMenu.malumVersion}, MenaceMenu V1.1.2 (<color=yellow>AU V{Application.version}</color>)"; // Tolerated
+            __instance.text.text = $"HyperMenu V{MalumMenu.hyperVersion}, MalumMenu V{MalumMenu.malumVersion}, MenaceMenu V1.1.2 (<color=yellow>AU V{Application.version}</color>)"; // Tolerated
         }
         else
         {
-            __instance.text.text =  $"HyperMenu V{MalumMenu.hyperVersion}, MalumMenu V{MalumMenu.malumVersion}, MenaceMenu V1.1.2 (<color=red>AU V{Application.version}</color>)"; // Unsupported
+            __instance.text.text = $"HyperMenu V{MalumMenu.hyperVersion}, MalumMenu V{MalumMenu.malumVersion}, MenaceMenu V1.1.2 (<color=red>AU V{Application.version}</color>)"; // Unsupported
         }
     }
 }
@@ -277,7 +277,6 @@ public static class Mushroom_FixedUpdate
     }
 }
 
-// Found here: https://github.com/g0aty/SickoMenu/blob/main/hooks/PlainDoor.cpp
 [HarmonyPatch(typeof(DoorBreakerGame), nameof(DoorBreakerGame.Start))]
 public static class DoorBreakerGame_Start
 {
@@ -294,7 +293,6 @@ public static class DoorBreakerGame_Start
     }
 }
 
-// Found here: https://github.com/g0aty/SickoMenu/blob/main/hooks/PlainDoor.cpp
 [HarmonyPatch(typeof(DoorCardSwipeGame), nameof(DoorCardSwipeGame.Begin))]
 public static class DoorCardSwipeGame_Begin
 {
@@ -311,7 +309,6 @@ public static class DoorCardSwipeGame_Begin
     }
 }
 
-// Found here: https://github.com/g0aty/SickoMenu/blob/main/hooks/PlainDoor.cpp
 [HarmonyPatch(typeof(MushroomDoorSabotageMinigame), nameof(MushroomDoorSabotageMinigame.Begin))]
 public static class MushroomDoorSabotageMinigame_Begin
 {
@@ -336,12 +333,9 @@ public static class Console_CanUse
         {
             __instance.AllowImpostor = true;
         }
-        // Prefix patch of Console.CanUse to allow impostors to interact with task consoles
     }
 
     // Postfix patch of Console.CanUse to allow any player to use any task console when in range
-    // Note: Console.CanUse has signature (GameData.PlayerInfo, out bool canUse, out bool couldUse).
-    // Harmony patches use 'ref' to modify 'out' parameters in Postfix methods.
     public static void Postfix(Console __instance, ref float __result, ref bool canUse, ref bool couldUse)
     {
         if (!CheatToggles.fakeTasks) return;
@@ -391,17 +385,14 @@ public static class IntroCutscene_CoBegin
     }
 }
 
-// Found here: https://github.com/g0aty/SickoMenu/blob/main/hooks/LobbyBehaviour.cpp
 [HarmonyPatch(typeof(GameContainer), nameof(GameContainer.SetupGameInfo))]
 public static class GameContainer_SetupGameInfo
 {
-    // Postfix patch of GameContainer.SetupGameInfo to show more information when finding a game:
-    // host name (e.g. Astral), lobby code (e.g. KLHCEG), host platform (e.g. Epic), and lobby age in minutes (e.g. 4:20)
+    // Postfix patch of GameContainer.SetupGameInfo to show more lobby info
     public static void Postfix(GameContainer __instance)
     {
         if (!CheatToggles.seeLobbyInfo) return;
 
-        // The Crewmate icon gets aligned properly with this
         const string separator = "<#0000>000000000000000</color>";
 
         var trueHostName = __instance.gameListing.TrueHostName;
@@ -411,7 +402,6 @@ public static class GameContainer_SetupGameInfo
 
         var platform = Utils.PlatformTypeToString(__instance.gameListing.Platform);
 
-        // Sets the text of the capacity field to include the new information
         __instance.capacity.text = $"<size=40%>{separator}\n{trueHostName}\n{__instance.capacity.text}\n" +
                                    $"<#fb0>{GameCode.IntToGameName(__instance.gameListing.GameId)}</color>\n" +
                                    $"<#b0f>{platform}</color>\n{lobbyTime}\n{separator}</size>";
@@ -447,6 +437,23 @@ public static class IGameOptionsExtensions_GetAdjustedNumImpostors
         __result = GameOptionsManager.Instance.CurrentGameOptions.NumImpostors;
 
         return false;
+    }
+}
+
+[HarmonyPatch(typeof(MatchInfoHudButton), nameof(MatchInfoHudButton.Update))]
+public static class MatchInfoHudButton_Update
+{
+    // Prefix patch of MatchInfoHudButton.Update to prevent MatchInfo and Chat buttons from overlapping
+    public static bool Prefix(MatchInfoHudButton __instance)
+    {
+        if (CheatToggles.enableChat)
+        {
+            __instance.aspectPosition.DistanceFromEdge = MatchInfoHudButton.adjustedDistanceFromEdge;
+
+            return false;
+        }
+
+        return true;
     }
 }
 

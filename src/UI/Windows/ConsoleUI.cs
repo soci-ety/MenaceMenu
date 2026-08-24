@@ -6,24 +6,19 @@ namespace MalumMenu;
 
 public class ConsoleUI : MonoBehaviour
 {
-    public static int windowHeight = 350;
-    public static int windowWidth = 550;
-    private Rect _windowRect;
+    public static int windowHeight = 380;
+    public static int windowWidth = 600;
+    public static Rect windowRect;
 
     private GUIStyle _logStyle;
     private static Vector2 _scrollPosition = Vector2.zero;
     private static List<string> _logEntries = new();
     private const int MaxLogEntries = 300;
-    private static readonly string _logFilePath = System.IO.Path.Combine(
-        BepInEx.Paths.ConfigPath,
-        "MenaceMenu",
-        "Logs",
-        $"Console.{System.DateTime.Now:MM_dd_yyyy.HH_mm_ss}.log");
 
     private void Start()
     {
         // Instantiate 2D area of ConsoleUI
-        _windowRect = new(
+        windowRect = new(
             Screen.width / 2f - windowWidth / 2f,
             Screen.height / 2f - windowHeight / 2f,
             windowWidth,
@@ -37,14 +32,12 @@ public class ConsoleUI : MonoBehaviour
 
         _logStyle ??= new GUIStyle(GUI.skin.label)
         {
-            fontSize = 14,
-            padding = new RectOffset { left = 4, right = 4, top = 2, bottom = 2 },
-            normal = { textColor = new Color(0.95f, 0.95f, 0.95f) }
+            fontSize = 15
         };
 
         UIHelpers.ApplyUIColor();
 
-        _windowRect = GUI.Window((int)WindowId.ConsoleUI, _windowRect, (GUI.WindowFunction)ConsoleWindow, "Console");
+        windowRect = GUI.Window((int)WindowId.ConsoleUI, windowRect, (GUI.WindowFunction)ConsoleWindow, "Console");
     }
 
     private void ConsoleWindow(int windowID)
@@ -64,12 +57,12 @@ public class ConsoleUI : MonoBehaviour
 
         GUILayout.BeginHorizontal();
 
-        if (GUILayout.Button("Clear Log", GUILayout.Width(260)))
+        if (GUILayout.Button("Clear Log", GUILayout.Width(285)))
         {
             _logEntries.Clear();
         }
 
-        if (GUILayout.Button("Copy to Clipboard", GUILayout.Height(30)))
+        if (GUILayout.Button("Copy Log to Clipboard"))
         {
             GUIUtility.systemCopyBuffer = String.Join("\n", _logEntries.ToArray());
         }
@@ -86,25 +79,9 @@ public class ConsoleUI : MonoBehaviour
             _logEntries.RemoveAt(0); // Remove the oldest log entry
         }
 
-        _logEntries.Add(message);
+        var currentTime = DateTime.Now.ToString("HH:mm:ss");
 
-        try
-        {
-            var logDirectory = System.IO.Path.GetDirectoryName(_logFilePath);
-            if (!string.IsNullOrEmpty(logDirectory))
-            {
-                System.IO.Directory.CreateDirectory(logDirectory);
-            }
-
-            System.IO.File.AppendAllText(_logFilePath, message + "\n");
-        }
-        catch {
-            if (_logEntries.Count >= MaxLogEntries) // Limit the number of logs to keep memory usage in check
-            {
-                _logEntries.RemoveAt(0); // Remove the oldest log entry
-            }
-            _logEntries.Add("Error saving to log file.");
-        }
+        _logEntries.Add($"<b>[ {currentTime} ]  {message}</b>");
 
         // Scroll to the bottom
         _scrollPosition.y = float.MaxValue;

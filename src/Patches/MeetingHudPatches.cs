@@ -13,21 +13,21 @@ public static class MeetingHud_Update
     // Prefix patch of MeetingHud.Update to constantly bloop new vote icons for each new vote being cast during the meeting
     public static void Prefix(MeetingHud __instance)
     {
-        if (__instance.CurrentState < MeetingHud.MeetingStates.Results)
+        if (__instance.state < MeetingHud.MeetingStates.Results)
         {
-            foreach (var playerVoteArea in Utils.GetPlayerStates(__instance))
+            foreach (var playerVoteArea in __instance.playerStates)
             {
                 if (!playerVoteArea) continue;
 
                 var playerData = GameData.Instance.GetPlayerById(playerVoteArea.PlayerId);
 
-                if (playerData != null && !playerData.Disconnected && playerVoteArea.VotedForId != PlayerVoteArea.HasNotVoted && playerVoteArea.VotedForId != PlayerVoteArea.MissedVote && playerVoteArea.VotedForId != PlayerVoteArea.DeadVote && !votedPlayers.Contains((byte)playerVoteArea.PlayerId))
+                if (playerData != null && !playerData.Disconnected && playerVoteArea.VotedForId != PlayerVoteArea.HasNotVoted && playerVoteArea.VotedForId != PlayerVoteArea.MissedVote && playerVoteArea.VotedForId != PlayerVoteArea.DeadVote && !votedPlayers.Contains(playerVoteArea.PlayerId))
                 {
-                    votedPlayers.Add((byte)playerVoteArea.PlayerId);
+                    votedPlayers.Add(playerVoteArea.PlayerId);
 
                     if (playerVoteArea.VotedForId != PlayerVoteArea.SkippedVote)
                     {
-                        foreach (var votedForArea in Utils.GetPlayerStates(__instance))
+                        foreach (var votedForArea in __instance.playerStates)
                         {
                             if (votedForArea.PlayerId == playerVoteArea.VotedForId)
                             {
@@ -43,7 +43,7 @@ public static class MeetingHud_Update
                 }
             }
 
-            foreach (var votedForArea in Utils.GetPlayerStates(__instance))
+            foreach (var votedForArea in __instance.playerStates)
             {
                 if (!votedForArea) continue;
 
@@ -79,7 +79,7 @@ public static class MeetingHud_PopulateResults
     // Prefix patch of MeetingHud.PopulateResults to clear all vote icons before repopulating them for final results
     public static void Prefix(MeetingHud __instance)
     {
-        foreach (var votedForArea in Utils.GetPlayerStates(__instance))
+        foreach (var votedForArea in __instance.playerStates)
         {
             if (!votedForArea) continue;
 
@@ -121,10 +121,31 @@ public static class MeetingHud_CheckForEndVoting
     {
         if (!CheatToggles.voteImmune) return true; // We don't need to check whether we are host because this method only runs on the host's side
 
-        if (!Utils.GetPlayerStates(__instance).All(ps => ps.AmDead || ps.DidVote)) return true;
+        if (!__instance.playerStates.All(ps => ps.AmDead || ps.DidVote)) return true;
 
         var max = __instance.CalculateVotes().MaxPair(out var tie);
         var exiled = GameData.Instance.AllPlayers.ToArray().FirstOrDefault(v => !tie && v.PlayerId == max.Key);
+
+        bool wasOverruled = false;
+        ushort overruleNonce = 0;
+        JudgeOverrule judgeOverrule;
+        NetworkedPlayerInfo networkedPlayerInfo;
+        NetworkedPlayerInfo networkedPlayerInfo2;
+
+        if (__instance.TryGetWinningOverrule(out judgeOverrule, out networkedPlayerInfo, out networkedPlayerInfo2))
+        {
+            wasOverruled = true;
+            overruleNonce = judgeOverrule.OverruleNonce;
+
+            if (networkedPlayerInfo2.Role.TeamType == RoleTeamTypes.Impostor)
+            {
+                exiled = GameData.Instance.GetPlayerById(judgeOverrule.OverruledPlayerId);
+            }
+            else
+            {
+                exiled = networkedPlayerInfo;
+            }
+        }
 
         // This is the only change from the original method - make sure local player is not exiled
         if (exiled != null && exiled == PlayerControl.LocalPlayer.Data)
@@ -132,12 +153,11 @@ public static class MeetingHud_CheckForEndVoting
             exiled = null;
         }
 
-        var playerStates = Utils.GetPlayerStates(__instance);
-        var states = new MeetingHud.VoterState[playerStates.Length];
+        var states = new MeetingHud.VoterState[__instance.playerStates.Length];
 
-        for (var index = 0; index < playerStates.Length; ++index)
+        for (var index = 0; index < __instance.playerStates.Length; ++index)
         {
-            var playerState = playerStates[index];
+            var playerState = __instance.playerStates[index];
             states[index] = new MeetingHud.VoterState
             {
                 VoterId = playerState.PlayerId,
@@ -145,7 +165,7 @@ public static class MeetingHud_CheckForEndVoting
             };
         }
 
-        Utils.CompleteVoting(states, exiled, tie);
+        __instance.RpcVotingComplete(states, exiled, tie, wasOverruled, overruleNonce);
 
         return false;
     }
