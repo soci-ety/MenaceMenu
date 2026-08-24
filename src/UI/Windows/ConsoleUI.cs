@@ -44,7 +44,7 @@ public class ConsoleUI : MonoBehaviour
     {
         GUILayout.BeginVertical(GUI.skin.box);
 
-        _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, false);
+        _scrollPosition = UIHelpers.BeginScrollView(_scrollPosition, false, false);
 
         foreach (var log in _logEntries)
         {

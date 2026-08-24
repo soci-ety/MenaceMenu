@@ -12,6 +12,12 @@ public static class UIHelpers
     private static GUIStyle _materialSwitchThumb;
     private static Texture2D _materialSliderRail;
     private static Texture2D _materialSliderThumb;
+    private static GUIStyle _materialSliderRailStyle;
+    private static GUIStyle _materialSliderThumbStyle;
+    private static GUIStyle _materialHorizontalScrollbar;
+    private static GUIStyle _materialVerticalScrollbar;
+    private static GUIStyle _materialHorizontalScrollbarThumb;
+    private static GUIStyle _materialVerticalScrollbarThumb;
     private static readonly Dictionary<string, float> ToggleProgress = new();
 
     public static void ResetMaterialStyles()
@@ -21,33 +27,150 @@ public static class UIHelpers
         _materialSwitchThumb = null;
         _materialSliderRail = null;
         _materialSliderThumb = null;
+        _materialSliderRailStyle = null;
+        _materialSliderThumbStyle = null;
+        _materialHorizontalScrollbar = null;
+        _materialVerticalScrollbar = null;
+        _materialHorizontalScrollbarThumb = null;
+        _materialVerticalScrollbarThumb = null;
         ToggleProgress.Clear();
     }
 
     public static float HorizontalSlider(float value, float leftValue, float rightValue, params GUILayoutOption[] options)
     {
-        float result = GUILayout.HorizontalSlider(value, leftValue, rightValue, options);
-        if (MenuUI.IsMaterialLayoutActive && Event.current.type == EventType.Repaint)
-            DrawMaterialSliderOverlay(GUILayoutUtility.GetLastRect(), result, leftValue, rightValue);
-        return result;
+        if (!MenuUI.IsMaterialLayoutActive)
+            return GUILayout.HorizontalSlider(value, leftValue, rightValue, options);
+
+        Rect rect = GUILayoutUtility.GetRect(250f, 26f, options);
+        int controlId = GUIUtility.GetControlID(FocusType.Passive);
+        Event current = Event.current;
+        Rect track = new(rect.x + 9f, rect.center.y - 4f, Mathf.Max(0f, rect.width - 18f), 8f);
+
+        if ((current.type == EventType.MouseDown || current.type == EventType.MouseDrag) &&
+            (current.type == EventType.MouseDrag || track.Contains(current.mousePosition)))
+        {
+            if (current.type == EventType.MouseDown)
+                GUIUtility.hotControl = controlId;
+
+            if (GUIUtility.hotControl == controlId)
+            {
+                value = Mathf.Lerp(leftValue, rightValue,
+                    Mathf.Clamp01((current.mousePosition.x - track.x) / Mathf.Max(1f, track.width)));
+                current.Use();
+            }
+        }
+        else if (current.type == EventType.MouseUp && GUIUtility.hotControl == controlId)
+        {
+            GUIUtility.hotControl = 0;
+            current.Use();
+        }
+
+        if (current.type == EventType.Repaint)
+            DrawMaterialSliderOverlay(rect, value, leftValue, rightValue);
+
+        return value;
+    }
+
+    public static Vector2 BeginScrollView(Vector2 scrollPosition, params GUILayoutOption[] options)
+    {
+        if (!MenuUI.IsMaterialLayoutActive)
+            return GUILayout.BeginScrollView(scrollPosition, options);
+
+        InitializeMaterialScrollStyles();
+        ApplyMaterialScrollStylesToSkin();
+        return GUILayout.BeginScrollView(scrollPosition, false, true, _materialHorizontalScrollbar,
+            _materialVerticalScrollbar, options);
+    }
+
+    public static Vector2 BeginScrollView(Vector2 scrollPosition, bool alwaysShowHorizontal,
+        bool alwaysShowVertical, params GUILayoutOption[] options)
+    {
+        if (!MenuUI.IsMaterialLayoutActive)
+            return GUILayout.BeginScrollView(scrollPosition, alwaysShowHorizontal, alwaysShowVertical, options);
+
+        InitializeMaterialScrollStyles();
+        ApplyMaterialScrollStylesToSkin();
+        return GUILayout.BeginScrollView(scrollPosition, alwaysShowHorizontal, alwaysShowVertical,
+            _materialHorizontalScrollbar, _materialVerticalScrollbar, options);
+    }
+
+    private static void ApplyMaterialScrollStylesToSkin()
+    {
+        GUISkin skin = MenuUI.MaterialSkin ?? GUI.skin;
+        skin.horizontalScrollbar = _materialHorizontalScrollbar;
+        skin.verticalScrollbar = _materialVerticalScrollbar;
+        skin.horizontalScrollbarThumb = _materialHorizontalScrollbarThumb;
+        skin.verticalScrollbarThumb = _materialVerticalScrollbarThumb;
+        GUI.skin = skin;
+    }
+
+    private static void InitializeMaterialScrollStyles()
+    {
+        if (_materialHorizontalScrollbar != null) return;
+
+        Texture2D track = CreateSolidTexture(new Color(0.07f, 0.09f, 0.12f, 1f));
+        Texture2D thumb = CreateRoundedTexture(MenuUI.GetMaterialAccentColor());
+        _materialHorizontalScrollbar = CreateScrollbarStyle(track, 10f, 0f);
+        _materialVerticalScrollbar = CreateScrollbarStyle(track, 0f, 10f);
+        _materialHorizontalScrollbarThumb = CreateScrollbarStyle(thumb, 10f, 0f);
+        _materialVerticalScrollbarThumb = CreateScrollbarStyle(thumb, 0f, 10f);
+        _materialHorizontalScrollbar.normal.background = track;
+        _materialVerticalScrollbar.normal.background = track;
+        _materialHorizontalScrollbarThumb.normal.background = thumb;
+        _materialVerticalScrollbarThumb.normal.background = thumb;
+    }
+
+    private static GUIStyle CreateScrollbarStyle(Texture2D texture, float fixedHeight, float fixedWidth)
+    {
+        GUIStyle style = new()
+        {
+            normal = { background = texture },
+            hover = { background = texture },
+            active = { background = texture },
+            focused = { background = texture },
+            onNormal = { background = texture },
+            onHover = { background = texture },
+            onActive = { background = texture },
+            onFocused = { background = texture },
+            fixedHeight = fixedHeight,
+            fixedWidth = fixedWidth,
+            stretchHeight = fixedHeight <= 0f,
+            stretchWidth = fixedWidth <= 0f,
+            border = new RectOffset { left = 8, right = 8, top = 8, bottom = 8 }
+        };
+        return style;
     }
 
     private static void DrawMaterialSliderOverlay(Rect rect, float value, float leftValue, float rightValue)
     {
         if (rect.width <= 0f || rect.height <= 0f) return;
-        _materialSliderRail ??= CreateSolidTexture(Color.white);
-        _materialSliderThumb ??= CreateRoundedTexture();
+        _materialSliderRail ??= CreateSolidTexture(new Color(0.18f, 0.25f, 0.34f, 1f));
+        _materialSliderThumb ??= CreateRoundedTexture(MenuUI.GetMaterialAccentColor());
+        _materialSliderRailStyle ??= CreateTextureStyle(_materialSliderRail);
+        _materialSliderThumbStyle ??= CreateTextureStyle(_materialSliderThumb);
 
         Color previousColor = GUI.color;
-        GUI.color = new Color(0.18f, 0.25f, 0.34f, previousColor.a);
-        GUI.DrawTexture(new Rect(rect.x, rect.center.y - 4f, rect.width, 8f), _materialSliderRail, ScaleMode.StretchToFill);
+        GUI.color = Color.white;
+        GUI.Box(new Rect(rect.x, rect.center.y - 4f, rect.width, 8f), GUIContent.none, _materialSliderRailStyle);
 
         float normalized = Mathf.InverseLerp(leftValue, rightValue, value);
         float thumbX = Mathf.Lerp(rect.x + 9f, rect.xMax - 9f, normalized);
-        GUI.color = new Color(MenuUI.GetMaterialAccentColor().r, MenuUI.GetMaterialAccentColor().g,
-            MenuUI.GetMaterialAccentColor().b, previousColor.a);
-        GUI.DrawTexture(new Rect(thumbX - 9f, rect.center.y - 9f, 18f, 18f), _materialSliderThumb, ScaleMode.StretchToFill);
+        GUI.Box(new Rect(thumbX - 9f, rect.center.y - 9f, 18f, 18f), GUIContent.none, _materialSliderThumbStyle);
         GUI.color = previousColor;
+    }
+
+    private static GUIStyle CreateTextureStyle(Texture2D texture)
+    {
+        return new GUIStyle
+        {
+            normal = { background = texture },
+            hover = { background = texture },
+            active = { background = texture },
+            focused = { background = texture },
+            border = new RectOffset { left = 8, right = 8, top = 8, bottom = 8 },
+            padding = new RectOffset(),
+            margin = new RectOffset()
+        };
     }
 
     public static void ApplyUIColor()
@@ -165,6 +288,11 @@ public static class UIHelpers
 
     private static Texture2D CreateRoundedTexture()
     {
+        return CreateRoundedTexture(Color.white);
+    }
+
+    private static Texture2D CreateRoundedTexture(Color color)
+    {
         const int size = 24;
         const float radius = 8f;
         Texture2D texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
@@ -177,7 +305,7 @@ public static class UIHelpers
                 float dy = Mathf.Max(radius - y, 0f);
                 dy = Mathf.Max(dy, y - (size - radius - 1f));
                 float alpha = Mathf.Clamp01(radius + 0.5f - Mathf.Sqrt(dx * dx + dy * dy));
-                texture.SetPixel(x, y, new Color(1f, 1f, 1f, alpha));
+                texture.SetPixel(x, y, new Color(color.r, color.g, color.b, alpha));
             }
         }
         texture.Apply();

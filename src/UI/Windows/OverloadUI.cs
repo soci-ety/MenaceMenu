@@ -487,7 +487,7 @@ public class OverloadUI : MonoBehaviour
 
     private void DrawConsole()
     {
-        _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, false);
+        _scrollPosition = UIHelpers.BeginScrollView(_scrollPosition, false, false);
 
         foreach (var log in _logEntries)
         {

@@ -28,7 +28,7 @@ public class PlayersTab : ITab
 
         // Left panel: Player list
         GUILayout.BeginVertical(GUILayout.Width(MenuUI.windowWidth * 0.35f));
-        _subsectionScrollVector = GUILayout.BeginScrollView(_subsectionScrollVector);
+        _subsectionScrollVector = UIHelpers.BeginScrollView(_subsectionScrollVector);
         DrawPlayerList();
         GUILayout.EndScrollView();
         GUILayout.EndVertical();
@@ -37,7 +37,7 @@ public class PlayersTab : ITab
         if (PlayersSection.selectedPlayer != null)
         {
             GUILayout.BeginVertical();
-            _subsectionScrollVector2 = GUILayout.BeginScrollView(_subsectionScrollVector2);
+            _subsectionScrollVector2 = UIHelpers.BeginScrollView(_subsectionScrollVector2);
             DrawPlayerControls(PlayersSection.selectedPlayer);
             GUILayout.EndScrollView();
             GUILayout.EndVertical();

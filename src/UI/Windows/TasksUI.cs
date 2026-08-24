@@ -44,7 +44,7 @@ public class TasksUI : MonoBehaviour
     {
         GUILayout.BeginVertical();
 
-        _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, true);
+        _scrollPosition = UIHelpers.BeginScrollView(_scrollPosition, false, true);
 
         foreach (var player in PlayerControl.AllPlayerControls)
         {

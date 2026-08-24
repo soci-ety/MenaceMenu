@@ -11,7 +11,7 @@ namespace MalumMenu
 
         public void Draw()
         {
-            _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
+            _scrollPosition = UIHelpers.BeginScrollView(_scrollPosition);
 
             Anticheat.Enabled = UIHelpers.Toggle(Anticheat.Enabled, "Enable Menace Menu Anticheat");
 

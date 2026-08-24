@@ -12,6 +12,7 @@ public class MenuUI : MonoBehaviour
 
     public static bool isGUIActive = false;
     public static bool IsMaterialLayoutActive { get; private set; }
+    public static GUISkin MaterialSkin => _materialSkin;
     private List<ITab> _tabs = new();
     private int _selectedTab = 1;
     private Vector2 _tabScrollPosition = Vector2.zero;
@@ -308,7 +309,7 @@ public class MenuUI : MonoBehaviour
         GUILayout.BeginVertical(GUIStylePreset.ModernBox, GUILayout.Width(windowWidth * 0.2f));
         GUILayout.Space(2);
 
-        _tabScrollPosition = GUILayout.BeginScrollView(_tabScrollPosition, false, true);
+        _tabScrollPosition = UIHelpers.BeginScrollView(_tabScrollPosition, false, true);
 
         for (var i = 0; i < _tabs.Count; i++)
         {
@@ -337,7 +338,7 @@ public class MenuUI : MonoBehaviour
         
         bool scrollContent = true;
         if (scrollContent)
-            _contentScrollPosition = GUILayout.BeginScrollView(_contentScrollPosition, false, true, GUILayout.Height(windowHeight - 58));
+            _contentScrollPosition = UIHelpers.BeginScrollView(_contentScrollPosition, false, true, GUILayout.Height(windowHeight - 58));
 
         if (_selectedTab >= 0 && _selectedTab < _tabs.Count)
         {
@@ -395,7 +396,7 @@ public class MenuUI : MonoBehaviour
         GUI.Box(new Rect(10f, 48f, sidebarWidth, bodyHeight), GUIContent.none, CreatePanelStyle(MaterialNavigation));
         GUILayout.BeginArea(new Rect(18f, 56f, sidebarWidth - 16f, bodyHeight - 12f));
         GUILayout.Label("NAVIGATION", MaterialCaptionStyle());
-        Vector2 tabScrollInput = GUILayout.BeginScrollView(_materialTabScrollPosition, false, true, _materialSkin.horizontalScrollbar, _materialSkin.verticalScrollbar);
+        Vector2 tabScrollInput = UIHelpers.BeginScrollView(_materialTabScrollPosition, false, true);
         for (int i = 0; i < _tabs.Count; i++)
         {
             if (GUILayout.Button(_tabs[i].name, _selectedTab == i ? CreateSelectedNavigationStyle() : CreateNavigationStyle(), GUILayout.Height(27)))
@@ -426,7 +427,8 @@ public class MenuUI : MonoBehaviour
             GUILayout.Box(string.Empty, CreateGradientStyle(MaterialAccent, MaterialAccentEnd), GUILayout.Height(2), GUILayout.ExpandWidth(true));
             GUILayout.Space(8);
             GUILayout.BeginVertical(CreateWorkSurfaceStyle());
-            Vector2 contentScrollInput = GUILayout.BeginScrollView(_materialContentScrollPosition, false, true, _materialSkin.horizontalScrollbar, _materialSkin.verticalScrollbar, GUILayout.Height(bodyHeight - 98f));
+            Vector2 contentScrollInput = UIHelpers.BeginScrollView(_materialContentScrollPosition, false, true,
+                GUILayout.Height(bodyHeight - 98f));
             _tabs[_selectedTab].Draw();
             GUILayout.EndScrollView();
             UpdateMaterialScroll(ref _materialContentScrollPosition, ref _materialContentScrollTarget, contentScrollInput);
@@ -713,17 +715,14 @@ public class MenuUI : MonoBehaviour
 
     private static GUISkin _materialSkin;
     private static GUISkin _materialSkinSource;
-    private static float _materialSkinOpacity = -1f;
 
     private static GUISkin GetMaterialSkin(GUISkin source)
     {
-        if (_materialSkin != null && _materialSkinSource == source &&
-            Mathf.Approximately(_materialSkinOpacity, MaterialWindowOpacity))
+        if (_materialSkin != null && _materialSkinSource == source)
             return _materialSkin;
 
         _materialSkin = UnityEngine.Object.Instantiate(source);
         _materialSkinSource = source;
-        _materialSkinOpacity = MaterialWindowOpacity;
         _materialSkin.name = "MenaceMaterialSkin";
         _materialSkin.window = new GUIStyle(source.window)
         {
@@ -818,6 +817,7 @@ public class MenuUI : MonoBehaviour
             active = { background = CreateRoundedTexture(Color.white) },
             focused = { background = CreateRoundedTexture(MaterialAccentEnd) },
             border = new RectOffset { left = 8, right = 8, top = 8, bottom = 8 },
+            fixedWidth = 10,
             fixedHeight = 10,
             stretchHeight = false
         };
@@ -839,6 +839,7 @@ public class MenuUI : MonoBehaviour
             focused = { background = CreateRoundedTexture(MaterialAccentEnd) },
             border = new RectOffset { left = 8, right = 8, top = 8, bottom = 8 },
             fixedWidth = 10,
+            fixedHeight = 10,
             stretchWidth = false
         };
 

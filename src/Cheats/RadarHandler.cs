@@ -49,6 +49,7 @@ public sealed class RadarHandler : MonoBehaviour
         {
             GUI.color = Color.white;
             _radarRect = GUI.Window(RadarWindowId, _radarRect, (GUI.WindowFunction)DrawWindow, new GUIContent("Radar"), GUI.skin.window);
+            ClampWindow();
         }
         catch { }
         finally
@@ -134,7 +135,7 @@ public sealed class RadarHandler : MonoBehaviour
         if (CheatToggles.radarDeadBodies) DrawBodies(map, pad);
         if (CheatToggles.radarRightClickTeleport) HandleTeleport(map, pad);
 
-        GUI.DragWindow();
+        GUI.DragWindow(new Rect(0f, 0f, _radarRect.width, 24f));
     }
 
     private static void DrawPlayers(Rect map, float pad)
