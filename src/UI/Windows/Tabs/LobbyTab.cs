@@ -53,7 +53,7 @@ public class LobbyTab : ITab
             GUILayout.Label("You are not the host of the current lobby. Host-only options will do nothing or may trigger anticheat.");
         }
 
-        GUILayout.BeginVertical(GUILayout.Width(MenuUI.windowWidth * 0.85f));
+        GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
 
         DrawLobbySettings();
 

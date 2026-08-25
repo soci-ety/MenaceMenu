@@ -9,7 +9,7 @@ public class SabotageTab : ITab
 
     public void Draw()
     {
-        GUILayout.BeginVertical(GUILayout.Width(MenuUI.windowWidth * 0.425f));
+        GUILayout.BeginVertical(GUILayout.ExpandWidth(true));
 
         if (ShipStatus.Instance == null)
         {
@@ -71,6 +71,7 @@ public class SabotageTab : ITab
         if (doors.Count == 0)
         {
             GUILayout.Label("This map has no doors that can be closed.");
+            GUILayout.EndVertical();
             return;
         }
 
