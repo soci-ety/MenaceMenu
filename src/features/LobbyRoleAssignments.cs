@@ -10,6 +10,11 @@ public static class LobbyRoleAssignments
 
     public static int Count => PendingRoles.Count;
 
+    public static IEnumerable<KeyValuePair<byte, RoleTypes>> GetPendingAssignments()
+    {
+        return PendingRoles;
+    }
+
     public static void Queue(byte playerId, RoleTypes role)
     {
         PendingRoles[playerId] = role;
@@ -18,6 +23,26 @@ public static class LobbyRoleAssignments
     public static void Clear()
     {
         PendingRoles.Clear();
+    }
+
+    public static void PruneMissingPlayers(Il2CppSystem.Collections.Generic.List<PlayerControl> players)
+    {
+        HashSet<byte> activePlayerIds = new();
+        foreach (PlayerControl player in players)
+        {
+            if (player != null)
+                activePlayerIds.Add(player.PlayerId);
+        }
+
+        List<byte> missingPlayerIds = new();
+        foreach (byte playerId in PendingRoles.Keys)
+        {
+            if (!activePlayerIds.Contains(playerId))
+                missingPlayerIds.Add(playerId);
+        }
+
+        foreach (byte playerId in missingPlayerIds)
+            PendingRoles.Remove(playerId);
     }
 
     public static void Apply(ref List<NetworkedPlayerInfo> players, ref List<RoleTypes> roleList, ref int rolesAssigned)

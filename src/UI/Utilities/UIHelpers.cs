@@ -217,9 +217,10 @@ public static class UIHelpers
 
         InitializeMaterialSwitchStyles();
         GUILayout.BeginHorizontal(GUILayout.Height(28));
+        int toggleId = GUIUtility.GetControlID(FocusType.Passive);
         Rect switchRect = GUILayoutUtility.GetRect(48f, 22f, GUILayout.Width(48f), GUILayout.Height(22f));
         bool nextValue = GUI.Button(switchRect, GUIContent.none, _materialSwitchButton) ? !value : value;
-        string toggleKey = label.Trim();
+        string toggleKey = $"{label.Trim()}:{toggleId}";
         ToggleProgress.TryGetValue(toggleKey, out float progress);
         float targetProgress = nextValue ? 1f : 0f;
         progress = Mathf.MoveTowards(progress, targetProgress, Time.unscaledDeltaTime * 5f);

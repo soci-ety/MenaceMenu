@@ -11,8 +11,8 @@
         <PathMap>$(MSBuildProjectDirectory)=/_/</PathMap>
 
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <AssemblyName>MenaceMenuV1.2.0</AssemblyName>
-        <VersionPrefix>1.2.0</VersionPrefix>
+        <AssemblyName>MenaceMenuV1.2.1pre</AssemblyName>
+        <VersionPrefix>1.2.1</VersionPrefix>
         <Description>Among Us cheat menu</Description>
         <Authors>ADHyperActive</Authors>
         <UnityBaseLibsDirectory>C:\Program Files\Unity\Hub\Editor\2022.3.62f3\Editor\Data\PlaybackEngines\windowsstandalonesupport\Variations\il2cpp\Managed</UnityBaseLibsDirectory>

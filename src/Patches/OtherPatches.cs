@@ -3,6 +3,7 @@ using AmongUs.Data;
 using AmongUs.Data.Player;
 using AmongUs.GameOptions;
 using UnityEngine;
+using TMPro;
 using System;
 using System.Security.Cryptography;
 using InnerNet;
@@ -388,14 +389,27 @@ public static class IntroCutscene_CoBegin
 [HarmonyPatch(typeof(GameContainer), nameof(GameContainer.SetupGameInfo))]
 public static class GameContainer_SetupGameInfo
 {
+    private const string HostNameObject = "MenaceLobbyHostName";
+
     // Postfix patch of GameContainer.SetupGameInfo to show more lobby info
     public static void Postfix(GameContainer __instance)
     {
-        if (!CheatToggles.seeLobbyInfo) return;
+        if (__instance == null || __instance.capacity == null || __instance.mapBackground == null)
+            return;
+
+        Transform nameParent = __instance.mapBackground.transform;
+        Transform existingName = nameParent.Find(HostNameObject);
+        if (!CheatToggles.seeLobbyInfo)
+        {
+            if (existingName != null)
+                existingName.gameObject.SetActive(false);
+            return;
+        }
 
         const string separator = "<#0000>000000000000000</color>";
 
         var trueHostName = __instance.gameListing.TrueHostName;
+        if (string.IsNullOrWhiteSpace(trueHostName)) trueHostName = "Unknown";
 
         var age = __instance.gameListing.Age;
         var lobbyTime = $"Age: {age / 60}:{(age % 60 < 10 ? "0" : "")}{age % 60}";
@@ -405,6 +419,30 @@ public static class GameContainer_SetupGameInfo
         __instance.capacity.text = $"<size=40%>{separator}\n{trueHostName}\n{__instance.capacity.text}\n" +
                                    $"<#fb0>{GameCode.IntToGameName(__instance.gameListing.GameId)}</color>\n" +
                                    $"<#b0f>{platform}</color>\n{lobbyTime}\n{separator}</size>";
+
+        TMP_Text hostNameText = existingName?.GetComponent<TMP_Text>();
+        if (hostNameText == null)
+        {
+            hostNameText = UnityEngine.Object.Instantiate(__instance.capacity, nameParent, true);
+            hostNameText.gameObject.name = HostNameObject;
+        }
+
+        hostNameText.gameObject.SetActive(true);
+        hostNameText.text = $"<size=75%><b>Host: {trueHostName}</b></size>";
+        hostNameText.alignment = TextAlignmentOptions.Center;
+        hostNameText.enableAutoSizing = true;
+        hostNameText.fontSizeMin = 0.7f;
+        hostNameText.fontSizeMax = 2.4f;
+        hostNameText.overflowMode = TextOverflowModes.Ellipsis;
+
+        RectTransform hostRect = hostNameText.rectTransform;
+        RectTransform capacityRect = __instance.capacity.rectTransform;
+        Bounds cardBounds = __instance.mapBackground.bounds;
+        hostRect.position = new Vector3(cardBounds.center.x - cardBounds.extents.x * 0.225f,
+            cardBounds.center.y, capacityRect.position.z - 1f);
+        hostRect.sizeDelta = new Vector2(3.5f, 0.6f);
+        hostNameText.transform.SetAsLastSibling();
+        hostNameText.raycastTarget = false;
     }
 }
 

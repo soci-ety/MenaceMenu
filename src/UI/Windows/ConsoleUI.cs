@@ -11,6 +11,9 @@ public class ConsoleUI : MonoBehaviour
     public static Rect windowRect;
 
     private GUIStyle _logStyle;
+    private bool _materialResizing;
+    private Vector2 _resizeStart;
+    private Vector2 _resizeOrigin;
     private static Vector2 _scrollPosition = Vector2.zero;
     private static List<string> _logEntries = new();
     private const int MaxLogEntries = 300;
@@ -30,6 +33,8 @@ public class ConsoleUI : MonoBehaviour
     {
         if (!CheatToggles.showConsole || !(MenuUI.isGUIActive || MalumMenu.menuKeepSubwindowsOpen.Value) || MalumMenu.isPanicked) return;
 
+        GUISkin previousSkin = GUI.skin;
+        GUI.skin = MenuUI.GetWindowSkin(previousSkin);
         _logStyle ??= new GUIStyle(GUI.skin.label)
         {
             fontSize = 15
@@ -38,6 +43,7 @@ public class ConsoleUI : MonoBehaviour
         UIHelpers.ApplyUIColor();
 
         windowRect = GUI.Window((int)WindowId.ConsoleUI, windowRect, (GUI.WindowFunction)ConsoleWindow, "Console");
+        GUI.skin = previousSkin;
     }
 
     private void ConsoleWindow(int windowID)
@@ -69,7 +75,42 @@ public class ConsoleUI : MonoBehaviour
 
         GUILayout.EndHorizontal();
 
+        if (MalumMenu.menuMaterialLayout?.Value == true)
+            HandleMaterialResize();
         GUI.DragWindow();
+    }
+
+    private void HandleMaterialResize()
+    {
+        const float gripSize = 22f;
+        Rect grip = new(windowRect.width - gripSize, windowRect.height - gripSize, gripSize, gripSize);
+        int controlId = GUIUtility.GetControlID(148238, FocusType.Passive);
+        Event current = Event.current;
+
+        if (current.type == EventType.MouseDown && current.button == 0 && grip.Contains(current.mousePosition))
+        {
+            _materialResizing = true;
+            _resizeStart = current.mousePosition;
+            _resizeOrigin = new Vector2(windowRect.width, windowRect.height);
+            GUIUtility.hotControl = controlId;
+            current.Use();
+        }
+        else if (_materialResizing && current.type == EventType.MouseDrag && GUIUtility.hotControl == controlId)
+        {
+            Vector2 delta = current.mousePosition - _resizeStart;
+            windowRect.width = Mathf.Clamp(_resizeOrigin.x + delta.x, 360f, Screen.width - 20f);
+            windowRect.height = Mathf.Clamp(_resizeOrigin.y + delta.y, 240f, Screen.height - 20f);
+            GUI.changed = true;
+            current.Use();
+        }
+        else if (_materialResizing && current.type == EventType.MouseUp && GUIUtility.hotControl == controlId)
+        {
+            _materialResizing = false;
+            GUIUtility.hotControl = 0;
+            current.Use();
+        }
+
+        GUI.Box(new Rect(windowRect.width - 12f, windowRect.height - 12f, 8f, 8f), GUIContent.none);
     }
 
     public static void Log(string message)

@@ -13,6 +13,15 @@ public class MenuUI : MonoBehaviour
     public static bool isGUIActive = false;
     public static bool IsMaterialLayoutActive { get; private set; }
     public static GUISkin MaterialSkin => _materialSkin;
+
+    public static GUISkin GetWindowSkin(GUISkin fallback)
+    {
+        if (MalumMenu.menuMaterialLayout?.Value != true)
+            return fallback;
+
+        return GetMaterialSkin(_legacySkin ?? fallback);
+    }
+
     private List<ITab> _tabs = new();
     private int _selectedTab = 1;
     private Vector2 _tabScrollPosition = Vector2.zero;
@@ -29,8 +38,26 @@ public class MenuUI : MonoBehaviour
     private bool _lastGameplayState;
     private bool _lastPlayerAvailable;
     private bool _lastMaterialLayout;
+    private bool _lastNewLayout;
+    private bool _materialResizing;
+    private Vector2 _materialResizeStart;
+    private Vector2 _materialResizeOrigin;
     private GUISkin _unitySkin;
-    private GUISkin _legacySkin;
+    private static GUISkin _legacySkin;
+
+    private static readonly string[] DefaultTabOrder =
+    {
+        "Movement", "Self", "ESP", "Roles", "Players", "Ship", "Sabotage", "Chat", "Animations",
+        "Console", "Lobby", "Passive", "Troll", "Protections", "Anticheat", "Modes", "Config",
+        "Profiles", "Skins", "Settings", "Test"
+    };
+
+    private static readonly string[] NewTabOrder =
+    {
+        "Movement", "Self", "Roles", "Players", "ESP", "Chat", "Lobby", "Modes", "Ship", "Sabotage",
+        "Passive", "Troll", "Protections", "Anticheat", "Animations", "Console", "Profiles", "Skins",
+        "Config", "Settings", "Test"
+    };
 
     private void Start()
     {
@@ -53,6 +80,7 @@ public class MenuUI : MonoBehaviour
         _tabs.Add(new ModesTab());
         _tabs.Add(new ConfigTab());
         _tabs.Add(new ProfilesTab());
+        _tabs.Add(new SkinsTab());
         // _tabs.Add(new OverloadTab());
 
         // Instantiate 2D area of MenuUI
@@ -63,6 +91,7 @@ public class MenuUI : MonoBehaviour
             windowHeight
         );
         _tabs.Add(new SettingsTab());
+        _tabs.Add(new TestTab());
     }
 
     public void InitStyles()
@@ -70,6 +99,42 @@ public class MenuUI : MonoBehaviour
         GUI.skin.toggle.fontSize = GUI.skin.button.fontSize = GUI.skin.label.fontSize = 14;
         GUI.skin.window.padding = new RectOffset { left = 12, right = 12, top = 30, bottom = 12 };
         GUI.skin.window.margin = new RectOffset { left = 8, right = 8, top = 8, bottom = 8 };
+    }
+
+    public void SelectTab(string tabName)
+    {
+        for (int i = 0; i < _tabs.Count; i++)
+        {
+            if (_tabs[i].name != tabName || !IsTabVisible(_tabs[i])) continue;
+            _selectedTab = i;
+            ResetMaterialContentScroll();
+            return;
+        }
+    }
+
+    private static bool IsTabVisible(ITab tab)
+    {
+        if (tab is TestTab)
+            return MalumMenu.menuShowTestTab?.Value == true;
+        return true;
+    }
+
+    private void ApplyMaterialTabOrder(bool newLayout)
+    {
+        if (_lastNewLayout == newLayout) return;
+
+        ITab selectedTab = _selectedTab >= 0 && _selectedTab < _tabs.Count ? _tabs[_selectedTab] : null;
+        string[] order = newLayout ? NewTabOrder : DefaultTabOrder;
+        List<ITab> reorderedTabs = new();
+        foreach (string tabName in order)
+        {
+            ITab tab = _tabs.Find(candidate => candidate.name == tabName);
+            if (tab != null) reorderedTabs.Add(tab);
+        }
+        _tabs = reorderedTabs;
+        _selectedTab = selectedTab == null ? 0 : Mathf.Max(0, _tabs.IndexOf(selectedTab));
+        _lastNewLayout = newLayout;
+        ResetMaterialContentScroll();
     }
 
     private void Update()
@@ -254,6 +319,10 @@ public class MenuUI : MonoBehaviour
         if (!isGUIActive || MalumMenu.isPanicked) return;
 
         bool materialLayout = MalumMenu.menuMaterialLayout?.Value == true;
+        if (materialLayout)
+            ApplyMaterialTabOrder(MalumMenu.menuMaterialNewLayout?.Value == true);
+        else if (_lastNewLayout)
+            ApplyMaterialTabOrder(false);
         IsMaterialLayoutActive = materialLayout;
         if (_unitySkin == null)
             _unitySkin = GUI.skin;
@@ -268,8 +337,17 @@ public class MenuUI : MonoBehaviour
         else
             GUI.skin = _legacySkin;
 
+        if (materialLayout && _selectedTab >= 0 && _selectedTab < _tabs.Count &&
+            !IsTabVisible(_tabs[_selectedTab]))
+        {
+            _selectedTab = 0;
+            ResetMaterialContentScroll();
+        }
+
         GUI.WindowFunction renderer = materialLayout
-            ? (GUI.WindowFunction)MaterialWindowFunction
+            ? (MaterialNewLayoutEnabled
+                ? (GUI.WindowFunction)NewLayoutWindowFunction
+                : (GUI.WindowFunction)MaterialWindowFunction)
             : (GUI.WindowFunction)WindowFunction;
 
         string title = materialLayout ? string.Empty : "Menace Menu v" + MalumMenu.menaceVersion;
@@ -281,8 +359,16 @@ public class MenuUI : MonoBehaviour
         if (materialLayout)
             GUI.color = new Color(1f, 1f, 1f, MaterialWindowOpacity);
         windowRect = GUI.Window((int)WindowId.MenuUI, windowRect, renderer, title);
+        if (materialLayout)
+        {
+            GUISkin resizeSkin = GUI.skin;
+            GUI.skin = GetMaterialSkin(_legacySkin);
+            DrawMaterialResizeGrip();
+            GUI.skin = resizeSkin;
+        }
         GUI.color = previousWindowColor;
         GUI.skin = _unitySkin;
+
     }
 
     private void DisableSabotageCheats()
@@ -313,6 +399,8 @@ public class MenuUI : MonoBehaviour
 
         for (var i = 0; i < _tabs.Count; i++)
         {
+            if (!IsTabVisible(_tabs[i]))
+                continue;
             Color standardColor = GUI.backgroundColor;
 
             if (_selectedTab == i)
@@ -376,20 +464,24 @@ public class MenuUI : MonoBehaviour
         if (_materialRenderedTab != _selectedTab)
         {
             _materialRenderedTab = _selectedTab;
-            _materialPageProgress = 0f;
+            _materialPageProgress = MaterialPageAnimationsEnabled ? 0f : 1f;
             _contentScrollPosition = Vector2.zero;
             _materialContentScrollPosition = Vector2.zero;
             _materialContentScrollTarget = Vector2.zero;
         }
-        float animationStep = 1f - Mathf.Exp(-Time.unscaledDeltaTime * 10f);
-        _materialPageProgress = Mathf.Lerp(_materialPageProgress, 1f, animationStep);
-        float pageEase = Mathf.SmoothStep(0f, 1f, _materialPageProgress);
+        float pageEase = 1f;
+        if (MaterialPageAnimationsEnabled)
+        {
+            float animationStep = 1f - Mathf.Exp(-Time.unscaledDeltaTime * 10f);
+            _materialPageProgress = Mathf.Lerp(_materialPageProgress, 1f, animationStep);
+            pageEase = Mathf.SmoothStep(0f, 1f, _materialPageProgress);
+        }
         if (_materialPageProgress < 0.999f)
             GUI.changed = true;
 
         GUI.Box(new Rect(0f, 0f, width, height), GUIContent.none, CreatePanelStyle(MaterialSurface));
         GUI.Box(new Rect(0f, 0f, width, 34f), GUIContent.none, CreatePanelStyle(MaterialHeader));
-        GUI.Label(new Rect(18f, 6f, 320f, 24f), "MENACE // CONTROL", CreateHeaderStyle());
+        GUI.Label(new Rect(18f, 6f, Mathf.Max(280f, width - 190f), 24f), "MENACE MENU // V1.2.1-pre-release.1", CreateHeaderStyle());
         GUI.Label(new Rect(width - 120f, 8f, 100f, 20f), Utils.isPlayer ? "IN GAME" : "LOBBY", MaterialStatusStyle());
         GUI.Box(new Rect(0f, 34f, width, 3f), GUIContent.none, CreateGradientStyle(MaterialAccent, MaterialAccentEnd));
 
@@ -399,6 +491,8 @@ public class MenuUI : MonoBehaviour
         Vector2 tabScrollInput = UIHelpers.BeginScrollView(_materialTabScrollPosition, false, true);
         for (int i = 0; i < _tabs.Count; i++)
         {
+            if (!IsTabVisible(_tabs[i]))
+                continue;
             if (GUILayout.Button(_tabs[i].name, _selectedTab == i ? CreateSelectedNavigationStyle() : CreateNavigationStyle(), GUILayout.Height(27)))
                 _selectedTab = i;
         }
@@ -413,20 +507,15 @@ public class MenuUI : MonoBehaviour
             Color pageColor = GUI.color;
             GUI.color = new Color(pageColor.r, pageColor.g, pageColor.b, pageEase);
             GUILayout.BeginHorizontal(CreatePageHeaderStyle(), GUILayout.Height(54));
-            GUILayout.BeginVertical(GUILayout.Width(64));
-            GUILayout.Label($"{_selectedTab + 1:00}", CreatePageNumberStyle());
-            GUILayout.Label("MODULE", MaterialCaptionStyle());
-            GUILayout.EndVertical();
             GUILayout.BeginVertical();
-            GUILayout.Label(_tabs[_selectedTab].name, CreateContentTitleStyle());
+            GUILayout.Label(GetMaterialPageTitle(), CreateContentTitleStyle());
             GUILayout.Label("gg/bH4Hy9YnVD", MaterialCaptionStyle());
             GUILayout.EndVertical();
             GUILayout.FlexibleSpace();
-            GUILayout.Label($"{_selectedTab + 1:00} / {_tabs.Count:00}", MaterialStatusStyle());
             GUILayout.EndHorizontal();
             GUILayout.Box(string.Empty, CreateGradientStyle(MaterialAccent, MaterialAccentEnd), GUILayout.Height(2), GUILayout.ExpandWidth(true));
             GUILayout.Space(8);
-            GUILayout.BeginVertical(CreateWorkSurfaceStyle());
+            GUILayout.BeginVertical(MaterialNewLayoutEnabled ? CreateOrganizedWorkSurfaceStyle() : CreateWorkSurfaceStyle());
             Vector2 contentScrollInput = UIHelpers.BeginScrollView(_materialContentScrollPosition, false, true,
                 GUILayout.Height(bodyHeight - 98f));
             _tabs[_selectedTab].Draw();
@@ -444,16 +533,168 @@ public class MenuUI : MonoBehaviour
         GUI.DragWindow(new Rect(0, 0, windowWidth, 36));
     }
 
+    private void NewLayoutWindowFunction(int windowID)
+    {
+        GUISkin previousSkin = GUI.skin;
+        GUI.skin = GetMaterialSkin(_legacySkin ?? previousSkin);
+        Color oldBackground = GUI.backgroundColor;
+        Color oldContent = GUI.contentColor;
+        Color oldColor = GUI.color;
+        GUI.color = Color.white;
+        GUI.contentColor = MaterialText;
+
+        float width = windowRect.width;
+        float height = windowRect.height;
+        float railWidth = 178f;
+        float contentX = railWidth + 14f;
+        float contentWidth = width - contentX - 12f;
+        float bodyHeight = height - 48f;
+
+        GUI.Box(new Rect(0f, 0f, width, height), GUIContent.none, CreatePanelStyle(MaterialSurface));
+        GUI.Box(new Rect(0f, 0f, width, 42f), GUIContent.none, CreatePanelStyle(MaterialHeader));
+        GUI.Label(new Rect(18f, 7f, width - 250f, 28f), "MENACE MENU // NEW LAYOUT", CreateHeaderStyle());
+        GUI.Label(new Rect(width - 142f, 10f, 124f, 20f), Utils.isPlayer ? "IN GAME" : "LOBBY", MaterialStatusStyle());
+        GUI.Box(new Rect(0f, 42f, width, 3f), GUIContent.none, CreateGradientStyle(MaterialAccent, MaterialAccentEnd));
+
+        GUI.Box(new Rect(10f, 56f, railWidth, bodyHeight - 8f), GUIContent.none, CreatePanelStyle(MaterialNavigation));
+        GUILayout.BeginArea(new Rect(22f, 66f, railWidth - 24f, bodyHeight - 28f));
+        GUILayout.Label("NAVIGATION", MaterialCaptionStyle());
+        Vector2 navigationInput = UIHelpers.BeginScrollView(_materialTabScrollPosition, false, true);
+        DrawNewLayoutCategory("CORE", "Movement", "Self", "Roles", "Players");
+        DrawNewLayoutCategory("LOBBY", "Lobby", "Modes", "Ship", "Sabotage");
+        DrawNewLayoutCategory("TOOLS", "ESP", "Chat", "Animations", "Console");
+        DrawNewLayoutCategory("SYSTEM", "Passive", "Troll", "Protections", "Anticheat", "Config", "Profiles", "Skins", "Settings", "Test");
+        GUILayout.EndScrollView();
+        UpdateMaterialScroll(ref _materialTabScrollPosition, ref _materialTabScrollTarget, navigationInput);
+        GUILayout.EndArea();
+
+        GUI.Box(new Rect(contentX, 56f, contentWidth, bodyHeight - 8f), GUIContent.none, CreatePanelStyle(MaterialContent));
+        GUILayout.BeginArea(new Rect(contentX + 16f, 68f, contentWidth - 32f, bodyHeight - 30f));
+        if (_selectedTab >= 0 && _selectedTab < _tabs.Count)
+        {
+            GUILayout.Label(_tabs[_selectedTab].name, CreateContentTitleStyle());
+            GUILayout.Label("gg/bH4Hy9YnVD", MaterialCaptionStyle());
+            GUILayout.Box(string.Empty, CreateGradientStyle(MaterialAccent, MaterialAccentEnd), GUILayout.Height(2), GUILayout.ExpandWidth(true));
+            GUILayout.Space(10f);
+            GUILayout.BeginVertical(CreateOrganizedWorkSurfaceStyle());
+            Vector2 contentInput = UIHelpers.BeginScrollView(_materialContentScrollPosition, false, true,
+                GUILayout.Height(bodyHeight - 82f));
+            _tabs[_selectedTab].Draw();
+            GUILayout.EndScrollView();
+            UpdateMaterialScroll(ref _materialContentScrollPosition, ref _materialContentScrollTarget, contentInput);
+            GUILayout.EndVertical();
+        }
+        GUILayout.EndArea();
+
+        GUI.backgroundColor = oldBackground;
+        GUI.contentColor = oldContent;
+        GUI.color = oldColor;
+        GUI.skin = previousSkin;
+        GUI.DragWindow(new Rect(0, 0, windowWidth, 44));
+    }
+
+    private void DrawNewLayoutCategory(string title, params string[] tabNames)
+    {
+        GUILayout.Space(6f);
+        GUILayout.Label(title, MaterialCaptionStyle());
+        foreach (string tabName in tabNames)
+        {
+            int tabIndex = _tabs.FindIndex(tab => tab.name == tabName && IsTabVisible(tab));
+            if (tabIndex < 0) continue;
+            if (GUILayout.Button(tabName, _selectedTab == tabIndex ? CreateSelectedNavigationStyle() : CreateNavigationStyle(), GUILayout.Height(27f)))
+            {
+                _selectedTab = tabIndex;
+                ResetMaterialContentScroll();
+            }
+        }
+    }
+
+    private void DrawMaterialResizeGrip()
+    {
+        const float gripSize = 22f;
+        Rect grip = new(windowRect.xMax - gripSize, windowRect.yMax - gripSize, gripSize, gripSize);
+        int controlId = GUIUtility.GetControlID(148237, FocusType.Passive);
+        Event current = Event.current;
+
+        if (current.type == EventType.MouseDown && current.button == 0 && grip.Contains(current.mousePosition))
+        {
+            _materialResizing = true;
+            _materialResizeStart = current.mousePosition;
+            _materialResizeOrigin = new Vector2(windowRect.width, windowRect.height);
+            GUIUtility.hotControl = controlId;
+            current.Use();
+        }
+        else if (_materialResizing && current.type == EventType.MouseDrag && GUIUtility.hotControl == controlId)
+        {
+            Vector2 delta = current.mousePosition - _materialResizeStart;
+            windowRect.width = Mathf.Clamp(_materialResizeOrigin.x + delta.x, 520f, Screen.width - 20f);
+            windowRect.height = Mathf.Clamp(_materialResizeOrigin.y + delta.y, 360f, Screen.height - 20f);
+            GUI.changed = true;
+            current.Use();
+        }
+        else if (_materialResizing && current.type == EventType.MouseUp && GUIUtility.hotControl == controlId)
+        {
+            _materialResizing = false;
+            GUIUtility.hotControl = 0;
+            current.Use();
+        }
+
+        Color previousColor = GUI.color;
+        GUI.color = MaterialAccent;
+        _materialResizeGripTexture ??= Texture2D.whiteTexture;
+        GUI.Box(new Rect(windowRect.xMax - 24f, windowRect.yMax - 24f, 20f, 20f),
+            GUIContent.none, CreateTextureStyle(_materialResizeGripTexture));
+        GUI.color = previousColor;
+    }
+
+    private static GUIStyle CreateTextureStyle(Texture2D texture)
+    {
+        return new GUIStyle
+        {
+            normal = { background = texture },
+            padding = new RectOffset(),
+            margin = new RectOffset(),
+            border = new RectOffset()
+        };
+    }
+
     private static void UpdateMaterialScroll(ref Vector2 position, ref Vector2 target, Vector2 input)
     {
         if ((input - position).sqrMagnitude > 0.01f)
             target = input;
+
+        if (!MaterialSmoothScrollingEnabled)
+        {
+            position = target;
+            return;
+        }
 
         float scrollStep = 1f - Mathf.Exp(-Time.unscaledDeltaTime * 14f);
         Vector2 nextPosition = Vector2.Lerp(position, target, scrollStep);
         if ((nextPosition - position).sqrMagnitude > 0.01f)
             GUI.changed = true;
         position = nextPosition;
+    }
+
+    private static bool MaterialSmoothScrollingEnabled =>
+        MalumMenu.menuMaterialLowPerformance?.Value != true &&
+        MalumMenu.menuMaterialSmoothScrolling?.Value != false;
+
+    private static bool MaterialPageAnimationsEnabled =>
+        MalumMenu.menuMaterialLowPerformance?.Value != true &&
+        MalumMenu.menuMaterialPageAnimations?.Value != false;
+
+    private static bool MaterialNewLayoutEnabled =>
+        MalumMenu.menuMaterialLayout?.Value == true && MalumMenu.menuMaterialNewLayout?.Value == true;
+
+    private string GetMaterialPageTitle()
+    {
+        return _tabs[_selectedTab] switch
+        {
+            RolesTab roles => $"Roles / {roles.MaterialSectionName}",
+            LobbyTab lobby => $"Lobby / {lobby.MaterialSectionName}",
+            _ => _tabs[_selectedTab].name
+        };
     }
 
     private static readonly Color MaterialSurface = new(0.045f, 0.05f, 0.06f, 1f);
@@ -511,6 +752,30 @@ public class MenuUI : MonoBehaviour
         return style;
     }
 
+    public static GUIStyle CreateMaterialTabStyle(bool selected)
+    {
+        GUIStyle style = new(GUI.skin.button)
+        {
+            fontSize = 12,
+            fontStyle = FontStyle.Bold,
+            alignment = TextAnchor.MiddleCenter,
+            normal = { textColor = new Color(0.70f, 0.77f, 0.86f, 1f) },
+            hover = { textColor = Color.white },
+            active = { textColor = Color.white },
+            padding = new RectOffset { left = 8, right = 8, top = 5, bottom = 5 },
+            margin = new RectOffset(),
+            border = new RectOffset { left = 8, right = 8, top = 8, bottom = 8 },
+            wordWrap = false,
+            fixedHeight = 28f
+        };
+        if (selected)
+        {
+            style.normal.background = CreateRoundedTexture(MaterialAccent);
+            style.normal.textColor = Color.white;
+        }
+        return style;
+    }
+
     private static GUIStyle CreateHeaderStyle() => new(GUI.skin.label)
     {
         fontSize = 21,
@@ -553,6 +818,14 @@ public class MenuUI : MonoBehaviour
         padding = new RectOffset { left = 10, right = 10, top = 8, bottom = 8 },
         margin = new RectOffset(),
         border = new RectOffset()
+    };
+
+    private static GUIStyle CreateOrganizedWorkSurfaceStyle() => new(GUI.skin.box)
+    {
+        normal = { background = CreateRoundedTexture(new Color(0.075f, 0.09f, 0.11f, 1f)) },
+        padding = new RectOffset { left = 16, right = 16, top = 14, bottom = 14 },
+        margin = new RectOffset(),
+        border = new RectOffset { left = 8, right = 8, top = 8, bottom = 8 }
     };
 
     private static GUIStyle MaterialCaptionStyle() => new(GUI.skin.label)
@@ -613,6 +886,15 @@ public class MenuUI : MonoBehaviour
         return MaterialAccent;
     }
 
+    public static void ResetMaterialContentScroll()
+    {
+        if (MalumMenu.menuUI != null)
+        {
+            MalumMenu.menuUI._materialContentScrollPosition = Vector2.zero;
+            MalumMenu.menuUI._materialContentScrollTarget = Vector2.zero;
+        }
+    }
+
     public static readonly string[] MaterialColorPresets =
         { "Teal / Amber", "Ocean / Lime", "Cardinal / Gold", "Violet / Rose", "Cobalt / Mint", "Copper / Sky", "Mono / Ice", "Plum / Peach" };
 
@@ -670,7 +952,8 @@ public class MenuUI : MonoBehaviour
                         for (int x = 0; x < size; x++)
                         {
                             bool insideRail = y >= railTop && y < railBottom;
-                            float edgeDistance = Mathf.Min(x, size - 1 - x, y - railTop, railBottom - 1 - y);
+                            float edgeDistance = Mathf.Min(Mathf.Min(x, size - 1 - x),
+                                Mathf.Min(y - railTop, railBottom - 1 - y));
                             float alpha = insideRail ? Mathf.Clamp01(edgeDistance + 1f) : 0f;
                             texture.SetPixel(x, y, new Color(color.r, color.g, color.b, color.a * MaterialWindowOpacity * alpha));
                         }
@@ -715,6 +998,7 @@ public class MenuUI : MonoBehaviour
 
     private static GUISkin _materialSkin;
     private static GUISkin _materialSkinSource;
+    private static Texture2D _materialResizeGripTexture;
 
     private static GUISkin GetMaterialSkin(GUISkin source)
     {

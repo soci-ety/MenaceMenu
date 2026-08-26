@@ -105,6 +105,11 @@ public sealed class RadarHandler : MonoBehaviour
         }
     }
 
+    public static Texture2D LoadMapPreview(int mapId)
+    {
+        return LoadMap(Mathf.Clamp(mapId, 0, 5));
+    }
+
     private static void InitStyles(Texture2D texture)
     {
         _mapStyle ??= new GUIStyle(GUIStyle.none);

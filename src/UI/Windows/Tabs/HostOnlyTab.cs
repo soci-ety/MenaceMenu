@@ -8,6 +8,12 @@ public class HostOnlyTab : ITab
 
     public void Draw()
     {
+        if (MenuUI.IsMaterialLayoutActive)
+        {
+            DrawMaterialLayout();
+            return;
+        }
+
         GUILayout.BeginHorizontal();
 
         GUILayout.BeginVertical(GUILayout.Width(MenuUI.windowWidth * 0.425f));
@@ -40,6 +46,25 @@ public class HostOnlyTab : ITab
         GUILayout.EndVertical();
 
         GUILayout.EndHorizontal();
+    }
+
+    private void DrawMaterialLayout()
+    {
+        if (PlayerControl.LocalPlayer == null)
+            GUILayout.Label("You are not currently in a game, these options will not work.");
+        else if (!AmongUsClient.Instance.AmHost)
+            GUILayout.Label("You are not the host of the current lobby. Using these options may do nothing.");
+
+        GUILayout.Label("General", GUIStylePreset.TabSubtitle);
+        DrawGeneral();
+        GUILayout.Space(12);
+        GUILayout.Label("Murder", GUIStylePreset.TabSubtitle);
+        DrawMurder();
+        GUILayout.Space(12);
+        GUILayout.Label("Game State", GUIStylePreset.TabSubtitle);
+        DrawGameState();
+        GUILayout.Space(12);
+        DrawMeetings();
     }
 
     private void DrawGeneral()

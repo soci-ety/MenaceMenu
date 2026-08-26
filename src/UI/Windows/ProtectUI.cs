@@ -67,7 +67,7 @@ public class ProtectUI : MonoBehaviour
 
             if (GUILayout.Button("Protect", GUIStylePreset.NormalButton) && Utils.isHost && !Utils.isLobby)
             {
-                PlayerControl.LocalPlayer.RpcProtectPlayer(player, player.cosmetics.ColorId);
+                PlayerControl.LocalPlayer.RpcProtectPlayer(player, PlayerControl.LocalPlayer.cosmetics.ColorId);
             }
 
             var keepProtected = playersToProtect.Contains(player);
@@ -93,7 +93,7 @@ public class ProtectUI : MonoBehaviour
         {
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                PlayerControl.LocalPlayer.RpcProtectPlayer(player, player.cosmetics.ColorId);
+                PlayerControl.LocalPlayer.RpcProtectPlayer(player, PlayerControl.LocalPlayer.cosmetics.ColorId);
             }
         }
 

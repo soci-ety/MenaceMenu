@@ -15,15 +15,17 @@ public class ProfilesTab : ITab
     public void Draw()
     {
         _profileNameField ??= new TextField("Default");
-        GUILayout.BeginVertical(GUILayout.Width(MenuUI.windowWidth * 0.425f));
+        GUILayout.BeginVertical(MenuUI.IsMaterialLayoutActive
+            ? GUILayout.ExpandWidth(true)
+            : GUILayout.Width(MenuUI.windowWidth * 0.425f));
         try
         {
             DrawProfileContent();
         }
         catch (Exception exception)
         {
-            GUILayout.Label("Profiles could not be loaded.", GUIStylePreset.TabSubtitle);
-            GUILayout.Label(exception.Message, GUIStylePreset.ModernLabel);
+            GUILayout.Label("Profiles could not be loaded.", GUI.skin.label);
+            GUILayout.Label(exception.Message, GUI.skin.label);
         }
 
         GUILayout.EndVertical();
@@ -31,12 +33,13 @@ public class ProfilesTab : ITab
 
     private void DrawProfileContent()
     {
-        GUILayout.Label("Named Profiles", GUIStylePreset.TabSubtitle);
-        GUILayout.Label("Save local toggle profiles or share the current configuration through the clipboard.", GUIStylePreset.ModernLabel);
+        GUILayout.Label("Named Profiles", GUI.skin.label);
+        GUILayout.Label("Save local toggle profiles or share the current configuration through the clipboard.", GUI.skin.label);
+        int nameWidth = MenuUI.IsMaterialLayoutActive ? 130 : 180;
 
         GUILayout.BeginHorizontal();
         GUILayout.Label("Name:", GUILayout.Width(50));
-        _profileNameField.Draw(180);
+        _profileNameField.Draw(nameWidth);
         if (GUILayout.Button("Save", GUILayout.Width(70)))
         {
             bool saved = ProfileStore.Save(_profileNameField.Content, out string saveError);
@@ -46,13 +49,13 @@ public class ProfilesTab : ITab
 
         IReadOnlyList<string> profiles = ProfileStore.ListProfiles();
 
-        GUILayout.Label(profiles.Count == 0 ? "No named profiles saved." : "Saved profiles:", GUIStylePreset.ModernLabel);
+        GUILayout.Label(profiles.Count == 0 ? "No named profiles saved." : "Saved profiles:", GUI.skin.label);
         int visibleProfiles = Mathf.Min(profiles.Count, 5);
         for (int profileIndex = 0; profileIndex < visibleProfiles; profileIndex++)
         {
             string profile = profiles[profileIndex];
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button(profile, GUILayout.Width(180)))
+            if (GUILayout.Button(profile, GUILayout.Width(nameWidth)))
                 _profileNameField.Content = profile;
 
             if (GUILayout.Button("Load", GUILayout.Width(60)))
@@ -64,10 +67,10 @@ public class ProfilesTab : ITab
         }
 
         if (profiles.Count > visibleProfiles)
-            GUILayout.Label($"{profiles.Count - visibleProfiles} more profiles in {ProfileStore.DirectoryPath}.", GUIStylePreset.ModernLabel);
+            GUILayout.Label($"{profiles.Count - visibleProfiles} more profiles in {ProfileStore.DirectoryPath}.", GUI.skin.label);
 
         GUILayout.Space(8);
-        GUILayout.Label("Shareable Profile", GUIStylePreset.TabSubtitle);
+        GUILayout.Label("Shareable Profile", GUI.skin.label);
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Copy Current"))
         {
@@ -98,7 +101,7 @@ public class ProfilesTab : ITab
         GUILayout.EndHorizontal();
 
         if (!string.IsNullOrEmpty(_profileMessage))
-            GUILayout.Label(_profileMessage, GUIStylePreset.ModernLabel);
+            GUILayout.Label(_profileMessage, GUI.skin.label);
     }
 
     private void SetMessage(bool succeeded, string success, string error)

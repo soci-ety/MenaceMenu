@@ -35,7 +35,7 @@ public partial class MalumMenu : BasePlugin
     public static StreamerUI streamerUI;
     public static KeybindListener keybindListener;
 
-    public static string menaceVersion = "1.2.0";
+    public static string menaceVersion = "1.2.1pre";
     public static List<string> supportedAU = new List<string> { "2026.8.18", "2026.6.5", "2026.3.31" };
     public static List<string> toleratedAU = new List<string> { "2026.2.24", "2026.3.17" };
     public static bool isPanicked = false;
@@ -51,6 +51,12 @@ public partial class MalumMenu : BasePlugin
     public static ConfigEntry<bool> menuKeepSubwindowsOpen;
     public static ConfigEntry<bool> menuAllowClickThrough;
     public static ConfigEntry<bool> menuMaterialLayout;
+    public static ConfigEntry<bool> menuMaterialSmoothScrolling;
+    public static ConfigEntry<bool> menuMaterialPageAnimations;
+    public static ConfigEntry<bool> menuMaterialLowPerformance;
+    public static ConfigEntry<bool> menuMaterialNewLayout;
+    public static ConfigEntry<bool> menuShowTestTab;
+    public static ConfigEntry<bool> menuSettingBoundaries;
     public static ConfigEntry<string> spoofLevel;
     public static ConfigEntry<string> spoofPlatform;
     public static ConfigEntry<bool> spoofDeviceId;
@@ -116,6 +122,36 @@ public partial class MalumMenu : BasePlugin
                     "MaterialLayout",
                                 true,
                     "When enabled, use the Material 3-inspired menu layout");
+
+        menuSettingBoundaries = Config.Bind("MenaceMenu.GUI",
+                "SettingBoundaries",
+                    true,
+                "When enabled, keep lobby rules within the normal Among Us limits");
+
+            menuMaterialSmoothScrolling = Config.Bind("MenaceMenu.GUI",
+                    "MaterialSmoothScrolling",
+                        true,
+                    "When enabled, smooth scrolling is used in the new UI");
+
+            menuMaterialPageAnimations = Config.Bind("MenaceMenu.GUI",
+                    "MaterialPageAnimations",
+                        true,
+                    "When enabled, page transition animations are used in the new UI");
+
+            menuMaterialLowPerformance = Config.Bind("MenaceMenu.GUI",
+                    "MaterialLowPerformance",
+                        false,
+                    "When enabled, reduce Material UI animation and scrolling work for low-end laptops");
+
+            menuMaterialNewLayout = Config.Bind("MenaceMenu.GUI",
+                    "MaterialNewLayout",
+                        false,
+                    "When enabled, show the organized Material UI layout page");
+
+                menuShowTestTab = Config.Bind("MenaceMenu.GUI",
+                        "ShowTestTab",
+                            false,
+                        "When enabled, show the diagnostic Test tab in the new UI");
 
 
         autoLoadProfile = Config.Bind("MenaceMenu.Profile",

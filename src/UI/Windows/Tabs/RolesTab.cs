@@ -6,9 +6,24 @@ namespace MalumMenu;
 public class RolesTab : ITab
 {
     public string name => "Roles";
+    private int _materialSection;
+    public string MaterialSectionName => _materialSection switch
+    {
+        0 => "General",
+        1 => "Impostor",
+        2 => "Shapeshifter",
+        3 => "Crewmate",
+        _ => "Other Roles"
+    };
 
     public void Draw()
     {
+        if (MenuUI.IsMaterialLayoutActive)
+        {
+            DrawMaterialSections();
+            return;
+        }
+
         GUILayout.BeginHorizontal();
 
         GUILayout.BeginVertical(GUILayout.Width(MenuUI.windowWidth * 0.425f));
@@ -29,25 +44,61 @@ public class RolesTab : ITab
 
         GUILayout.Space(15);
 
-        DrawTracker();
-
         GUILayout.EndVertical();
 
         GUILayout.BeginVertical();
 
-        DrawEngineer();
-
-        GUILayout.Space(15);
-
-        DrawScientist();
-
-        GUILayout.Space(15);
-
-        DrawDetective();
+        DrawOtherRoles();
 
         GUILayout.EndVertical();
 
         GUILayout.EndHorizontal();
+    }
+
+    private void DrawMaterialSections()
+    {
+        string[] sections = { "General", "Impostor", "Shapeshifter", "Crewmate", "Other Roles" };
+        for (int i = 0; i < sections.Length; i++)
+        {
+            if (i % 3 == 0)
+                GUILayout.BeginHorizontal(GUILayout.ExpandWidth(true), GUILayout.Height(32));
+
+            Color previousBackground = GUI.backgroundColor;
+            if (i == _materialSection)
+                GUI.backgroundColor = MenuUI.GetMaterialAccentColor();
+            if (GUILayout.Button(sections[i], MenuUI.CreateMaterialTabStyle(i == _materialSection), GUILayout.MinWidth(80), GUILayout.ExpandWidth(true)))
+                _materialSection = i;
+            GUI.backgroundColor = previousBackground;
+
+            if (i % 3 != 2 && i != sections.Length - 1)
+                GUILayout.Space(4);
+            if (i % 3 == 2 || i == sections.Length - 1)
+            {
+                GUILayout.EndHorizontal();
+                if (i != sections.Length - 1)
+                    GUILayout.Space(4);
+            }
+        }
+        GUILayout.Space(6);
+
+        switch (_materialSection)
+        {
+            case 0:
+                DrawGeneral();
+                break;
+            case 1:
+                DrawImpostor();
+                break;
+            case 2:
+                DrawShapeshifter();
+                break;
+            case 3:
+                DrawCrewmate();
+                break;
+            default:
+                DrawOtherRoles();
+                break;
+        }
     }
 
     private void DrawGeneral()
@@ -97,6 +148,23 @@ public class RolesTab : ITab
         CheatToggles.noTrackingCooldown = UIHelpers.Toggle(CheatToggles.noTrackingCooldown, " No Track Cooldown");
 
         CheatToggles.trackReach = UIHelpers.Toggle(CheatToggles.trackReach, " Track Reach");
+    }
+
+    private void DrawOtherRoles()
+    {
+        DrawTracker();
+
+        GUILayout.Space(15);
+
+        DrawEngineer();
+
+        GUILayout.Space(15);
+
+        DrawScientist();
+
+        GUILayout.Space(15);
+
+        DrawDetective();
     }
 
     private void DrawEngineer()

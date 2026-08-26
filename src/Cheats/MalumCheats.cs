@@ -88,6 +88,17 @@ public static class MalumCheats
         CheatToggles.forceStartGame = false;
     }
 
+    public static void FakeStartCounterCheat()
+    {
+        if (!LobbyTab.FakeStartCounter || !Utils.isHost || !Utils.isLobby || AmongUsClient.Instance == null)
+            return;
+
+        sbyte counter = (sbyte)Mathf.Clamp(LobbyTab.FakeStartValue, -128, 127);
+        PlayerControl.LocalPlayer?.RpcSetStartCounter(counter);
+        GameStartManager.Instance?.SetStartCounter(counter);
+        LobbyTab.FakeStartCounter = false;
+    }
+
     public static void CompleteMyTasksCheat()
     {
         if (CheatToggles.completeMyTasks)

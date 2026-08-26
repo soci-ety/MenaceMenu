@@ -14,6 +14,8 @@ public class SabotageTab : ITab
         if (ShipStatus.Instance == null)
         {
             GUILayout.Label("You are not currently in a game, or the game has not started yet. These options will not work.");
+            GUILayout.EndVertical();
+            return;
         }
 
         Sabotage.UpdateSystemsDirectly = UIHelpers.Toggle(Sabotage.UpdateSystemsDirectly, "Update Sabotage Systems Directly");

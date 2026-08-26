@@ -308,7 +308,7 @@ public static class MalumPPMCheats
                         {
                             if (AmongUsClient.Instance.AmHost)
                             {
-                                PlayerControl.LocalPlayer.RpcSetRole(RoleTypes.ImpostorGhost);
+                                PlayerControl.LocalPlayer.RpcSetRole(RoleTypes.ImpostorGhost, true);
                             }
                             else
                             {
@@ -319,7 +319,7 @@ public static class MalumPPMCheats
                         {
                             if (AmongUsClient.Instance.AmHost)
                             {
-                                PlayerControl.LocalPlayer.RpcSetRole(RoleTypes.CrewmateGhost);
+                                PlayerControl.LocalPlayer.RpcSetRole(RoleTypes.CrewmateGhost, true);
                             }
                             else
                             {
@@ -331,7 +331,7 @@ public static class MalumPPMCheats
                     {
                         if (AmongUsClient.Instance.AmHost)
                         {
-                            PlayerControl.LocalPlayer.RpcSetRole(selectedRole);
+                            PlayerControl.LocalPlayer.RpcSetRole(selectedRole, true);
                         }
                         else
                         {

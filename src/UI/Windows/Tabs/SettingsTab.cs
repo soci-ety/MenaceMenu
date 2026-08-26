@@ -78,11 +78,22 @@ public class SettingsTab : ITab
 
         GUILayout.Space(5);
 
-        MalumMenu.menuMaterialLayout.Value = UIHelpers.Toggle(MalumMenu.menuMaterialLayout.Value, " New UI (WIP)");
+        MalumMenu.menuMaterialLayout.Value = UIHelpers.Toggle(MalumMenu.menuMaterialLayout.Value, " Material UI");
 
         if (MalumMenu.menuMaterialLayout.Value)
         {
-            GUILayout.Label("New UI Color Preset", GUIStylePreset.TabSubtitle);
+            MalumMenu.menuMaterialSmoothScrolling.Value = UIHelpers.Toggle(
+                MalumMenu.menuMaterialSmoothScrolling.Value, " Smooth scrolling");
+            MalumMenu.menuMaterialPageAnimations.Value = UIHelpers.Toggle(
+                MalumMenu.menuMaterialPageAnimations.Value, " Page animations");
+            MalumMenu.menuMaterialLowPerformance.Value = UIHelpers.Toggle(
+                MalumMenu.menuMaterialLowPerformance.Value, " Low-end performance mode");
+            MalumMenu.menuMaterialNewLayout.Value = UIHelpers.Toggle(
+                MalumMenu.menuMaterialNewLayout.Value, " New Layout");
+            MalumMenu.menuShowTestTab.Value = UIHelpers.Toggle(
+                MalumMenu.menuShowTestTab.Value, " Show Test tab");
+
+            GUILayout.Label("Material UI Color Presets", GUIStylePreset.TabSubtitle);
             for (int i = 0; i < MenuUI.MaterialColorPresets.Length; i++)
             {
                 if (i % 4 == 0)

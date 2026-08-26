@@ -91,6 +91,21 @@ public class HostOnlyTab2 : ITab
 
         GUILayout.Label($"Selected map: {(MapNames)selectedMap}");
         selectedMap = (byte)UIHelpers.HorizontalSlider(selectedMap, 0, 5);
+        if (MenuUI.IsMaterialLayoutActive)
+        {
+            Texture2D mapPreview = RadarHandler.LoadMapPreview(selectedMap);
+            if (mapPreview != null)
+            {
+                Rect previewRect = GUILayoutUtility.GetRect(260f, 135f, GUILayout.ExpandWidth(true));
+                GUI.Box(previewRect, GUIContent.none, new GUIStyle
+                {
+                    normal = { background = mapPreview },
+                    padding = new RectOffset(),
+                    margin = new RectOffset(),
+                    border = new RectOffset()
+                });
+            }
+        }
 
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Despawn Map"))
